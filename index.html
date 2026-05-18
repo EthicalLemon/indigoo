@@ -497,7 +497,7 @@ body.authed .show-guest{display:none;}
 .panel-route{font-size:12.5px;color:rgba(255,255,255,0.7);margin-top:3px;font-weight:600;}
 .panel-close{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.75);font-size:13px;cursor:pointer;padding:6px 9px;border-radius:7px;transition:all 0.15s;line-height:1;}
 .panel-close:hover{background:rgba(255,255,255,0.18);color:#fff;}
-.panel-body{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:18px;}
+.panel-body{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:18px;padding-bottom:32px;}
 .ps-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);font-weight:800;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--border);}
 .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
 .panel-cell{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
@@ -520,7 +520,7 @@ body.authed .show-guest{display:none;}
 .cabin-name{font-size:10.5px;font-weight:700;color:var(--text2);margin-bottom:3px;}
 .cabin-opt.selected .cabin-name{color:var(--indigo);}
 .cabin-price{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--indigo);}
-.wallet-info{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 13px;margin-bottom:11px;font-size:12px;}
+.wallet-info{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 13px;margin-bottom:11px;font-size:12px;flex-shrink:0;}
 .wallet-info-label{color:var(--text3);font-weight:600;}
 .wallet-info-val{font-family:var(--mono);font-weight:700;color:var(--green);}
 .wallet-info-val.low{color:var(--red);}
@@ -1293,10 +1293,14 @@ function alertBadge(f) {
 }
 function durationBetween(dep, arr) {
   try {
+    if (!dep || !arr || dep === '—' || arr === '—') return '—';
     const parse = t => { const[h,m]=t.replace(/[^0-9:]/g,'').split(':').map(Number); return h*60+(m||0); };
-    const d=parse(dep), a=parse(arr), diff=a>d?a-d:a+1440-d;
+    const d=parse(dep), a=parse(arr);
+    if (isNaN(d) || isNaN(a)) return '—';
+    const diff = a > d ? a - d : a + 1440 - d;
+    if (diff === 0 || diff === 1440) return '—';
     return `${Math.floor(diff/60)}h ${diff%60}m`;
-  } catch { return ''; }
+  } catch { return '—'; }
 }
 
 function renderCards(flights) {

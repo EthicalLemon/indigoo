@@ -1470,9 +1470,12 @@ async function loadWalletPasses() {
 //  FLIGHTS — real API with demo fallback
 // ════════════════════════════════════════════════════
 async function loadFlights() {
-  document.getElementById('loading-state').style.display = 'flex';
-  document.getElementById('flight-cards').innerHTML = '';
-  document.getElementById('empty-state').style.display = 'none';
+  const loadingEl = document.getElementById('loading-state');
+  const cardsEl   = document.getElementById('flight-cards');
+  const emptyEl   = document.getElementById('empty-state');
+  if (loadingEl) loadingEl.style.display = 'flex';
+  if (cardsEl)   cardsEl.innerHTML = '';
+  if (emptyEl)   emptyEl.style.display = 'none';
   try {
     const res  = await fetch(`${API_BASE}/flights`, { signal: AbortSignal.timeout(6000) });
     if (!res.ok) throw new Error('API returned ' + res.status);
@@ -1481,29 +1484,28 @@ async function loadFlights() {
   } catch (e) {
     console.warn('[IndiGo] Could not reach API:', e.message);
     allFlights = [];
-    document.getElementById('loading-state').style.display = 'none';
-    // Show a friendly offline message instead of demo data
-    document.getElementById('flight-cards').innerHTML = `
+    if (loadingEl) loadingEl.style.display = 'none';
+    if (cardsEl) cardsEl.innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:60px 20px;color:var(--text3);">
         <div style="font-size:36px;opacity:0.2;">📡</div>
         <div style="font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);">API Offline</div>
         <div style="font-size:12px;color:var(--text4);text-align:center;max-width:260px;line-height:1.7;">
-          Could not connect to the API server.<br/>Make sure <code>api-server.js</code> is running.
+          Could not connect to the API server.<br/>Make sure your Netlify functions are deployed.
         </div>
         <button class="btn-refresh-sm" onclick="refreshFlights()" style="margin-top:4px;">Try Again</button>
       </div>`;
     return;
   }
-  document.getElementById('loading-state').style.display = 'none';
+  if (loadingEl) loadingEl.style.display = 'none';
   updateStats(); updateFilterCounts(); applyFilter(currentFilter);
 }
 
 
 async function refreshFlights() {
   const s = document.getElementById('spin-ico');
-  s.style.display = 'inline-block';
+  if (s) s.style.display = 'inline-block';
   await loadFlights();
-  s.style.display = 'none';
+  if (s) s.style.display = 'none';
   toast('Flights refreshed', 'success');
 }
 
@@ -1585,12 +1587,12 @@ function renderCards(flights) {
   document.getElementById('result-sub').textContent = `${flights.length} flight${flights.length!==1?'s':''} found`;
   if (!flights.length) { wrap.innerHTML=''; empty.style.display='flex'; return; }
   empty.style.display = 'none';
-  wrap.innerHTML = flights.map((f,i) => `
-    <div class="flight-card${activeFlightId===f.messageId?' selected':''}" onclick="openPanel('${f.messageId}')" style="animation-delay:${i*0.03}s">
+  wrap.innerHTML = flights.map((f,i) => {
+    const fid = f.messageId || f.message_id || '';
+    return `
+    <div class="flight-card${activeFlightId===fid?' selected':''}" onclick="openPanel('${fid}')" style="animation-delay:${i*0.03}s">
       <div class="card-top">
-        <div class="airline-logo">
-          <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" onerror="this.style.display='none';this.parentElement.innerHTML='✈'"/>
-        </div>
+        <div class="airline-logo">✈</div>
         <div class="route-block">
           <div class="apt-col">
             <div class="apt-code">${f.depAirport||'—'}</div>
@@ -1620,13 +1622,13 @@ function renderCards(flights) {
         </div>
         <div class="card-bot-right">
           ${alertBadge(f)}
-          <button class="btn-book" onclick="event.stopPropagation();quickBook('${f.messageId}')" ${bookable(f)?'':'disabled'}>
+          <button class="btn-book" onclick="event.stopPropagation();quickBook('${fid}')" ${bookable(f)?'':'disabled'}>
             ${bookable(f)?'Book Seat':'Unavailable'}
           </button>
         </div>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function quickBook(id) {
@@ -1722,7 +1724,8 @@ async function submitBookingConfirm() {
     const res  = await fetch(`${API_BASE}/book`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        userId: currentUser.id, messageId: f.messageId,
+        userId: currentUser.id,
+        messageId: f.messageId || f.message_id,
         cabinClass: selectedCabin, price: selectedPrice,
         name: discordVal,
         robloxUsername: robloxVal,
@@ -1753,6 +1756,30 @@ async function submitBookingConfirm() {
   }
 }
 
+// ── Cancel Booking (from My Bookings tab) ──────────
+async function cancelBooking(bookingRef) {
+  if (!currentUser) return;
+  if (!confirm(`Cancel booking ${bookingRef}? You will receive a 50% refund.`)) return;
+  try {
+    const res  = await fetch(`${API_BASE}/checkin`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ bookingRef, confirmed: false }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Cancel failed');
+    toast(`✅ Booking ${bookingRef} cancelled. ₹${Number(data.refund||0).toLocaleString('en-IN')} refunded.`, 'success');
+    userBalance = data.newBalance;
+    const fmt = `₹${Number(userBalance).toLocaleString('en-IN')}`;
+    document.getElementById('nav-balance-small').textContent = fmt;
+    document.getElementById('pd-balance').textContent        = fmt;
+    document.getElementById('my-balance').textContent        = fmt;
+    document.getElementById('wm-balance').textContent        = fmt;
+    loadMyBookings();
+  } catch (e) {
+    toast('Cancel failed: ' + e.message, 'error');
+  }
+}
+
 // ── Book flight (panel button → opens confirm modal) ──
 async function bookCurrentFlight() {
   openBookingConfirm();
@@ -1771,9 +1798,9 @@ function selectCabin(el, name, price) {
 
 // ── Panel ──────────────────────────────────────────
 function openPanel(id) {
-  const f = allFlights.find(x=>x.messageId===id);
+  const f = allFlights.find(x=>(x.messageId===id)||(x.message_id===id));
   if (!f) return;
-  activeFlightId = id;
+  activeFlightId = f.messageId || f.message_id;
   document.querySelectorAll('.flight-card').forEach(c=>c.classList.remove('selected'));
   document.querySelectorAll(`.flight-card`).forEach(c=>{
     if (c.getAttribute('onclick')?.includes(id)) c.classList.add('selected');
@@ -1838,11 +1865,26 @@ async function loadMyBookings() {
     document.getElementById('bk-loading').style.display = 'none';
     document.getElementById('bk-sub').textContent = `${bks.length} booking${bks.length!==1?'s':''}`;
     if (!bks.length) { document.getElementById('bk-empty').style.display='flex'; return; }
-    document.getElementById('bookings-list').innerHTML = bks.map((b,i)=>`
-      <div class="booking-card" style="animation-delay:${i*0.04}s">
+    document.getElementById('bookings-list').innerHTML = bks.map((b,i)=>{
+      const isCancelled = b.checkedIn === false;
+      const isCheckedIn = b.checkedIn === true;
+      const isPending   = b.checkedIn === null || b.checkedIn === undefined;
+      const statusIcon  = isCheckedIn ? '✅' : isCancelled ? '❌' : '⏳';
+      const statusLabel = isCheckedIn ? 'Checked In' : isCancelled ? 'Cancelled' : 'Pending';
+      const statusColor = isCheckedIn ? 'var(--green)' : isCancelled ? 'var(--red)' : 'var(--amber)';
+      const cardOpacity = isCancelled ? 'opacity:0.55;' : '';
+      const flightStatusBadge = b.flightStatus ? `<span class="status-badge ${b.flightStatus}" style="font-size:8px;">${b.flightStatus}</span>` : '';
+      return `
+      <div class="booking-card" style="animation-delay:${i*0.04}s;${cardOpacity}${isCancelled?'border-color:rgba(255,77,77,0.2);':''}">
         <div class="bk-head">
-          <span class="bk-ref">${b.bookingRef}</span>
-          <span class="bk-status">${b.flightNum||'—'} · ${new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="bk-ref">${b.bookingRef}</span>
+            <span style="font-size:9px;font-weight:700;color:${statusColor};background:${statusColor}18;border:1px solid ${statusColor}33;padding:1px 7px;border-radius:3px;letter-spacing:0.06em;">${statusIcon} ${statusLabel}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;">
+            ${flightStatusBadge}
+            <span class="bk-status">${b.flightNum||'—'} · ${new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+          </div>
         </div>
         <div class="bk-body">
           <div class="bk-route">
@@ -1852,11 +1894,12 @@ async function loadMyBookings() {
           <div class="bk-meta">
             <span class="bk-class-pill ${b.cabinClass||'Economy'}">${b.cabinClass||'Economy'}</span>
             <span class="bk-fare">₹${Number(b.price||0).toLocaleString('en-IN')}</span>
-            <span class="bk-date">Ref: ${b.bookingRef}</span>
+            ${isPending ? `<button onclick="cancelBooking('${b.bookingRef}')" style="font-size:9px;font-weight:700;color:var(--red);background:var(--red-bg);border:1px solid rgba(255,77,77,0.2);padding:2px 9px;border-radius:3px;cursor:pointer;font-family:var(--font);transition:all 0.12s;" onmouseover="this.style.background='var(--red)';this.style.color='#fff'" onmouseout="this.style.background='var(--red-bg)';this.style.color='var(--red)'">✕ Cancel</button>` : `<span class="bk-date">Ref: ${b.bookingRef}</span>`}
           </div>
         </div>
-      </div>
-    `).join('');
+        ${isCancelled ? `<div style="padding:6px 14px 8px;font-size:10px;color:var(--red);font-family:var(--mono);">Cancelled · 50% refunded to wallet</div>` : ''}
+      </div>`;
+    }).join('');
   } catch {
     document.getElementById('bk-loading').style.display = 'none';
     toast('Could not load bookings', 'error');

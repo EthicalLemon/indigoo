@@ -365,10 +365,19 @@ body.authed .show-guest{display:none;}
 .dot-dep{background:var(--green);}.dot-arr{background:var(--violet);}
 .dot-del{background:var(--amber);}.dot-can{background:var(--red);}
 
-/* Content */
-.content{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:13px;}
+.flight-card:nth-child(1){animation-delay:0ms}
+.flight-card:nth-child(2){animation-delay:40ms}
+.flight-card:nth-child(3){animation-delay:80ms}
+.flight-card:nth-child(4){animation-delay:120ms}
+.flight-card:nth-child(5){animation-delay:160ms}
+.flight-card:nth-child(6){animation-delay:200ms}
+.flight-card:nth-child(7){animation-delay:240ms}
+.flight-card:nth-child(8){animation-delay:280ms}
+.flight-card:nth-child(n+9){animation-delay:320ms}
 
-/* Stats */
+/* Content tweaks */
+.content{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px;}
+.section-head{display:flex;align-items:center;justify-content:space-between;}
 .stats-row{display:flex;gap:9px;flex-shrink:0;}
 .stat-card{
   flex:1;background:var(--surface);border:1px solid var(--border);
@@ -413,52 +422,72 @@ body.authed .show-guest{display:none;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
 /* ══════ FLIGHT CARDS ══════ */
-.flight-cards{display:flex;flex-direction:column;gap:9px;}
+.flight-cards{display:flex;flex-direction:column;gap:0;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);}
 .flight-card{
-  background:var(--surface);border:1px solid var(--border);border-radius:14px;
-  overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:all 0.18s;
-  animation:cardIn 0.22s ease both;
+  background:var(--surface);border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background 0.14s;
+  animation:cardIn 0.28s cubic-bezier(0.22,1,0.36,1) both;
+  position:relative;
 }
-@keyframes cardIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.flight-card:hover{border-color:var(--indigo-border);box-shadow:var(--shadow-md);transform:translateY(-1px);}
-.flight-card.selected{border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-mid),var(--shadow-md);}
-.card-top{display:flex;align-items:center;padding:14px 18px;gap:16px;}
+.flight-card:last-child{border-bottom:none;}
+@keyframes cardIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.flight-card::after{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--indigo);opacity:0;transition:opacity 0.15s;}
+.flight-card:hover{background:var(--surface2);}
+.flight-card:hover::after{opacity:1;}
+.flight-card.selected{background:var(--indigo-light);}
+.flight-card.selected::after{opacity:1;}
+.card-top{display:flex;align-items:center;padding:16px 20px;gap:20px;}
 .airline-logo{
-  width:38px;height:38px;border-radius:10px;
+  width:36px;height:36px;border-radius:8px;
   background:var(--indigo-light);border:1px solid var(--indigo-border);
-  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;overflow:hidden;
 }
-.airline-logo img{width:38px;height:38px;object-fit:cover;border-radius:10px;}
+.airline-logo img{width:36px;height:36px;object-fit:cover;border-radius:8px;}
 .route-block{flex:1;display:flex;align-items:center;}
-.apt-col{text-align:center;min-width:65px;}
-.apt-code{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.02em;line-height:1;}
-.apt-city{font-size:10.5px;color:var(--text3);font-weight:600;margin-top:2px;}
-.apt-time{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--indigo);margin-top:3px;}
-.route-line{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 8px;}
-.route-line-track{width:100%;height:1px;background:var(--indigo-border);position:relative;display:flex;align-items:center;justify-content:center;}
-.route-line-track::before{content:'✈';font-size:11px;color:var(--indigo);background:var(--surface);padding:0 4px;}
-.route-duration{font-size:9.5px;font-weight:700;color:var(--text4);letter-spacing:0.08em;text-transform:uppercase;}
-.card-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
-.flight-num{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--text3);background:var(--bg2);padding:3px 8px;border-radius:20px;}
+.apt-col{text-align:center;min-width:60px;}
+.apt-code{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--text);letter-spacing:-0.03em;line-height:1;}
+.apt-city{font-size:10px;color:var(--text3);font-weight:600;margin-top:3px;letter-spacing:0.02em;}
+.apt-time{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--indigo);margin-top:4px;}
+.route-line{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:0 16px;}
+.route-line-track{
+  width:100%;height:1px;
+  background:linear-gradient(90deg,var(--border) 0%,var(--indigo-border) 40%,var(--indigo-border) 60%,var(--border) 100%);
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.route-line-track::before{
+  content:'›';font-size:14px;color:var(--indigo);
+  background:var(--surface);padding:0 6px;font-weight:700;
+  transition:background 0.14s;
+}
+.flight-card:hover .route-line-track::before,.flight-card.selected .route-line-track::before{
+  background:var(--surface2);
+}
+.flight-card.selected .route-line-track::before{background:var(--indigo-light);}
+.route-duration{font-size:9px;font-weight:700;color:var(--text4);letter-spacing:0.1em;text-transform:uppercase;}
+.card-meta{display:flex;flex-direction:column;align-items:flex-end;gap:7px;}
+.flight-num{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.06em;}
 .card-divider{height:1px;background:var(--border);}
-.card-bottom{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;background:var(--bg);}
-.card-bot-left{display:flex;align-items:center;gap:10px;}
-.aircraft-chip{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--text3);font-weight:600;}
-.gate-chip{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--text3);}
-.gate-pill{font-family:var(--mono);font-size:10px;font-weight:700;background:var(--indigo-light);color:var(--indigo);padding:2px 7px;border-radius:20px;border:1px solid var(--indigo-border);}
-.card-bot-right{display:flex;align-items:center;gap:7px;}
-.alert-flag{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
-.alert-flag.delayed{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,0.2);}
-.alert-flag.cancelled{background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,0.2);}
-.alert-flag.rescheduled{background:#ecfeff;color:var(--cyan);border:1px solid rgba(8,145,178,0.2);}
-.alert-dot-sm{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.card-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 20px 10px 59px;
+}
+.card-bot-left{display:flex;align-items:center;gap:12px;}
+.aircraft-chip{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text4);font-weight:600;letter-spacing:0.02em;}
+.gate-chip{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text4);}
+.gate-pill{font-family:var(--mono);font-size:9.5px;font-weight:700;background:var(--indigo-light);color:var(--indigo);padding:1px 6px;border-radius:4px;border:1px solid var(--indigo-border);}
+.card-bot-right{display:flex;align-items:center;gap:8px;}
+.alert-flag{display:flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:4px;}
+.alert-flag.delayed{background:var(--amber-bg);color:var(--amber);}
+.alert-flag.cancelled{background:var(--red-bg);color:var(--red);}
+.alert-flag.rescheduled{background:#ecfeff;color:var(--cyan);}
+.alert-dot-sm{width:4px;height:4px;border-radius:50%;background:currentColor;}
 .btn-book{
   background:var(--indigo);color:#fff;border:none;font-family:var(--font);
-  font-size:11px;font-weight:700;letter-spacing:0.03em;padding:6px 13px;
-  border-radius:7px;cursor:pointer;transition:all 0.15s;white-space:nowrap;
+  font-size:10.5px;font-weight:700;letter-spacing:0.04em;padding:5px 14px;
+  border-radius:6px;cursor:pointer;transition:all 0.15s;white-space:nowrap;
 }
-.btn-book:hover{background:var(--indigo2);box-shadow:0 4px 12px rgba(26,53,176,0.3);}
-.btn-book:disabled{background:var(--bg3);color:var(--text4);cursor:not-allowed;}
+.btn-book:hover{background:var(--indigo2);box-shadow:0 3px 10px rgba(26,53,176,0.28);}
+.btn-book:disabled{background:var(--bg3);color:var(--text4);cursor:not-allowed;box-shadow:none;}
 
 /* Status badges */
 .status-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:20px;}
@@ -478,59 +507,102 @@ body.authed .show-guest{display:none;}
 .loading-spin{font-size:26px;animation:spin 1.2s linear infinite;display:inline-block;}
 
 /* ══════ SIDE PANEL ══════ */
-.panel-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.28);backdrop-filter:blur(4px);}
+.panel-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.22);backdrop-filter:blur(6px);}
 .panel-overlay.open{display:block;}
 .side-panel{
-  position:fixed;top:0;right:0;bottom:0;width:420px;
-  background:var(--surface);border-left:1px solid var(--border2);
+  position:fixed;top:0;right:0;bottom:0;width:440px;
+  background:var(--surface);border-left:1px solid var(--border);
   display:flex;flex-direction:column;z-index:301;
-  box-shadow:-8px 0 40px rgba(0,0,0,0.1);animation:slideIn 0.2s ease;
+  box-shadow:-20px 0 60px rgba(0,0,0,0.08);
+  animation:slideIn 0.26s cubic-bezier(0.22,1,0.36,1);
 }
-@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:none;opacity:1}}
 .panel-head{
-  padding:16px 20px;border-bottom:1px solid var(--border);
+  padding:24px 24px 20px;border-bottom:1px solid var(--border);
   display:flex;align-items:flex-start;justify-content:space-between;
   flex-shrink:0;background:var(--indigo);
 }
-.panel-flight-tag{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.5);font-weight:700;margin-bottom:4px;}
-.panel-flight-num{font-family:var(--mono);font-size:20px;font-weight:700;color:#fff;letter-spacing:0.02em;}
-.panel-route{font-size:12.5px;color:rgba(255,255,255,0.7);margin-top:3px;font-weight:600;}
-.panel-close{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.75);font-size:13px;cursor:pointer;padding:6px 9px;border-radius:7px;transition:all 0.15s;line-height:1;}
-.panel-close:hover{background:rgba(255,255,255,0.18);color:#fff;}
-.panel-body{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:18px;padding-bottom:32px;}
-.ps-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);font-weight:800;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--border);}
-.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
-.panel-cell{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
-.pc-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);font-weight:700;margin-bottom:3px;}
+.panel-flight-tag{font-size:9px;letter-spacing:0.28em;text-transform:uppercase;color:rgba(255,255,255,0.4);font-weight:700;margin-bottom:6px;}
+.panel-flight-num{font-family:var(--mono);font-size:24px;font-weight:700;color:#fff;letter-spacing:0.01em;line-height:1;}
+.panel-route{font-size:13px;color:rgba(255,255,255,0.6);margin-top:5px;font-weight:500;letter-spacing:0.01em;}
+.panel-close{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.6);font-size:14px;cursor:pointer;
+  width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;line-height:1;flex-shrink:0;margin-top:2px;
+}
+.panel-close:hover{background:rgba(255,255,255,0.16);color:#fff;}
+.panel-body{flex:1;overflow-y:auto;padding:0;display:flex;flex-direction:column;}
+
+/* Panel sections */
+.panel-section{padding:20px 24px;border-bottom:1px solid var(--border);}
+.panel-section:last-child{border-bottom:none;}
+.ps-label{
+  font-size:8.5px;letter-spacing:0.24em;text-transform:uppercase;
+  color:var(--text4);font-weight:800;margin-bottom:14px;
+}
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.panel-cell{background:var(--bg);border-radius:8px;padding:11px 14px;}
+.pc-label{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:4px;}
 .pc-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);}
-.crew-list{display:flex;flex-direction:column;gap:5px;}
-.crew-item{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 11px;}
-.crew-role{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);font-weight:800;width:85px;flex-shrink:0;}
-.crew-name{font-family:var(--mono);font-size:11.5px;color:var(--text2);font-weight:500;}
+.crew-list{display:flex;flex-direction:column;gap:6px;}
+.crew-item{
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border);padding-bottom:10px;
+}
+.crew-item:last-child{border-bottom:none;padding-bottom:0;}
+.crew-role{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);font-weight:800;width:90px;flex-shrink:0;}
+.crew-name{font-family:var(--mono);font-size:12px;color:var(--text2);font-weight:500;}
 .crew-empty{color:var(--text4);font-style:italic;}
-.panel-notes{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:12px;color:var(--text2);line-height:1.7;min-height:40px;}
+.panel-notes{font-size:12.5px;color:var(--text2);line-height:1.75;min-height:36px;}
 .panel-status-row{display:flex;align-items:center;justify-content:space-between;}
 .panel-msg-id{font-family:var(--mono);font-size:9.5px;color:var(--text4);}
 
-/* Panel booking */
-.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:13px;}
-.cabin-opt{border:1.5px solid var(--border2);border-radius:10px;padding:9px 7px;cursor:pointer;text-align:center;transition:all 0.13s;background:var(--bg2);}
-.cabin-opt:hover{border-color:var(--indigo-border);background:var(--indigo-light);}
+/* ── BOOKING SECTION ── */
+.panel-book-section-wrap{padding:20px 24px 28px;}
+.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.cabin-opt{
+  border:1.5px solid var(--border);border-radius:10px;padding:12px 8px 10px;
+  cursor:pointer;text-align:center;transition:all 0.16s;background:var(--bg);
+  position:relative;overflow:hidden;
+}
+.cabin-opt::before{
+  content:'';position:absolute;inset:0;background:var(--indigo);
+  opacity:0;transition:opacity 0.16s;
+}
+.cabin-opt:hover{border-color:var(--indigo-border);}
+.cabin-opt:hover::before{opacity:0.04;}
 .cabin-opt.selected{border-color:var(--indigo);background:var(--indigo-light);}
-.cabin-name{font-size:10.5px;font-weight:700;color:var(--text2);margin-bottom:3px;}
+.cabin-opt.selected::before{opacity:0;}
+.cabin-name{font-size:10px;font-weight:700;color:var(--text2);margin-bottom:5px;position:relative;}
 .cabin-opt.selected .cabin-name{color:var(--indigo);}
-.cabin-price{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--indigo);}
-.wallet-info{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 13px;margin-bottom:11px;font-size:12px;flex-shrink:0;}
-.wallet-info-label{color:var(--text3);font-weight:600;}
-.wallet-info-val{font-family:var(--mono);font-weight:700;color:var(--green);}
-.wallet-info-val.low{color:var(--red);}
-.panel-book-note{font-size:11.5px;color:var(--text3);margin-bottom:9px;line-height:1.65;}
-.btn-book-lg{width:100%;background:var(--indigo);color:#fff;border:none;font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:0.03em;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.15s;}
-.btn-book-lg:hover{background:var(--indigo2);box-shadow:0 4px 18px rgba(26,53,176,0.32);}
-.btn-book-lg:disabled{background:var(--bg3);color:var(--text4);cursor:not-allowed;box-shadow:none;}
-.btn-login-prompt{width:100%;background:#5865F2;color:#fff;border:none;font-family:var(--font);font-size:13px;font-weight:700;padding:12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;}
-.btn-login-prompt:hover{background:#6875f5;box-shadow:0 4px 18px rgba(88,101,242,0.35);}
-.book-loading{text-align:center;padding:8px;font-size:12px;color:var(--text3);display:none;}
+.cabin-price{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--indigo);position:relative;}
+
+.wallet-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  margin-bottom:16px;
+}
+.wallet-row-label{font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);}
+.wallet-row-val{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green);}
+.wallet-row-val.low{color:var(--red);}
+
+.book-loading{text-align:center;padding:10px;font-size:12px;color:var(--text3);display:none;}
+.btn-book-lg{
+  width:100%;background:var(--indigo);color:#fff;border:none;
+  font-family:var(--font);font-size:13px;font-weight:700;letter-spacing:0.02em;
+  padding:14px;border-radius:10px;cursor:pointer;transition:all 0.16s;
+}
+.btn-book-lg:hover{background:var(--indigo2);box-shadow:0 6px 20px rgba(26,53,176,0.28);transform:translateY(-1px);}
+.btn-book-lg:active{transform:none;box-shadow:none;}
+.btn-book-lg:disabled{background:var(--bg3);color:var(--text4);cursor:not-allowed;box-shadow:none;transform:none;}
+.panel-book-note{font-size:11px;color:var(--text4);margin-top:10px;line-height:1.7;text-align:center;}
+.btn-login-prompt{
+  width:100%;background:#5865F2;color:#fff;border:none;font-family:var(--font);
+  font-size:13px;font-weight:700;padding:14px;border-radius:10px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;
+}
+.btn-login-prompt:hover{background:#6875f5;box-shadow:0 6px 20px rgba(88,101,242,0.32);}
 
 /* ══════ MY BOOKINGS TAB ══════ */
 .bookings-list{display:flex;flex-direction:column;gap:9px;max-width:680px;width:100%;}
@@ -801,18 +873,18 @@ body.authed .show-guest{display:none;}
       <button class="panel-close" onclick="closePanel()">✕</button>
     </div>
     <div class="panel-body">
-      <div><div class="ps-label">Flight Info</div><div class="panel-grid" id="panel-grid"></div></div>
-      <div><div class="ps-label">Crew</div><div class="crew-list" id="panel-crew"></div></div>
-      <div><div class="ps-label">Remarks</div><div class="panel-notes" id="panel-notes">—</div></div>
-      <div>
+      <div class="panel-section"><div class="ps-label">Flight Info</div><div class="panel-grid" id="panel-grid"></div></div>
+      <div class="panel-section"><div class="ps-label">Crew</div><div class="crew-list" id="panel-crew"></div></div>
+      <div class="panel-section"><div class="ps-label">Remarks</div><div class="panel-notes" id="panel-notes">—</div></div>
+      <div class="panel-section">
         <div class="ps-label">Status</div>
         <div class="panel-status-row"><span id="panel-badge"></span><span class="panel-msg-id" id="panel-msgid">—</span></div>
       </div>
-      <div id="panel-book-section">
+      <div class="panel-section" id="panel-book-section">
         <div class="ps-label">Book a Seat</div>
         <!-- Guest -->
         <div class="show-guest">
-          <p class="panel-book-note">Login with Discord to book this flight. Your boarding pass will be sent to you as a DM.</p>
+          <p class="panel-book-note" style="margin-bottom:14px;color:var(--text3);">Login with Discord to book this flight. Your boarding pass will be sent to you as a DM.</p>
           <button class="btn-login-prompt" onclick="openLoginModal()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
             Login with Discord to Book
@@ -822,25 +894,25 @@ body.authed .show-guest{display:none;}
         <div class="show-authed" id="panel-authed-book">
           <div class="cabin-selector">
             <div class="cabin-opt selected" onclick="selectCabin(this,'Economy',500)">
-              <div class="cabin-name">💺 Economy</div>
+              <div class="cabin-name">Economy</div>
               <div class="cabin-price">₹500</div>
             </div>
             <div class="cabin-opt" onclick="selectCabin(this,'Business',1200)">
-              <div class="cabin-name">🥂 Business</div>
+              <div class="cabin-name">Business</div>
               <div class="cabin-price">₹1,200</div>
             </div>
             <div class="cabin-opt" onclick="selectCabin(this,'First',2500)">
-              <div class="cabin-name">⭐ First</div>
+              <div class="cabin-name">First</div>
               <div class="cabin-price">₹2,500</div>
             </div>
           </div>
-          <div class="wallet-info" id="panel-wallet-info">
-            <span class="wallet-info-label">Your wallet</span>
-            <span class="wallet-info-val" id="panel-wallet-val">₹—</span>
+          <div class="wallet-row">
+            <span class="wallet-row-label">Your Wallet</span>
+            <span class="wallet-row-val" id="panel-wallet-val">₹—</span>
           </div>
           <div class="book-loading" id="book-loading">Processing booking…</div>
           <button class="btn-book-lg" id="panel-book-btn" onclick="bookCurrentFlight()">Book Seat · ₹500</button>
-          <p class="panel-book-note" id="panel-book-note" style="margin-top:8px;margin-bottom:0;">Boarding pass sent to your Discord DM immediately after booking.</p>
+          <p class="panel-book-note" id="panel-book-note">Boarding pass sent to your Discord DM after booking.</p>
         </div>
       </div>
     </div>
@@ -1408,7 +1480,7 @@ function selectCabin(el, name, price) {
   const btn = document.getElementById('panel-book-btn');
   if (btn) btn.textContent = `Book Seat · ₹${price.toLocaleString('en-IN')}`;
   const wv = document.getElementById('panel-wallet-val');
-  if (wv && userBalance !== null) wv.className = 'wallet-info-val' + (userBalance < price ? ' low' : '');
+  if (wv && userBalance !== null) wv.className = 'wallet-row-val' + (userBalance < price ? ' low' : '');
 }
 
 // ── Panel ──────────────────────────────────────────

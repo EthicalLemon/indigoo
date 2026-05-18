@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>IndiGo PTFS · Passenger Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f0f2f8;--bg2:#e8ebf4;--bg3:#dde1ef;
+  --surface:#ffffff;--surface2:#f6f8fe;
+  --indigo:#1a35b0;--indigo2:#2344c8;--indigo3:#3358e8;
+  --indigo-light:#eef1fd;--indigo-mid:rgba(26,53,176,0.1);--indigo-border:rgba(26,53,176,0.18);
+  --text:#0c1428;--text2:#334270;--text3:#6b748f;--text4:#a0a8c0;
+  --green:#059669;--green-bg:#ecfdf5;--green-border:rgba(5,150,105,0.2);
+  --amber:#d97706;--amber-bg:#fffbeb;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --violet:#7c3aed;--violet-bg:#f5f3ff;
+  --sky:#0284c7;--sky-bg:#f0f9ff;--cyan:#0891b2;
+  --border:rgba(12,20,40,0.07);--border2:rgba(12,20,40,0.12);
+  --shadow:0 1px 3px rgba(12,20,40,0.06),0 4px 16px rgba(12,20,40,0.04);
+  --shadow-md:0 2px 8px rgba(12,20,40,0.08),0 8px 32px rgba(12,20,40,0.06);
+  --shadow-lg:0 8px 32px rgba(12,20,40,0.12),0 24px 64px rgba(12,20,40,0.08);
+  --shadow-xl:0 20px 60px rgba(12,20,40,0.18),0 4px 16px rgba(12,20,40,0.1);
+  --font:'Plus Jakarta Sans',sans-serif;--mono:'DM Mono',monospace;
+  --nav-h:58px;
+  --radius:12px;
+}
+html,body{height:100%;overflow:hidden;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);font-size:14px;line-height:1.5;display:flex;flex-direction:column;}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:10px;}
+
+/* Grid pattern */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+/* ══════ NAV ══════ */
+nav{
+  position:relative;z-index:200;height:var(--nav-h);
+  background:var(--indigo);display:flex;align-items:center;
+  padding:0 24px;flex-shrink:0;
+  box-shadow:0 2px 24px rgba(26,53,176,0.4);
+}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+.nav-logo-wrap{
+  width:32px;height:32px;border-radius:8px;overflow:hidden;
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-logo-wrap img{width:32px;height:32px;object-fit:cover;}
+.brand-name{font-weight:800;font-size:16px;color:#fff;letter-spacing:-0.025em;}
+.brand-tag{font-size:8.5px;color:rgba(255,255,255,0.5);letter-spacing:0.2em;text-transform:uppercase;font-weight:600;margin-top:1px;}
+.nav-sep{width:1px;height:24px;background:rgba(255,255,255,0.12);margin:0 20px;}
+.nav-links{display:flex;align-items:center;gap:1px;}
+.nav-link{
+  padding:5px 12px;border-radius:6px;font-size:12.5px;font-weight:600;
+  color:rgba(255,255,255,0.65);cursor:pointer;border:none;background:transparent;
+  font-family:var(--font);transition:all 0.15s;letter-spacing:0.01em;
+}
+.nav-link:hover{color:#fff;background:rgba(255,255,255,0.09);}
+.nav-link.active{color:#fff;background:rgba(255,255,255,0.14);}
+.nav-right{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.clock-pill{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;
+  color:rgba(255,255,255,0.65);background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.1);padding:4px 10px;border-radius:20px;letter-spacing:0.05em;
+}
+.btn-discord{
+  display:flex;align-items:center;gap:7px;background:#5865F2;
+  border:1px solid rgba(255,255,255,0.12);color:#fff;
+  font-family:var(--font);font-size:12px;font-weight:700;
+  padding:6px 14px;border-radius:7px;cursor:pointer;transition:all 0.15s;letter-spacing:0.01em;
+}
+.btn-discord:hover{background:#6875f5;transform:translateY(-1px);box-shadow:0 4px 14px rgba(88,101,242,0.45);}
+.disc-svg{width:15px;height:15px;fill:white;flex-shrink:0;}
+.show-authed{display:none;}
+.show-guest{display:flex;}
+body.authed .show-authed{display:flex;}
+body.authed .show-guest{display:none;}
+
+/* ══ PROFILE CHIP (authed) ══ */
+.profile-wrap{position:relative;}
+.profile-chip{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);
+  border-radius:8px;padding:4px 10px 4px 4px;cursor:pointer;
+  transition:all 0.15s;user-select:none;
+}
+.profile-chip:hover{background:rgba(255,255,255,0.16);border-color:rgba(255,255,255,0.22);}
+.user-avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:rgba(255,255,255,0.22);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;
+  border:1.5px solid rgba(255,255,255,0.25);overflow:hidden;flex-shrink:0;
+}
+.user-avatar img{width:26px;height:26px;object-fit:cover;border-radius:50%;}
+.profile-name-wrap{display:flex;flex-direction:column;line-height:1.2;}
+.user-name{font-size:12px;font-weight:700;color:#fff;}
+.user-balance-small{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,0.6);font-weight:500;}
+.chevron-icon{font-size:10px;color:rgba(255,255,255,0.5);margin-left:2px;transition:transform 0.2s;}
+.profile-chip.open .chevron-icon{transform:rotate(180deg);}
+
+/* ══ PROFILE DROPDOWN ══ */
+.profile-dropdown{
+  position:absolute;top:calc(100% + 10px);right:0;
+  width:320px;background:var(--surface);
+  border:1px solid var(--border2);border-radius:16px;
+  box-shadow:var(--shadow-xl);z-index:500;
+  display:none;overflow:hidden;
+  animation:dropIn 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.profile-dropdown.open{display:block;}
+@keyframes dropIn{from{opacity:0;transform:translateY(-8px) scale(0.96)}to{opacity:1;transform:none}}
+
+.pd-header{
+  background:linear-gradient(135deg,var(--indigo) 0%,#1a2590 100%);
+  padding:20px;position:relative;overflow:hidden;
+}
+.pd-header::before{
+  content:'';position:absolute;right:-20px;top:-20px;
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(255,255,255,0.04);
+}
+.pd-avatar{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(255,255,255,0.15);border:2.5px solid rgba(255,255,255,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;color:#fff;margin-bottom:12px;overflow:hidden;
+}
+.pd-avatar img{width:52px;height:52px;object-fit:cover;border-radius:50%;}
+.pd-username{font-size:16px;font-weight:800;color:#fff;letter-spacing:-0.02em;margin-bottom:2px;}
+.pd-discord-tag{font-size:11px;color:rgba(255,255,255,0.55);font-family:var(--mono);}
+
+/* Apple Wallet Card inside dropdown */
+.pd-wallet-card{
+  margin:16px;border-radius:14px;overflow:hidden;
+  background:linear-gradient(135deg,#0f1f6e 0%,#1a35b0 40%,#2650d8 100%);
+  position:relative;cursor:pointer;transition:transform 0.2s;
+  box-shadow:0 8px 24px rgba(26,53,176,0.35);
+}
+.pd-wallet-card:hover{transform:scale(1.015);}
+.pd-wallet-card::before{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:140px;height:140px;border-radius:50%;
+  background:rgba(255,255,255,0.04);pointer-events:none;
+}
+.pd-wallet-card::after{
+  content:'';position:absolute;right:30px;bottom:-40px;
+  width:100px;height:100px;border-radius:50%;
+  background:rgba(255,255,255,0.03);pointer-events:none;
+}
+.pwc-top{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;}
+.pwc-logo{font-size:11px;font-weight:800;color:rgba(255,255,255,0.75);letter-spacing:0.15em;text-transform:uppercase;}
+.pwc-chip{width:28px;height:20px;border-radius:4px;background:linear-gradient(135deg,#f0c040,#c8900a);border:1px solid rgba(255,255,255,0.2);}
+.pwc-balance-label{padding:0 16px;font-size:9px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.45);}
+.pwc-balance{padding:4px 16px 14px;font-family:var(--mono);font-size:26px;font-weight:500;color:#fff;letter-spacing:-0.02em;}
+.pwc-footer{
+  background:rgba(0,0,0,0.15);padding:8px 16px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.pwc-user{font-size:10px;font-weight:700;color:rgba(255,255,255,0.65);letter-spacing:0.05em;text-transform:uppercase;}
+.pwc-tap{font-size:9px;color:rgba(255,255,255,0.4);display:flex;align-items:center;gap:4px;}
+.pwc-tap-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.3);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:0.3}50%{opacity:1;}}
+
+.pd-actions{padding:6px 12px 12px;display:flex;flex-direction:column;gap:2px;}
+.pd-action{
+  display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;
+  cursor:pointer;transition:all 0.12s;border:none;background:transparent;
+  font-family:var(--font);width:100%;text-align:left;
+}
+.pd-action:hover{background:var(--bg2);}
+.pd-action-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.pd-action-text{flex:1;}
+.pd-action-label{font-size:12.5px;font-weight:700;color:var(--text);}
+.pd-action-sub{font-size:10.5px;color:var(--text3);margin-top:1px;}
+.pd-action-arrow{font-size:11px;color:var(--text4);}
+.pd-divider{height:1px;background:var(--border);margin:4px 12px;}
+.pd-signout{
+  display:flex;align-items:center;justify-content:center;gap:6px;
+  padding:9px;border-radius:8px;cursor:pointer;
+  background:var(--red-bg);border:1px solid rgba(220,38,38,0.15);
+  font-family:var(--font);font-size:12px;font-weight:700;color:var(--red);
+  transition:all 0.15s;margin:0 12px 12px;
+}
+.pd-signout:hover{background:var(--red);color:#fff;}
+
+/* ══════ APPLE WALLET MODAL ══════ */
+.wallet-modal-overlay{
+  display:none;position:fixed;inset:0;z-index:800;
+  background:rgba(8,12,30,0.7);backdrop-filter:blur(16px);
+  align-items:center;justify-content:center;
+}
+.wallet-modal-overlay.open{display:flex;}
+.wallet-modal{
+  width:380px;max-height:90vh;overflow-y:auto;
+  background:var(--bg);border-radius:28px;
+  box-shadow:var(--shadow-xl);overflow:hidden;
+  animation:walletIn 0.35s cubic-bezier(0.34,1.4,0.64,1) both;
+}
+@keyframes walletIn{from{opacity:0;transform:scale(0.85) translateY(40px)}to{opacity:1;transform:none}}
+
+/* Main wallet card (big) */
+.wm-card{
+  background:linear-gradient(160deg,#0a1866 0%,#1a35b0 45%,#2850e8 100%);
+  padding:28px 24px 24px;position:relative;overflow:hidden;
+}
+.wm-card::before{content:'';position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.wm-card::after{content:'';position:absolute;left:-20px;bottom:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.025);}
+.wm-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;position:relative;}
+.wm-logo{font-size:13px;font-weight:800;letter-spacing:0.12em;color:rgba(255,255,255,0.75);text-transform:uppercase;}
+.wm-chip-wrap{display:flex;gap:8px;align-items:center;}
+.wm-chip{width:36px;height:26px;border-radius:5px;background:linear-gradient(135deg,#f0c040,#c8900a);border:1px solid rgba(255,255,255,0.15);}
+.wm-balance-lbl{font-size:10px;font-weight:700;letter-spacing:0.18em;color:rgba(255,255,255,0.45);text-transform:uppercase;position:relative;}
+.wm-balance{font-family:var(--mono);font-size:40px;font-weight:500;color:#fff;letter-spacing:-0.03em;margin:6px 0 20px;position:relative;}
+.wm-card-footer{display:flex;align-items:flex-end;justify-content:space-between;position:relative;}
+.wm-user-info{}
+.wm-user-label{font-size:9px;font-weight:700;letter-spacing:0.18em;color:rgba(255,255,255,0.4);text-transform:uppercase;}
+.wm-user-name{font-size:14px;font-weight:800;color:#fff;margin-top:2px;letter-spacing:-0.01em;}
+.wm-network{font-size:9px;font-weight:700;letter-spacing:0.08em;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-top:16px;}
+
+/* Wallet stats strip */
+.wm-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  background:var(--surface);border-bottom:1px solid var(--border);
+}
+.wm-stat{padding:14px 16px;text-align:center;border-right:1px solid var(--border);}
+.wm-stat:last-child{border-right:none;}
+.wm-stat-val{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.wm-stat-label{font-size:9.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);}
+
+/* Wallet passes (bookings) */
+.wm-passes{padding:16px;display:flex;flex-direction:column;gap:10px;}
+.wm-passes-head{font-size:11px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;}
+
+.wm-pass{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;transition:all 0.2s;cursor:default;
+}
+.wm-pass:hover{border-color:var(--indigo-border);box-shadow:var(--shadow-md);}
+.wm-pass-head{
+  padding:10px 14px 8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.wm-pass-airline{font-size:9px;font-weight:800;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;}
+.wm-pass-ref{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--text4);}
+.wm-pass-route{display:flex;align-items:center;gap:10px;padding:0 14px 10px;}
+.wm-pass-apt{text-align:center;}
+.wm-pass-code{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.02em;}
+.wm-pass-city{font-size:9px;color:var(--text3);font-weight:600;margin-top:1px;}
+.wm-pass-time{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--indigo);margin-top:3px;}
+.wm-pass-line{flex:1;height:1px;background:var(--indigo-border);position:relative;display:flex;align-items:center;justify-content:center;}
+.wm-pass-plane{font-size:12px;color:var(--indigo);background:var(--surface);padding:0 4px;}
+.wm-pass-footer{
+  background:var(--bg2);border-top:1px solid var(--border);
+  padding:7px 14px;display:flex;align-items:center;justify-content:space-between;
+}
+.wm-pass-class{
+  font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;
+  padding:2px 8px;border-radius:20px;
+}
+.wm-pass-class.Economy{background:var(--indigo-light);color:var(--indigo);border:1px solid var(--indigo-border);}
+.wm-pass-class.Business{background:#ecfeff;color:var(--cyan);border:1px solid rgba(8,145,178,0.2);}
+.wm-pass-class.First{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,0.2);}
+.wm-pass-fare{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text);}
+.wm-pass-date{font-size:9.5px;color:var(--text4);}
+
+.wm-empty{text-align:center;padding:32px 20px;color:var(--text4);}
+.wm-empty-icon{font-size:32px;opacity:0.2;margin-bottom:8px;}
+.wm-empty-text{font-size:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;}
+
+.wm-close-btn{
+  margin:0 16px 16px;width:calc(100% - 32px);
+  background:var(--indigo);color:#fff;border:none;
+  font-family:var(--font);font-size:13px;font-weight:700;
+  padding:12px;border-radius:12px;cursor:pointer;transition:all 0.15s;
+}
+.wm-close-btn:hover{background:var(--indigo2);}
+
+/* ══════ HERO ══════ */
+.hero{
+  background:linear-gradient(135deg,var(--indigo) 0%,#14268a 45%,#102070 100%);
+  padding:28px 24px 36px;position:relative;z-index:2;overflow:hidden;flex-shrink:0;
+}
+.hero::before{content:'';position:absolute;right:-60px;top:-60px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.025);}
+.hero::after{content:'';position:absolute;right:80px;bottom:-100px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.02);}
+.hero-plane{
+  position:absolute;right:36px;top:50%;transform:translateY(-50%);
+  font-size:72px;opacity:0.07;user-select:none;
+  animation:floatPlane 6s ease-in-out infinite;
+}
+@keyframes floatPlane{0%,100%{transform:translateY(-50%) rotate(-4deg)}50%{transform:translateY(calc(-50% - 7px)) rotate(4deg)}}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:10px;}
+.hero-dot{width:5px;height:5px;border-radius:50%;background:#7dd3fc;animation:pulse 2s infinite;}
+.hero-title{font-size:28px;font-weight:800;color:#fff;letter-spacing:-0.035em;line-height:1.1;margin-bottom:7px;}
+.hero-title span{color:#93c5fd;}
+.hero-sub{font-size:13px;color:rgba(255,255,255,0.55);font-weight:400;max-width:380px;}
+
+.search-card{
+  margin-top:20px;background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);border-radius:14px;
+  padding:16px 18px;max-width:780px;position:relative;z-index:3;backdrop-filter:blur(10px);
+}
+.search-row{display:flex;align-items:flex-end;gap:9px;flex-wrap:wrap;}
+.sf{display:flex;flex-direction:column;gap:4px;}
+.sf-label{font-size:9px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.4);}
+.sf-input{
+  background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.12);
+  color:#fff;font-family:var(--mono);font-size:13px;font-weight:500;
+  padding:8px 11px;border-radius:8px;outline:none;transition:all 0.15s;
+}
+.sf-input::placeholder{color:rgba(255,255,255,0.25);}
+.sf-input:focus{border-color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.12);}
+.sf.wide .sf-input{width:120px;}
+.sf.narrow .sf-input{width:105px;}
+.sf-swap{
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.65);font-size:13px;cursor:pointer;
+  width:32px;height:34px;border-radius:7px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;align-self:flex-end;flex-shrink:0;
+}
+.sf-swap:hover{background:rgba(255,255,255,0.16);color:#fff;}
+.btn-search{
+  background:#fff;color:var(--indigo);border:none;font-family:var(--font);
+  font-size:12.5px;font-weight:800;letter-spacing:0.02em;
+  padding:8px 20px;border-radius:8px;cursor:pointer;
+  transition:all 0.15s;align-self:flex-end;white-space:nowrap;
+  box-shadow:0 2px 10px rgba(0,0,0,0.15);
+}
+.btn-search:hover{background:#eef0ff;transform:translateY(-1px);}
+
+/* ══════ MAIN LAYOUT ══════ */
+.main{display:flex;flex:1;overflow:hidden;position:relative;z-index:1;}
+
+/* Sidebar */
+.sidebar{
+  width:200px;flex-shrink:0;background:var(--surface);
+  border-right:1px solid var(--border);overflow-y:auto;padding:18px 12px;
+  display:flex;flex-direction:column;gap:18px;
+}
+.filter-heading{font-size:9px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:var(--text4);margin-bottom:7px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+.filter-options{display:flex;flex-direction:column;gap:2px;}
+.filter-option{
+  display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:9px;
+  cursor:pointer;transition:all 0.13s;border:1px solid transparent;
+}
+.filter-option:hover{background:var(--bg2);}
+.filter-option.active{background:var(--indigo-light);border-color:var(--indigo-border);}
+.fo-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.fo-label{font-size:12px;font-weight:600;color:var(--text2);}
+.filter-option.active .fo-label{color:var(--indigo);}
+.fo-count{margin-left:auto;font-size:10px;font-weight:700;font-family:var(--mono);color:var(--text4);background:var(--bg2);padding:2px 6px;border-radius:10px;}
+.filter-option.active .fo-count{color:var(--indigo);background:var(--indigo-mid);}
+.dot-all{background:var(--text3);}.dot-sched{background:var(--sky);}.dot-board{background:var(--cyan);}
+.dot-dep{background:var(--green);}.dot-arr{background:var(--violet);}
+.dot-del{background:var(--amber);}.dot-can{background:var(--red);}
+
+/* Content */
+.content{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:13px;}
+
+/* Stats */
+.stats-row{display:flex;gap:9px;flex-shrink:0;}
+.stat-card{
+  flex:1;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:12px 13px;display:flex;flex-direction:column;gap:2px;box-shadow:var(--shadow);
+}
+.stat-top{display:flex;align-items:center;justify-content:space-between;}
+.stat-label-txt{font-size:9.5px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);}
+.stat-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;}
+.stat-num{font-family:var(--mono);font-size:20px;font-weight:600;line-height:1;letter-spacing:-0.02em;}
+.stat-desc{font-size:9.5px;color:var(--text4);}
+.stat-card.active .stat-num{color:var(--indigo);}.stat-card.active .stat-icon{background:var(--indigo-light);}
+.stat-card.ontime .stat-num{color:var(--green);}.stat-card.ontime .stat-icon{background:var(--green-bg);}
+.stat-card.delayed .stat-num{color:var(--amber);}.stat-card.delayed .stat-icon{background:var(--amber-bg);}
+.stat-card.cancelled .stat-num{color:var(--red);}.stat-card.cancelled .stat-icon{background:var(--red-bg);}
+.stat-card.ended .stat-num{color:var(--violet);}.stat-card.ended .stat-icon{background:var(--violet-bg);}
+
+/* Section head */
+.section-head{display:flex;align-items:center;justify-content:space-between;}
+.section-title{font-size:14px;font-weight:800;color:var(--text);}
+.section-sub{font-size:11.5px;color:var(--text3);}
+.sort-row{display:flex;align-items:center;gap:7px;}
+.search-box-wrap{position:relative;display:flex;align-items:center;}
+.search-box-wrap input{
+  background:var(--surface);border:1px solid var(--border2);
+  color:var(--text);font-family:var(--font);font-size:12px;
+  padding:7px 9px 7px 28px;border-radius:8px;outline:none;width:170px;transition:all 0.15s;
+}
+.search-box-wrap input:focus{border-color:var(--indigo-border);box-shadow:0 0 0 3px var(--indigo-mid);}
+.search-box-wrap input::placeholder{color:var(--text4);}
+.sb-icon{position:absolute;left:8px;color:var(--text4);font-size:12px;pointer-events:none;}
+.sort-sel{
+  background:var(--surface);border:1px solid var(--border2);color:var(--text2);
+  font-family:var(--font);font-size:11px;font-weight:600;padding:7px 9px;border-radius:8px;outline:none;cursor:pointer;
+}
+.btn-refresh-sm{
+  background:var(--surface);border:1px solid var(--border2);color:var(--text3);
+  font-family:var(--font);font-size:11px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+  padding:7px 11px;border-radius:8px;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:5px;
+}
+.btn-refresh-sm:hover{border-color:var(--indigo-border);color:var(--indigo);}
+.spin-anim{display:inline-block;animation:spin 0.9s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ══════ FLIGHT CARDS ══════ */
+.flight-cards{display:flex;flex-direction:column;gap:9px;}
+.flight-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:all 0.18s;
+  animation:cardIn 0.22s ease both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.flight-card:hover{border-color:var(--indigo-border);box-shadow:var(--shadow-md);transform:translateY(-1px);}
+.flight-card.selected{border-color:var(--indigo);box-shadow:0 0 0 3px var(--indigo-mid),var(--shadow-md);}
+.card-top{display:flex;align-items:center;padding:14px 18px;gap:16px;}
+.airline-logo{
+  width:38px;height:38px;border-radius:10px;
+  background:var(--indigo-light);border:1px solid var(--indigo-border);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;overflow:hidden;
+}
+.airline-logo img{width:38px;height:38px;object-fit:cover;border-radius:10px;}
+.route-block{flex:1;display:flex;align-items:center;}
+.apt-col{text-align:center;min-width:65px;}
+.apt-code{font-family:var(--mono);font-size:20px;font-weight:700;color:var(--text);letter-spacing:-0.02em;line-height:1;}
+.apt-city{font-size:10.5px;color:var(--text3);font-weight:600;margin-top:2px;}
+.apt-time{font-family:var(--mono);font-size:11px;font-weight:600;color:var(--indigo);margin-top:3px;}
+.route-line{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:0 8px;}
+.route-line-track{width:100%;height:1px;background:var(--indigo-border);position:relative;display:flex;align-items:center;justify-content:center;}
+.route-line-track::before{content:'✈';font-size:11px;color:var(--indigo);background:var(--surface);padding:0 4px;}
+.route-duration{font-size:9.5px;font-weight:700;color:var(--text4);letter-spacing:0.08em;text-transform:uppercase;}
+.card-meta{display:flex;flex-direction:column;align-items:flex-end;gap:6px;}
+.flight-num{font-family:var(--mono);font-size:10.5px;font-weight:600;color:var(--text3);background:var(--bg2);padding:3px 8px;border-radius:20px;}
+.card-divider{height:1px;background:var(--border);}
+.card-bottom{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;background:var(--bg);}
+.card-bot-left{display:flex;align-items:center;gap:10px;}
+.aircraft-chip{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--text3);font-weight:600;}
+.gate-chip{display:flex;align-items:center;gap:5px;font-size:10.5px;color:var(--text3);}
+.gate-pill{font-family:var(--mono);font-size:10px;font-weight:700;background:var(--indigo-light);color:var(--indigo);padding:2px 7px;border-radius:20px;border:1px solid var(--indigo-border);}
+.card-bot-right{display:flex;align-items:center;gap:7px;}
+.alert-flag{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;}
+.alert-flag.delayed{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,0.2);}
+.alert-flag.cancelled{background:var(--red-bg);color:var(--red);border:1px solid rgba(220,38,38,0.2);}
+.alert-flag.rescheduled{background:#ecfeff;color:var(--cyan);border:1px solid rgba(8,145,178,0.2);}
+.alert-dot-sm{width:5px;height:5px;border-radius:50%;background:currentColor;}
+.btn-book{
+  background:var(--indigo);color:#fff;border:none;font-family:var(--font);
+  font-size:11px;font-weight:700;letter-spacing:0.03em;padding:6px 13px;
+  border-radius:7px;cursor:pointer;transition:all 0.15s;white-space:nowrap;
+}
+.btn-book:hover{background:var(--indigo2);box-shadow:0 4px 12px rgba(26,53,176,0.3);}
+.btn-book:disabled{background:var(--bg3);color:var(--text4);cursor:not-allowed;}
+
+/* Status badges */
+.status-badge{display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:3px 8px;border-radius:20px;}
+.status-badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+.status-badge.Scheduled{background:var(--sky-bg);color:#075985;border:1px solid rgba(2,132,199,0.2);}.status-badge.Scheduled::before{background:var(--sky);}
+.status-badge.Boarding{background:#ecfeff;color:#164e63;border:1px solid rgba(8,145,178,0.2);}.status-badge.Boarding::before{background:var(--cyan);}
+.status-badge.Departed{background:var(--green-bg);color:#064e3b;border:1px solid rgba(5,150,105,0.2);}.status-badge.Departed::before{background:var(--green);}
+.status-badge.Arrived{background:var(--violet-bg);color:#4c1d95;border:1px solid rgba(124,58,237,0.2);}.status-badge.Arrived::before{background:var(--violet);}
+.status-badge.Delayed{background:var(--amber-bg);color:#78350f;border:1px solid rgba(217,119,6,0.2);}.status-badge.Delayed::before{background:var(--amber);}
+.status-badge.Cancelled{background:var(--red-bg);color:#7f1d1d;border:1px solid rgba(220,38,38,0.2);}.status-badge.Cancelled::before{background:var(--red);}
+.status-badge.Rescheduled{background:#ecfeff;color:#164e63;border:1px solid rgba(8,145,178,0.2);}.status-badge.Rescheduled::before{background:var(--cyan);}
+
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:60px 20px;color:var(--text3);}
+.empty-icon{font-size:36px;opacity:0.18;}
+.empty-label{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);}
+.loading-state{display:flex;flex-direction:column;align-items:center;gap:10px;padding:60px 0;color:var(--text3);}
+.loading-spin{font-size:26px;animation:spin 1.2s linear infinite;display:inline-block;}
+
+/* ══════ SIDE PANEL ══════ */
+.panel-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.28);backdrop-filter:blur(4px);}
+.panel-overlay.open{display:block;}
+.side-panel{
+  position:fixed;top:0;right:0;bottom:0;width:420px;
+  background:var(--surface);border-left:1px solid var(--border2);
+  display:flex;flex-direction:column;z-index:301;
+  box-shadow:-8px 0 40px rgba(0,0,0,0.1);animation:slideIn 0.2s ease;
+}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.panel-head{
+  padding:16px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-start;justify-content:space-between;
+  flex-shrink:0;background:var(--indigo);
+}
+.panel-flight-tag{font-size:9px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.5);font-weight:700;margin-bottom:4px;}
+.panel-flight-num{font-family:var(--mono);font-size:20px;font-weight:700;color:#fff;letter-spacing:0.02em;}
+.panel-route{font-size:12.5px;color:rgba(255,255,255,0.7);margin-top:3px;font-weight:600;}
+.panel-close{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.14);color:rgba(255,255,255,0.75);font-size:13px;cursor:pointer;padding:6px 9px;border-radius:7px;transition:all 0.15s;line-height:1;}
+.panel-close:hover{background:rgba(255,255,255,0.18);color:#fff;}
+.panel-body{flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:18px;}
+.ps-label{font-size:9px;letter-spacing:0.2em;text-transform:uppercase;color:var(--text3);font-weight:800;margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--border);}
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.panel-cell{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 12px;}
+.pc-label{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);font-weight:700;margin-bottom:3px;}
+.pc-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);}
+.crew-list{display:flex;flex-direction:column;gap:5px;}
+.crew-item{display:flex;align-items:center;gap:9px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:7px 11px;}
+.crew-role{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3);font-weight:800;width:85px;flex-shrink:0;}
+.crew-name{font-family:var(--mono);font-size:11.5px;color:var(--text2);font-weight:500;}
+.crew-empty{color:var(--text4);font-style:italic;}
+.panel-notes{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:11px 13px;font-size:12px;color:var(--text2);line-height:1.7;min-height:40px;}
+.panel-status-row{display:flex;align-items:center;justify-content:space-between;}
+.panel-msg-id{font-family:var(--mono);font-size:9.5px;color:var(--text4);}
+
+/* Panel booking */
+.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin-bottom:13px;}
+.cabin-opt{border:1.5px solid var(--border2);border-radius:10px;padding:9px 7px;cursor:pointer;text-align:center;transition:all 0.13s;background:var(--bg2);}
+.cabin-opt:hover{border-color:var(--indigo-border);background:var(--indigo-light);}
+.cabin-opt.selected{border-color:var(--indigo);background:var(--indigo-light);}
+.cabin-name{font-size:10.5px;font-weight:700;color:var(--text2);margin-bottom:3px;}
+.cabin-opt.selected .cabin-name{color:var(--indigo);}
+.cabin-price{font-family:var(--mono);font-size:12.5px;font-weight:700;color:var(--indigo);}
+.wallet-info{display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:9px 13px;margin-bottom:11px;font-size:12px;}
+.wallet-info-label{color:var(--text3);font-weight:600;}
+.wallet-info-val{font-family:var(--mono);font-weight:700;color:var(--green);}
+.wallet-info-val.low{color:var(--red);}
+.panel-book-note{font-size:11.5px;color:var(--text3);margin-bottom:9px;line-height:1.65;}
+.btn-book-lg{width:100%;background:var(--indigo);color:#fff;border:none;font-family:var(--font);font-size:13px;font-weight:800;letter-spacing:0.03em;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.15s;}
+.btn-book-lg:hover{background:var(--indigo2);box-shadow:0 4px 18px rgba(26,53,176,0.32);}
+.btn-book-lg:disabled{background:var(--bg3);color:var(--text4);cursor:not-allowed;box-shadow:none;}
+.btn-login-prompt{width:100%;background:#5865F2;color:#fff;border:none;font-family:var(--font);font-size:13px;font-weight:700;padding:12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.15s;}
+.btn-login-prompt:hover{background:#6875f5;box-shadow:0 4px 18px rgba(88,101,242,0.35);}
+.book-loading{text-align:center;padding:8px;font-size:12px;color:var(--text3);display:none;}
+
+/* ══════ MY BOOKINGS TAB ══════ */
+.bookings-list{display:flex;flex-direction:column;gap:9px;max-width:680px;width:100%;}
+.booking-card{background:var(--surface);border:1px solid var(--border);border-radius:13px;overflow:hidden;box-shadow:var(--shadow);animation:cardIn 0.22s ease both;}
+.bk-head{background:var(--indigo);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;}
+.bk-ref{font-family:var(--mono);font-size:11px;font-weight:700;color:#fff;letter-spacing:0.1em;}
+.bk-status{font-size:10px;color:rgba(255,255,255,0.65);font-weight:600;}
+.bk-body{padding:12px 16px;display:flex;align-items:center;gap:18px;}
+.bk-route{flex:1;}
+.bk-airports{font-family:var(--mono);font-size:17px;font-weight:700;color:var(--text);letter-spacing:-0.01em;}
+.bk-times{font-size:11px;color:var(--text3);margin-top:3px;}
+.bk-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.bk-class-pill{font-size:9.5px;font-weight:800;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:0.08em;}
+.bk-class-pill.Economy{background:var(--indigo-light);color:var(--indigo);border:1px solid var(--indigo-border);}
+.bk-class-pill.Business{background:#ecfeff;color:var(--cyan);border:1px solid rgba(8,145,178,0.2);}
+.bk-class-pill.First{background:var(--amber-bg);color:var(--amber);border:1px solid rgba(217,119,6,0.2);}
+.bk-fare{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--text);}
+.bk-date{font-size:10px;color:var(--text4);}
+
+/* ══════ LOGIN MODAL ══════ */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:20px;width:360px;overflow:hidden;animation:modalIn 0.2s ease;box-shadow:var(--shadow-xl);}
+@keyframes modalIn{from{opacity:0;transform:scale(0.95) translateY(10px)}to{opacity:1;transform:none}}
+.modal-hero{background:linear-gradient(135deg,var(--indigo) 0%,#102070 100%);padding:28px 24px;text-align:center;position:relative;overflow:hidden;}
+.modal-hero::before{content:'';position:absolute;right:-20px;bottom:-20px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.modal-logo{width:50px;height:50px;border-radius:12px;margin:0 auto 12px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.modal-logo img{width:50px;height:50px;object-fit:cover;border-radius:12px;}
+.modal-title{font-size:20px;font-weight:800;color:#fff;letter-spacing:-0.025em;}
+.modal-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-top:4px;}
+.modal-body{padding:22px;}
+.modal-info{background:var(--indigo-light);border:1px solid var(--indigo-border);border-radius:10px;padding:11px 13px;margin-bottom:16px;font-size:12px;color:var(--indigo);line-height:1.65;}
+.modal-info strong{font-weight:800;}
+.btn-discord-lg{width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#5865F2;border:none;color:#fff;font-family:var(--font);font-size:13.5px;font-weight:700;padding:12px;border-radius:10px;cursor:pointer;transition:all 0.15s;box-shadow:0 2px 12px rgba(88,101,242,0.3);}
+.btn-discord-lg:hover{background:#6875f5;transform:translateY(-1px);box-shadow:0 6px 20px rgba(88,101,242,0.4);}
+.modal-cancel-btn{width:100%;background:transparent;border:1px solid var(--border2);color:var(--text3);font-family:var(--font);font-size:12.5px;font-weight:600;padding:10px;border-radius:10px;cursor:pointer;margin-top:7px;transition:all 0.15s;}
+.modal-cancel-btn:hover{color:var(--text2);background:var(--bg2);}
+
+/* ══════ TABS ══════ */
+.tab-content{display:none;}
+.tab-content.active{display:flex;flex-direction:column;flex:1;overflow:hidden;}
+.page-center{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;background:var(--bg);}
+
+/* ══════ TOAST ══════ */
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:900;display:flex;flex-direction:column;gap:7px;}
+.toast{background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:11px 14px;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:9px;animation:toastIn 0.2s ease;min-width:250px;box-shadow:var(--shadow-lg);}
+.toast.success{border-left:3px solid var(--green);}
+.toast.error{border-left:3px solid var(--red);}
+.toast.info{border-left:3px solid var(--indigo);}
+@keyframes toastIn{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-logo-wrap">
+      <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" alt="IndiGo" onerror="this.style.display='none'"/>
+    </div>
+    <div>
+      <div class="brand-name">IndiGo PTFS</div>
+      <div class="brand-tag">Virtual Airline</div>
+    </div>
+  </a>
+  <div class="nav-sep"></div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="switchTab(this,'flights')">✈ Flights</button>
+    <button class="nav-link" onclick="switchTab(this,'my')">🎫 My Bookings</button>
+    <button class="nav-link" onclick="switchTab(this,'about')">ℹ About</button>
+  </div>
+  <div class="nav-right">
+    <div class="clock-pill" id="nav-clock">00:00:00 UTC</div>
+
+    <!-- Guest -->
+    <button class="btn-discord show-guest" onclick="openLoginModal()">
+      <svg class="disc-svg" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+      Login with Discord
+    </button>
+
+    <!-- Authed — profile chip + dropdown -->
+    <div class="profile-wrap show-authed">
+      <div class="profile-chip" id="profile-chip" onclick="toggleProfileDropdown()">
+        <div class="user-avatar" id="nav-avatar">
+          <img id="nav-avatar-img" src="" alt="" style="display:none"/>
+          <span id="nav-avatar-init">?</span>
+        </div>
+        <div class="profile-name-wrap">
+          <span class="user-name" id="nav-username">—</span>
+          <span class="user-balance-small" id="nav-balance-small">₹—</span>
+        </div>
+        <span class="chevron-icon">▾</span>
+      </div>
+
+      <!-- Dropdown -->
+      <div class="profile-dropdown" id="profile-dropdown">
+        <div class="pd-header">
+          <div class="pd-avatar" id="pd-avatar">
+            <img id="pd-avatar-img" src="" alt="" style="display:none"/>
+            <span id="pd-avatar-init">?</span>
+          </div>
+          <div class="pd-username" id="pd-username">—</div>
+          <div class="pd-discord-tag" id="pd-discord-tag">—</div>
+        </div>
+
+        <!-- Apple Wallet Card -->
+        <div class="pd-wallet-card" onclick="openWalletModal()">
+          <div class="pwc-top">
+            <span class="pwc-logo">IndiGo</span>
+            <div class="pwc-chip"></div>
+          </div>
+          <div class="pwc-balance-label">Wallet Balance</div>
+          <div class="pwc-balance" id="pd-balance">₹—</div>
+          <div class="pwc-footer">
+            <span class="pwc-user" id="pd-wallet-name">—</span>
+            <span class="pwc-tap"><span class="pwc-tap-dot"></span>Tap to view passes</span>
+          </div>
+        </div>
+
+        <div class="pd-actions">
+          <button class="pd-action" onclick="openWalletModal()">
+            <div class="pd-action-icon" style="background:#eef1fd;font-size:16px;">💳</div>
+            <div class="pd-action-text">
+              <div class="pd-action-label">My Wallet</div>
+              <div class="pd-action-sub">View balance & all passes</div>
+            </div>
+            <span class="pd-action-arrow">›</span>
+          </button>
+          <button class="pd-action" onclick="closeDropdownSwitchTab('my')">
+            <div class="pd-action-icon" style="background:#ecfdf5;font-size:16px;">🎫</div>
+            <div class="pd-action-text">
+              <div class="pd-action-label">My Bookings</div>
+              <div class="pd-action-sub">Manage your reservations</div>
+            </div>
+            <span class="pd-action-arrow">›</span>
+          </button>
+        </div>
+
+        <div class="pd-divider"></div>
+        <button class="pd-signout" onclick="logout()">
+          <span>⇤</span> Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ FLIGHTS TAB ══ -->
+<div class="tab-content active" id="tab-flights">
+  <div class="hero">
+    <div class="hero-plane">✈</div>
+    <div class="hero-tag"><span class="hero-dot"></span>IndiGo PTFS Virtual Airline</div>
+    <h1 class="hero-title">Book your next<br/><span>virtual flight</span></h1>
+    <p class="hero-sub">Browse live flights, check real-time status, and reserve your seat instantly.</p>
+    <div class="search-card">
+      <div class="search-row">
+        <div class="sf wide"><div class="sf-label">From</div><input class="sf-input" id="s-from" placeholder="DEL" maxlength="3"/></div>
+        <button class="sf-swap" onclick="swapAirports()">⇄</button>
+        <div class="sf wide"><div class="sf-label">To</div><input class="sf-input" id="s-to" placeholder="BOM" maxlength="3"/></div>
+        <div class="sf narrow"><div class="sf-label">Date</div><input class="sf-input" id="s-date" placeholder="Any"/></div>
+        <button class="btn-search" onclick="doSearch()">Search Flights</button>
+      </div>
+    </div>
+  </div>
+  <div class="main">
+    <div class="sidebar">
+      <div>
+        <div class="filter-heading">Filter by Status</div>
+        <div class="filter-options">
+          <div class="filter-option active" onclick="filterFlights('all',this)"><span class="fo-dot dot-all"></span><span class="fo-label">All Flights</span><span class="fo-count" id="fc-all">—</span></div>
+          <div class="filter-option" onclick="filterFlights('on-time',this)"><span class="fo-dot dot-sched"></span><span class="fo-label">Scheduled</span><span class="fo-count" id="fc-ontime">—</span></div>
+          <div class="filter-option" onclick="filterFlights('boarding',this)"><span class="fo-dot dot-board"></span><span class="fo-label">Boarding</span><span class="fo-count" id="fc-boarding">—</span></div>
+          <div class="filter-option" onclick="filterFlights('delayed',this)"><span class="fo-dot dot-del"></span><span class="fo-label">Delayed</span><span class="fo-count" id="fc-delayed">—</span></div>
+          <div class="filter-option" onclick="filterFlights('cancelled',this)"><span class="fo-dot dot-can"></span><span class="fo-label">Cancelled</span><span class="fo-count" id="fc-can">—</span></div>
+          <div class="filter-option" onclick="filterFlights('ended',this)"><span class="fo-dot dot-arr"></span><span class="fo-label">Ended</span><span class="fo-count" id="fc-ended">—</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="stats-row">
+        <div class="stat-card active"><div class="stat-top"><div class="stat-label-txt">Active</div><div class="stat-icon">✈</div></div><div class="stat-num" id="stat-active">—</div><div class="stat-desc">flights in ops</div></div>
+        <div class="stat-card ontime"><div class="stat-top"><div class="stat-label-txt">On-Time</div><div class="stat-icon">✓</div></div><div class="stat-num" id="stat-ontime">—</div><div class="stat-desc">scheduled / boarding</div></div>
+        <div class="stat-card delayed"><div class="stat-top"><div class="stat-label-txt">Delayed</div><div class="stat-icon">⚠</div></div><div class="stat-num" id="stat-delayed">—</div><div class="stat-desc">need attention</div></div>
+        <div class="stat-card cancelled"><div class="stat-top"><div class="stat-label-txt">Cancelled</div><div class="stat-icon">✕</div></div><div class="stat-num" id="stat-cancelled">—</div><div class="stat-desc">this period</div></div>
+        <div class="stat-card ended"><div class="stat-top"><div class="stat-label-txt">Ended</div><div class="stat-icon">⏱</div></div><div class="stat-num" id="stat-ended">—</div><div class="stat-desc">dep / arrived</div></div>
+      </div>
+      <div class="section-head">
+        <div><div class="section-title">Available Flights</div><div class="section-sub" id="result-sub">Loading…</div></div>
+        <div class="sort-row">
+          <div class="search-box-wrap"><span class="sb-icon">⌕</span><input type="text" placeholder="Search route, flight…" id="search-input" oninput="applySearch()"/></div>
+          <select class="sort-sel" onchange="applySort(this.value)">
+            <option value="flight">Sort: Flight</option>
+            <option value="dep">Sort: Dep Time</option>
+            <option value="route">Sort: Route</option>
+            <option value="status">Sort: Status</option>
+          </select>
+          <button class="btn-refresh-sm" onclick="refreshFlights()"><span id="spin-ico" style="display:none" class="spin-anim">↻</span> Refresh</button>
+        </div>
+      </div>
+      <div class="flight-cards" id="flight-cards">
+        <div class="loading-state" id="loading-state"><div class="loading-spin">↻</div><div style="font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4)">Loading flights…</div></div>
+      </div>
+      <div class="empty-state" id="empty-state" style="display:none"><div class="empty-icon">✈</div><div class="empty-label">No flights found</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MY BOOKINGS TAB ══ -->
+<div class="tab-content" id="tab-my">
+  <div class="page-center" id="my-guest-state">
+    <div style="text-align:center;padding:50px 20px;">
+      <div style="font-size:44px;opacity:0.12;margin-bottom:16px;">🎫</div>
+      <div style="font-size:17px;font-weight:800;color:var(--text);margin-bottom:7px;letter-spacing:-0.02em;">My Bookings</div>
+      <div style="font-size:12.5px;color:var(--text3);max-width:280px;margin:0 auto 22px;line-height:1.65;">Login with Discord to view your booking history and manage reservations.</div>
+      <button class="btn-discord" onclick="openLoginModal()" style="margin:0 auto;">
+        <svg class="disc-svg" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Login with Discord
+      </button>
+    </div>
+  </div>
+  <div class="content" id="my-authed-state" style="display:none;align-items:center;">
+    <div style="width:100%;max-width:680px;">
+      <div class="section-head" style="margin-bottom:13px;">
+        <div><div class="section-title">My Bookings</div><div class="section-sub" id="bk-sub">—</div></div>
+        <div style="display:flex;align-items:center;gap:9px;">
+          <div style="background:var(--green-bg);border:1px solid var(--green-border);border-radius:9px;padding:7px 13px;display:flex;gap:7px;align-items:center;">
+            <span style="font-size:10px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--green);">WALLET</span>
+            <span style="font-family:var(--mono);font-weight:700;font-size:14px;color:var(--green);" id="my-balance">₹—</span>
+          </div>
+          <button onclick="openWalletModal()" style="background:var(--indigo-light);border:1px solid var(--indigo-border);color:var(--indigo);font-family:var(--font);font-size:11px;font-weight:700;padding:7px 12px;border-radius:9px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='var(--indigo)';this.style.color='#fff'" onmouseout="this.style.background='var(--indigo-light)';this.style.color='var(--indigo)'">💳 View Wallet</button>
+        </div>
+      </div>
+      <div class="bookings-list" id="bookings-list"></div>
+      <div class="loading-state" id="bk-loading"><div class="loading-spin">↻</div></div>
+      <div class="empty-state" id="bk-empty" style="display:none"><div class="empty-icon">🎫</div><div class="empty-label">No bookings yet</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ABOUT TAB ══ -->
+<div class="tab-content" id="tab-about">
+  <div class="page-center">
+    <div style="text-align:center;padding:60px 20px;max-width:500px;">
+      <div style="width:68px;height:68px;border-radius:16px;background:var(--indigo-light);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 20px;overflow:hidden;">
+        <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" style="width:68px;height:68px;object-fit:cover;border-radius:16px;" onerror="this.style.display='none'"/>
+      </div>
+      <div style="font-size:21px;font-weight:800;color:var(--text);margin-bottom:9px;letter-spacing:-0.025em;">IndiGo PTFS</div>
+      <div style="font-size:13px;color:var(--text3);line-height:1.8;margin-bottom:22px;">IndiGo PTFS is a virtual airline community operating on PTFS (Pilot Training Flight Simulator). Book a seat on any listed flight — your boarding pass is sent directly to your Discord DM.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;text-align:center;margin-bottom:16px;">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px;"><div style="font-size:22px;margin-bottom:6px;">💺</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Economy</div><div style="font-family:var(--mono);font-size:13px;color:var(--indigo);font-weight:700;margin-top:4px;">₹500</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px;"><div style="font-size:22px;margin-bottom:6px;">🥂</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Business</div><div style="font-family:var(--mono);font-size:13px;color:var(--cyan);font-weight:700;margin-top:4px;">₹1,200</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px 10px;"><div style="font-size:22px;margin-bottom:6px;">⭐</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">First Class</div><div style="font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:700;margin-top:4px;">₹2,500</div></div>
+      </div>
+      <div style="font-size:11px;color:var(--text4);line-height:1.8;">New members receive ₹5,000 starter balance · 50% refund on cancellations<br/>Boarding pass image sent to Discord DM on booking</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ FLIGHT DETAIL PANEL ══ -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanelOutside(event)">
+  <div class="side-panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-flight-tag">Flight Details</div>
+        <div class="panel-flight-num" id="panel-fnum">—</div>
+        <div class="panel-route" id="panel-froute">—</div>
+      </div>
+      <button class="panel-close" onclick="closePanel()">✕</button>
+    </div>
+    <div class="panel-body">
+      <div><div class="ps-label">Flight Info</div><div class="panel-grid" id="panel-grid"></div></div>
+      <div><div class="ps-label">Crew</div><div class="crew-list" id="panel-crew"></div></div>
+      <div><div class="ps-label">Remarks</div><div class="panel-notes" id="panel-notes">—</div></div>
+      <div>
+        <div class="ps-label">Status</div>
+        <div class="panel-status-row"><span id="panel-badge"></span><span class="panel-msg-id" id="panel-msgid">—</span></div>
+      </div>
+      <div id="panel-book-section">
+        <div class="ps-label">Book a Seat</div>
+        <!-- Guest -->
+        <div class="show-guest">
+          <p class="panel-book-note">Login with Discord to book this flight. Your boarding pass will be sent to you as a DM.</p>
+          <button class="btn-login-prompt" onclick="openLoginModal()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            Login with Discord to Book
+          </button>
+        </div>
+        <!-- Authed -->
+        <div class="show-authed" id="panel-authed-book">
+          <div class="cabin-selector">
+            <div class="cabin-opt selected" onclick="selectCabin(this,'Economy',500)">
+              <div class="cabin-name">💺 Economy</div>
+              <div class="cabin-price">₹500</div>
+            </div>
+            <div class="cabin-opt" onclick="selectCabin(this,'Business',1200)">
+              <div class="cabin-name">🥂 Business</div>
+              <div class="cabin-price">₹1,200</div>
+            </div>
+            <div class="cabin-opt" onclick="selectCabin(this,'First',2500)">
+              <div class="cabin-name">⭐ First</div>
+              <div class="cabin-price">₹2,500</div>
+            </div>
+          </div>
+          <div class="wallet-info" id="panel-wallet-info">
+            <span class="wallet-info-label">Your wallet</span>
+            <span class="wallet-info-val" id="panel-wallet-val">₹—</span>
+          </div>
+          <div class="book-loading" id="book-loading">Processing booking…</div>
+          <button class="btn-book-lg" id="panel-book-btn" onclick="bookCurrentFlight()">Book Seat · ₹500</button>
+          <p class="panel-book-note" id="panel-book-note" style="margin-top:8px;margin-bottom:0;">Boarding pass sent to your Discord DM immediately after booking.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ APPLE WALLET MODAL ══ -->
+<div class="wallet-modal-overlay" id="wallet-modal-overlay" onclick="closeWalletModalOutside(event)">
+  <div class="wallet-modal">
+    <!-- Big card -->
+    <div class="wm-card">
+      <div class="wm-card-top">
+        <span class="wm-logo">IndiGo</span>
+        <div class="wm-chip-wrap"><div class="wm-chip"></div></div>
+      </div>
+      <div class="wm-balance-lbl">Available Balance</div>
+      <div class="wm-balance" id="wm-balance">₹—</div>
+      <div class="wm-card-footer">
+        <div class="wm-user-info">
+          <div class="wm-user-label">Passenger</div>
+          <div class="wm-user-name" id="wm-username">—</div>
+        </div>
+        <div class="wm-network">PTFS NETWORK</div>
+      </div>
+    </div>
+
+    <!-- Stats strip -->
+    <div class="wm-stats">
+      <div class="wm-stat">
+        <div class="wm-stat-val" id="wm-total-spent">₹—</div>
+        <div class="wm-stat-label">Total Spent</div>
+      </div>
+      <div class="wm-stat">
+        <div class="wm-stat-val" id="wm-num-trips">—</div>
+        <div class="wm-stat-label">Trips</div>
+      </div>
+      <div class="wm-stat">
+        <div class="wm-stat-val" id="wm-fav-class">—</div>
+        <div class="wm-stat-label">Fav Class</div>
+      </div>
+    </div>
+
+    <!-- Boarding passes -->
+    <div class="wm-passes">
+      <div class="wm-passes-head">Boarding Passes</div>
+      <div id="wm-passes-list">
+        <div class="loading-state" style="padding:20px 0;"><div class="loading-spin">↻</div></div>
+      </div>
+    </div>
+
+    <button class="wm-close-btn" onclick="closeWalletModal()">Close Wallet</button>
+  </div>
+</div>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-hero">
+      <div class="modal-logo">
+        <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" onerror="this.style.display='none'"/>
+      </div>
+      <div class="modal-title">IndiGo PTFS</div>
+      <div class="modal-sub">Virtual Airline · Passenger Portal</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info"><strong>Discord login required.</strong> We use Discord OAuth to verify your membership and send boarding passes to your DMs.</div>
+      <button class="btn-discord-lg" onclick="startDiscordOAuth()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+        Continue with Discord
+      </button>
+      <button class="modal-cancel-btn" onclick="closeModal()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+// ════════════════════════════════════════════════════
+//  CONFIG — update these before launch
+// ════════════════════════════════════════════════════
+// ─── UPDATE THESE BEFORE LAUNCH ──────────────────────────────────────────────
+// API_BASE: URL of your api-server.js
+const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+                 ? 'http://localhost:3001'
+                 : '/api'; // Netlify Functions via redirect in netlify.toml
+
+// DISCORD_CLIENT: your Discord Application ID (from Discord Developer Portal)
+const DISCORD_CLIENT = '1472625958769922170';
+
+// REDIRECT_URI: must EXACTLY match one of the Redirect URIs you added in
+// Discord Developer Portal → your app → OAuth2 → Redirects
+// Common values:
+//   Local dev (serve .):   'http://localhost:3000'   or  'http://localhost:5500'
+//   Local dev (file://):   won't work — serve with: npx serve .
+//   Production:            'https://yourdomain.com'
+//
+// HOW TO FIND YOURS: open this page, copy the URL bar up to (not including) any ?code=
+// Then paste that exact URL in Discord Developer Portal → OAuth2 → Redirects
+const REDIRECT_URI = (function() {
+  const u = window.location.origin + window.location.pathname;
+  // strip trailing slash for consistency
+  return u.endsWith('/') ? u.slice(0, -1) : u;
+})();
+const CABIN_PRICES   = { Economy: 500, Business: 1200, First: 2500 };
+
+// ── State ─────────────────────────────────────────
+let allFlights      = [];
+let filteredFlights = [];
+let currentFilter   = 'all';
+let currentSort     = 'flight';
+let currentUser     = null;
+let userBalance     = null;
+let activeFlightId  = null;
+let selectedCabin   = 'Economy';
+let selectedPrice   = 500;
+let dropdownOpen    = false;
+
+const CITIES = {
+  DEL:'Delhi',BOM:'Mumbai',HYD:'Hyderabad',MAA:'Chennai',CCU:'Kolkata',
+  BLR:'Bengaluru',GOI:'Goa',AMD:'Ahmedabad',PNQ:'Pune',COK:'Kochi',
+  JAI:'Jaipur',LKO:'Lucknow',ATQ:'Amritsar',IXC:'Chandigarh',PAT:'Patna',
+  BBI:'Bhubaneswar',NAG:'Nagpur',SXR:'Srinagar',GAU:'Guwahati',
+};
+const cityOf = c => CITIES[c] || c;
+
+// ── UTC Clock ──────────────────────────────────────
+(function clock(){
+  const tick = () => {
+    const n = new Date();
+    document.getElementById('nav-clock').textContent =
+      [n.getUTCHours(),n.getUTCMinutes(),n.getUTCSeconds()]
+        .map(x=>String(x).padStart(2,'0')).join(':') + ' UTC';
+  };
+  tick(); setInterval(tick, 1000);
+})();
+
+// ════════════════════════════════════════════════════
+//  DISCORD OAUTH
+// ════════════════════════════════════════════════════
+function startDiscordOAuth() {
+  // Debug: log the exact redirect URI being used so you can register it in Discord
+  console.log('[IndiGo] OAuth redirect URI:', REDIRECT_URI);
+  const state = Math.random().toString(36).slice(2);
+  sessionStorage.setItem('oauth_state', state);
+  const p = new URLSearchParams({
+    client_id: DISCORD_CLIENT, redirect_uri: REDIRECT_URI,
+    response_type: 'code', scope: 'identify', state,
+  });
+  window.location.href = 'https://discord.com/api/oauth2/authorize?' + p.toString();
+}
+
+async function handleOAuthCallback() {
+  const url    = new URL(window.location.href);
+  const code   = url.searchParams.get('code');
+  const state  = url.searchParams.get('state');
+  const stored = sessionStorage.getItem('oauth_state');
+  if (!code) return false;
+
+  url.searchParams.delete('code'); url.searchParams.delete('state');
+  window.history.replaceState({}, '', url.toString());
+  sessionStorage.removeItem('oauth_state');
+
+  if (state !== stored) { toast('OAuth state mismatch — try again', 'error'); return true; }
+
+  toast('Logging you in…', 'info');
+  try {
+    const res  = await fetch(`${API_BASE}/auth`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code, redirectUri: REDIRECT_URI }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Login failed');
+    currentUser = { ...data.user, accessToken: data.accessToken };
+    localStorage.setItem('ptfs_user', JSON.stringify(currentUser));
+    await onLoggedIn(true);
+    closeModal();
+  } catch (e) {
+    toast('Login failed: ' + e.message, 'error');
+  }
+  return true;
+}
+
+function openLoginModal()  { document.getElementById('modal-overlay').classList.add('open'); }
+function closeModal()      { document.getElementById('modal-overlay').classList.remove('open'); }
+function closeModalOutside(e) { if (e.target.id === 'modal-overlay') closeModal(); }
+
+function logout() {
+  currentUser = null; userBalance = null;
+  localStorage.removeItem('ptfs_user');
+  document.body.classList.remove('authed');
+  resetBalanceUI();
+  document.getElementById('my-guest-state').style.display = 'flex';
+  document.getElementById('my-authed-state').style.display = 'none';
+  closeProfileDropdown();
+  toast('Signed out', 'info');
+}
+
+function resetBalanceUI() {
+  document.getElementById('nav-balance-small').textContent = '₹—';
+  document.getElementById('pd-balance').textContent = '₹—';
+  document.getElementById('my-balance').textContent = '₹—';
+  document.getElementById('panel-wallet-val').textContent = '₹—';
+  document.getElementById('wm-balance').textContent = '₹—';
+}
+
+async function onLoggedIn(showToast) {
+  document.body.classList.add('authed');
+  const u = currentUser;
+
+  // Nav avatar
+  const avatarImg  = document.getElementById('nav-avatar-img');
+  const avatarInit = document.getElementById('nav-avatar-init');
+  const pdAvatarImg  = document.getElementById('pd-avatar-img');
+  const pdAvatarInit = document.getElementById('pd-avatar-init');
+  const name = u.globalName || u.username || '?';
+
+  if (u.avatar) {
+    const url = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=64`;
+    avatarImg.src = url; avatarImg.style.display = 'block'; avatarInit.style.display = 'none';
+    pdAvatarImg.src = url; pdAvatarImg.style.display = 'block'; pdAvatarInit.style.display = 'none';
+  } else {
+    const init = name.charAt(0).toUpperCase();
+    avatarInit.textContent = init; pdAvatarInit.textContent = init;
+  }
+
+  document.getElementById('nav-username').textContent = name;
+  document.getElementById('pd-username').textContent  = name;
+  document.getElementById('pd-discord-tag').textContent = u.username ? '@' + u.username : '';
+  document.getElementById('pd-wallet-name').textContent = name.toUpperCase();
+  document.getElementById('wm-username').textContent = name;
+
+  if (showToast) toast(`Welcome, ${name}! 👋`, 'success');
+  await fetchWallet();
+}
+
+async function fetchWallet() {
+  if (!currentUser) return;
+  try {
+    const res  = await fetch(`${API_BASE}/wallet/${currentUser.id}`);
+    const data = await res.json();
+    userBalance = data.balance ?? 0;
+    const fmt   = `₹${Number(userBalance).toLocaleString('en-IN')}`;
+    document.getElementById('nav-balance-small').textContent = fmt;
+    document.getElementById('pd-balance').textContent        = fmt;
+    document.getElementById('my-balance').textContent        = fmt;
+    document.getElementById('panel-wallet-val').textContent  = fmt;
+    document.getElementById('panel-wallet-val').className    = 'wallet-info-val' + (userBalance < selectedPrice ? ' low' : '');
+    document.getElementById('wm-balance').textContent        = fmt;
+  } catch {}
+}
+
+// ════════════════════════════════════════════════════
+//  PROFILE DROPDOWN
+// ════════════════════════════════════════════════════
+function toggleProfileDropdown() {
+  dropdownOpen = !dropdownOpen;
+  document.getElementById('profile-dropdown').classList.toggle('open', dropdownOpen);
+  document.getElementById('profile-chip').classList.toggle('open', dropdownOpen);
+}
+function closeProfileDropdown() {
+  dropdownOpen = false;
+  document.getElementById('profile-dropdown').classList.remove('open');
+  document.getElementById('profile-chip').classList.remove('open');
+}
+function closeDropdownSwitchTab(tab) {
+  closeProfileDropdown();
+  const btn = document.querySelector(`.nav-link:nth-child(${tab==='my'?2:1})`);
+  if (btn) switchTab(btn, tab);
+}
+document.addEventListener('click', e => {
+  if (dropdownOpen && !e.target.closest('.profile-wrap')) closeProfileDropdown();
+});
+
+// ════════════════════════════════════════════════════
+//  APPLE WALLET MODAL
+// ════════════════════════════════════════════════════
+async function openWalletModal() {
+  closeProfileDropdown();
+  document.getElementById('wallet-modal-overlay').classList.add('open');
+  await fetchWallet();
+  await loadWalletPasses();
+}
+function closeWalletModal() {
+  document.getElementById('wallet-modal-overlay').classList.remove('open');
+}
+function closeWalletModalOutside(e) {
+  if (e.target.id === 'wallet-modal-overlay') closeWalletModal();
+}
+
+async function loadWalletPasses() {
+  const list = document.getElementById('wm-passes-list');
+  list.innerHTML = '<div class="loading-state" style="padding:20px 0;"><div class="loading-spin">↻</div></div>';
+
+  if (!currentUser) {
+    list.innerHTML = '<div class="wm-empty"><div class="wm-empty-icon">🔒</div><div class="wm-empty-text">Login to view passes</div></div>';
+    return;
+  }
+
+  try {
+    const res  = await fetch(`${API_BASE}/bookings/${currentUser.id}`);
+    const data = await res.json();
+    const bks  = (data.bookings || []).sort((a,b) => new Date(b.bookedAt) - new Date(a.bookedAt));
+
+    // Update stats
+    const totalSpent = bks.reduce((s,b) => s + (b.price||0), 0);
+    const classCounts = {};
+    bks.forEach(b => { classCounts[b.cabinClass] = (classCounts[b.cabinClass]||0)+1; });
+    const favClass = Object.entries(classCounts).sort((a,b)=>b[1]-a[1])[0]?.[0] || '—';
+    document.getElementById('wm-total-spent').textContent = `₹${totalSpent.toLocaleString('en-IN')}`;
+    document.getElementById('wm-num-trips').textContent   = bks.length;
+    document.getElementById('wm-fav-class').textContent   = favClass;
+
+    if (!bks.length) {
+      list.innerHTML = '<div class="wm-empty"><div class="wm-empty-icon">🎫</div><div class="wm-empty-text">No passes yet — book a flight!</div></div>';
+      return;
+    }
+
+    list.innerHTML = bks.map(b => `
+      <div class="wm-pass">
+        <div class="wm-pass-head">
+          <span class="wm-pass-airline">IndiGo PTFS · ${b.flightNum||'—'}</span>
+          <span class="wm-pass-ref">${b.bookingRef}</span>
+        </div>
+        <div class="wm-pass-route">
+          <div class="wm-pass-apt">
+            <div class="wm-pass-code">${b.depAirport||'—'}</div>
+            <div class="wm-pass-city">${cityOf(b.depAirport)}</div>
+            <div class="wm-pass-time">${b.depTime||'—'}</div>
+          </div>
+          <div class="wm-pass-line"><span class="wm-pass-plane">✈</span></div>
+          <div class="wm-pass-apt" style="text-align:right">
+            <div class="wm-pass-code">${b.arrAirport||'—'}</div>
+            <div class="wm-pass-city">${cityOf(b.arrAirport)}</div>
+            <div class="wm-pass-time">${b.arrTime||'—'}</div>
+          </div>
+        </div>
+        <div class="wm-pass-footer">
+          <span class="wm-pass-class ${b.cabinClass||'Economy'}">${b.cabinClass||'Economy'}</span>
+          <span class="wm-pass-date">${new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</span>
+          <span class="wm-pass-fare">₹${Number(b.price||0).toLocaleString('en-IN')}</span>
+        </div>
+      </div>
+    `).join('');
+  } catch {
+    list.innerHTML = '<div class="wm-empty"><div class="wm-empty-text">Could not load passes</div></div>';
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  FLIGHTS — real API with demo fallback
+// ════════════════════════════════════════════════════
+async function loadFlights() {
+  document.getElementById('loading-state').style.display = 'flex';
+  document.getElementById('flight-cards').innerHTML = '';
+  document.getElementById('empty-state').style.display = 'none';
+  try {
+    const res  = await fetch(`${API_BASE}/flights`, { signal: AbortSignal.timeout(6000) });
+    if (!res.ok) throw new Error('API returned ' + res.status);
+    const data = await res.json();
+    allFlights = (data.flights || []).filter(f => f && f.flightNum);
+  } catch (e) {
+    console.warn('[IndiGo] Could not reach API:', e.message);
+    allFlights = [];
+    document.getElementById('loading-state').style.display = 'none';
+    // Show a friendly offline message instead of demo data
+    document.getElementById('flight-cards').innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:60px 20px;color:var(--text3);">
+        <div style="font-size:36px;opacity:0.2;">📡</div>
+        <div style="font-size:13px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);">API Offline</div>
+        <div style="font-size:12px;color:var(--text4);text-align:center;max-width:260px;line-height:1.7;">
+          Could not connect to the API server.<br/>Make sure <code>api-server.js</code> is running.
+        </div>
+        <button class="btn-refresh-sm" onclick="refreshFlights()" style="margin-top:4px;">Try Again</button>
+      </div>`;
+    return;
+  }
+  document.getElementById('loading-state').style.display = 'none';
+  updateStats(); updateFilterCounts(); applyFilter(currentFilter);
+}
+
+
+async function refreshFlights() {
+  const s = document.getElementById('spin-ico');
+  s.style.display = 'inline-block';
+  await loadFlights();
+  s.style.display = 'none';
+  toast('Flights refreshed', 'success');
+}
+
+// ── Stats ──────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-active').textContent    = allFlights.filter(f=>!['Cancelled','Arrived','Departed'].includes(f.status)).length;
+  document.getElementById('stat-ontime').textContent    = allFlights.filter(f=>['Scheduled','Boarding'].includes(f.status)).length;
+  document.getElementById('stat-delayed').textContent   = allFlights.filter(f=>['Delayed','Rescheduled'].includes(f.status)).length;
+  document.getElementById('stat-cancelled').textContent = allFlights.filter(f=>f.status==='Cancelled').length;
+  document.getElementById('stat-ended').textContent     = allFlights.filter(f=>['Arrived','Departed'].includes(f.status)).length;
+}
+function updateFilterCounts() {
+  document.getElementById('fc-all').textContent      = allFlights.length;
+  document.getElementById('fc-ontime').textContent   = allFlights.filter(f=>f.status==='Scheduled').length;
+  document.getElementById('fc-boarding').textContent = allFlights.filter(f=>f.status==='Boarding').length;
+  document.getElementById('fc-delayed').textContent  = allFlights.filter(f=>['Delayed','Rescheduled'].includes(f.status)).length;
+  document.getElementById('fc-can').textContent      = allFlights.filter(f=>f.status==='Cancelled').length;
+  document.getElementById('fc-ended').textContent    = allFlights.filter(f=>['Arrived','Departed'].includes(f.status)).length;
+}
+
+// ── Filter / Sort / Search ─────────────────────────
+function filterFlights(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-option').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilter(filter);
+}
+function applyFilter(filter) {
+  const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
+  let list = [...allFlights];
+  if (filter==='on-time')   list = list.filter(f=>f.status==='Scheduled');
+  if (filter==='boarding')  list = list.filter(f=>f.status==='Boarding');
+  if (filter==='delayed')   list = list.filter(f=>['Delayed','Rescheduled'].includes(f.status));
+  if (filter==='cancelled') list = list.filter(f=>f.status==='Cancelled');
+  if (filter==='ended')     list = list.filter(f=>['Arrived','Departed'].includes(f.status));
+  if (q) list = list.filter(f =>
+    (f.flightNum||'').toLowerCase().includes(q)||
+    (f.depAirport||'').toLowerCase().includes(q)||
+    (f.arrAirport||'').toLowerCase().includes(q)||
+    cityOf(f.depAirport).toLowerCase().includes(q)||
+    cityOf(f.arrAirport).toLowerCase().includes(q)||
+    (f.aircraft||'').toLowerCase().includes(q)||
+    (f.status||'').toLowerCase().includes(q)
+  );
+  filteredFlights = list;
+  doSort();
+}
+function applySearch() { applyFilter(currentFilter); }
+function applySort(col) { if(col) currentSort=col; doSort(); }
+function doSort() {
+  const key = {flight:'flightNum',dep:'depTime',route:'depAirport',status:'status'}[currentSort]||'flightNum';
+  const sorted = [...filteredFlights].sort((a,b)=>(a[key]||'').toString().localeCompare((b[key]||'').toString()));
+  renderCards(sorted);
+}
+
+// ── Render Cards ──────────────────────────────────
+function bookable(f) { return ['Scheduled','Boarding'].includes(f.status); }
+function alertBadge(f) {
+  if (f.status==='Delayed')     return `<span class="alert-flag delayed"><span class="alert-dot-sm"></span>Delayed</span>`;
+  if (f.status==='Rescheduled') return `<span class="alert-flag rescheduled"><span class="alert-dot-sm"></span>Rescheduled</span>`;
+  if (f.status==='Cancelled')   return `<span class="alert-flag cancelled"><span class="alert-dot-sm"></span>Cancelled</span>`;
+  return '';
+}
+function durationBetween(dep, arr) {
+  try {
+    const parse = t => { const[h,m]=t.replace(/[^0-9:]/g,'').split(':').map(Number); return h*60+(m||0); };
+    const d=parse(dep), a=parse(arr), diff=a>d?a-d:a+1440-d;
+    return `${Math.floor(diff/60)}h ${diff%60}m`;
+  } catch { return ''; }
+}
+
+function renderCards(flights) {
+  const wrap  = document.getElementById('flight-cards');
+  const empty = document.getElementById('empty-state');
+  document.getElementById('result-sub').textContent = `${flights.length} flight${flights.length!==1?'s':''} found`;
+  if (!flights.length) { wrap.innerHTML=''; empty.style.display='flex'; return; }
+  empty.style.display = 'none';
+  wrap.innerHTML = flights.map((f,i) => `
+    <div class="flight-card${activeFlightId===f.messageId?' selected':''}" onclick="openPanel('${f.messageId}')" style="animation-delay:${i*0.03}s">
+      <div class="card-top">
+        <div class="airline-logo">
+          <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" onerror="this.style.display='none';this.parentElement.innerHTML='✈'"/>
+        </div>
+        <div class="route-block">
+          <div class="apt-col">
+            <div class="apt-code">${f.depAirport||'—'}</div>
+            <div class="apt-city">${cityOf(f.depAirport)}</div>
+            <div class="apt-time">${f.depTime||'—'}</div>
+          </div>
+          <div class="route-line">
+            <div class="route-line-track"></div>
+            <div class="route-duration">${durationBetween(f.depTime,f.arrTime)}</div>
+          </div>
+          <div class="apt-col">
+            <div class="apt-code">${f.arrAirport||'—'}</div>
+            <div class="apt-city">${cityOf(f.arrAirport)}</div>
+            <div class="apt-time">${f.arrTime||'—'}</div>
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="flight-num">${f.flightNum||'—'}</div>
+          <span class="status-badge ${f.status||''}">${f.status||'—'}</span>
+        </div>
+      </div>
+      <div class="card-divider"></div>
+      <div class="card-bottom">
+        <div class="card-bot-left">
+          ${f.aircraft&&f.aircraft!=='TBA'?`<span class="aircraft-chip">🛫 ${f.aircraft}</span>`:''}
+          ${f.depGate&&f.depGate!=='—'&&f.depGate!=='TBA'?`<span class="gate-chip">Gate <span class="gate-pill">${f.depGate}</span></span>`:''}
+        </div>
+        <div class="card-bot-right">
+          ${alertBadge(f)}
+          <button class="btn-book" onclick="event.stopPropagation();quickBook('${f.messageId}')" ${bookable(f)?'':'disabled'}>
+            ${bookable(f)?'Book Seat':'Unavailable'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function quickBook(id) {
+  if (!currentUser) { openLoginModal(); return; }
+  openPanel(id);
+}
+
+// ── Book flight ────────────────────────────────────
+async function bookCurrentFlight() {
+  if (!currentUser) { openLoginModal(); return; }
+  const f = allFlights.find(x=>x.messageId===activeFlightId);
+  if (!f || !bookable(f)) { toast('Flight is not bookable', 'error'); return; }
+  if (userBalance !== null && userBalance < selectedPrice) {
+    toast(`Insufficient balance — need ₹${selectedPrice.toLocaleString('en-IN')}, have ₹${userBalance.toLocaleString('en-IN')}`, 'error');
+    return;
+  }
+  const btn     = document.getElementById('panel-book-btn');
+  const loading = document.getElementById('book-loading');
+  btn.disabled  = true; loading.style.display = 'block';
+  try {
+    const res  = await fetch(`${API_BASE}/book`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: currentUser.id, messageId: f.messageId,
+        cabinClass: selectedCabin, price: selectedPrice,
+        name: currentUser.globalName || currentUser.username, seatPref: 'Any',
+      }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Booking failed');
+
+    userBalance = data.newBalance;
+    const fmt = `₹${Number(userBalance).toLocaleString('en-IN')}`;
+    document.getElementById('nav-balance-small').textContent      = fmt;
+    document.getElementById('pd-balance').textContent             = fmt;
+    document.getElementById('my-balance').textContent             = fmt;
+    document.getElementById('panel-wallet-val').textContent       = fmt;
+    document.getElementById('panel-wallet-val').className         = 'wallet-info-val';
+    document.getElementById('wm-balance').textContent             = fmt;
+
+    toast(`🎫 Booked! Ref: ${data.bookingRef} — Check Discord DMs for boarding pass`, 'success');
+    closePanel();
+    if (document.getElementById('tab-my').classList.contains('active')) loadMyBookings();
+  } catch (e) {
+    toast('Booking failed: ' + e.message, 'error');
+  }
+  btn.disabled = false; loading.style.display = 'none';
+}
+
+// ── Cabin selector ─────────────────────────────────
+function selectCabin(el, name, price) {
+  document.querySelectorAll('.cabin-opt').forEach(o=>o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedCabin = name; selectedPrice = price;
+  const btn = document.getElementById('panel-book-btn');
+  if (btn) btn.textContent = `Book Seat · ₹${price.toLocaleString('en-IN')}`;
+  const wv = document.getElementById('panel-wallet-val');
+  if (wv && userBalance !== null) wv.className = 'wallet-info-val' + (userBalance < price ? ' low' : '');
+}
+
+// ── Panel ──────────────────────────────────────────
+function openPanel(id) {
+  const f = allFlights.find(x=>x.messageId===id);
+  if (!f) return;
+  activeFlightId = id;
+  document.querySelectorAll('.flight-card').forEach(c=>c.classList.remove('selected'));
+  document.querySelectorAll(`.flight-card`).forEach(c=>{
+    if (c.getAttribute('onclick')?.includes(id)) c.classList.add('selected');
+  });
+
+  document.getElementById('panel-fnum').textContent   = f.flightNum || '—';
+  document.getElementById('panel-froute').textContent = `${cityOf(f.depAirport)} → ${cityOf(f.arrAirport)}`;
+  document.getElementById('panel-badge').innerHTML    = `<span class="status-badge ${f.status||''}">${f.status||'—'}</span>`;
+  document.getElementById('panel-msgid').textContent  = `ID: ${f.messageId}`;
+  document.getElementById('panel-notes').textContent  = f.notes || 'No remarks.';
+  document.getElementById('panel-grid').innerHTML = `
+    <div class="panel-cell"><div class="pc-label">Dep Time</div><div class="pc-val">${f.depTime||'—'}</div></div>
+    <div class="panel-cell"><div class="pc-label">Arr Time</div><div class="pc-val">${f.arrTime||'—'}</div></div>
+    <div class="panel-cell"><div class="pc-label">Dep Gate</div><div class="pc-val">${f.depGate&&f.depGate!=='TBA'?f.depGate:'—'}</div></div>
+    <div class="panel-cell"><div class="pc-label">Arr Gate</div><div class="pc-val">${f.arrGate&&f.arrGate!=='TBA'?f.arrGate:'—'}</div></div>
+    <div class="panel-cell"><div class="pc-label">Aircraft</div><div class="pc-val">${f.aircraft||'—'}</div></div>
+    <div class="panel-cell"><div class="pc-label">Duration</div><div class="pc-val">${durationBetween(f.depTime,f.arrTime)||'—'}</div></div>
+  `;
+
+  const crewItems = [
+    {role:'Captain', val:f.captain||''},
+    {role:'First Officer', val:f.fo||''},
+    ...(f.cc||[]).map((n,i)=>({role:`Cabin Crew ${i+1}`, val:n})),
+  ];
+  document.getElementById('panel-crew').innerHTML = crewItems.map(c=>`
+    <div class="crew-item"><div class="crew-role">${c.role}</div><div class="crew-name ${c.val?'':'crew-empty'}">${c.val||'Unassigned'}</div></div>
+  `).join('');
+
+  const canBook = bookable(f);
+  const btn     = document.getElementById('panel-book-btn');
+  btn.disabled  = !canBook;
+  btn.textContent = canBook ? `Book Seat · ₹${selectedPrice.toLocaleString('en-IN')}` : 'Not Bookable';
+  document.getElementById('panel-book-note').textContent = canBook
+    ? 'Boarding pass sent to your Discord DM immediately after booking.'
+    : `This flight cannot be booked (status: ${f.status}).`;
+  if (userBalance !== null) {
+    document.getElementById('panel-wallet-val').textContent = `₹${Number(userBalance).toLocaleString('en-IN')}`;
+    document.getElementById('panel-wallet-val').className   = 'wallet-info-val' + (userBalance < selectedPrice ? ' low' : '');
+  }
+  document.getElementById('panel-overlay').classList.add('open');
+}
+function closePanel() {
+  document.getElementById('panel-overlay').classList.remove('open');
+  activeFlightId = null;
+  document.querySelectorAll('.flight-card').forEach(c=>c.classList.remove('selected'));
+}
+function closePanelOutside(e) { if(e.target.id==='panel-overlay') closePanel(); }
+
+// ── My Bookings tab ────────────────────────────────
+async function loadMyBookings() {
+  if (!currentUser) return;
+  document.getElementById('my-guest-state').style.display  = 'none';
+  document.getElementById('my-authed-state').style.display = 'flex';
+  document.getElementById('bk-loading').style.display  = 'flex';
+  document.getElementById('bk-empty').style.display    = 'none';
+  document.getElementById('bookings-list').innerHTML   = '';
+  await fetchWallet();
+  try {
+    const res  = await fetch(`${API_BASE}/bookings/${currentUser.id}`);
+    const data = await res.json();
+    const bks  = (data.bookings||[]).sort((a,b)=>new Date(b.bookedAt)-new Date(a.bookedAt));
+    document.getElementById('bk-loading').style.display = 'none';
+    document.getElementById('bk-sub').textContent = `${bks.length} booking${bks.length!==1?'s':''}`;
+    if (!bks.length) { document.getElementById('bk-empty').style.display='flex'; return; }
+    document.getElementById('bookings-list').innerHTML = bks.map((b,i)=>`
+      <div class="booking-card" style="animation-delay:${i*0.04}s">
+        <div class="bk-head">
+          <span class="bk-ref">${b.bookingRef}</span>
+          <span class="bk-status">${b.flightNum||'—'} · ${new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+        </div>
+        <div class="bk-body">
+          <div class="bk-route">
+            <div class="bk-airports">${b.depAirport||'—'} → ${b.arrAirport||'—'}</div>
+            <div class="bk-times">${b.depTime||''} → ${b.arrTime||''} · ${b.aircraft||''}</div>
+          </div>
+          <div class="bk-meta">
+            <span class="bk-class-pill ${b.cabinClass||'Economy'}">${b.cabinClass||'Economy'}</span>
+            <span class="bk-fare">₹${Number(b.price||0).toLocaleString('en-IN')}</span>
+            <span class="bk-date">Ref: ${b.bookingRef}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  } catch {
+    document.getElementById('bk-loading').style.display = 'none';
+    toast('Could not load bookings', 'error');
+  }
+}
+
+// ── Hero search ────────────────────────────────────
+function swapAirports() {
+  const f=document.getElementById('s-from'), t=document.getElementById('s-to');
+  [f.value, t.value] = [t.value, f.value];
+}
+function doSearch() {
+  const from = document.getElementById('s-from').value.trim().toUpperCase();
+  const to   = document.getElementById('s-to').value.trim().toUpperCase();
+  document.getElementById('search-input').value = (from+' '+to).trim();
+  applySearch();
+  if (from||to) toast(`Searching: ${from||'any'} → ${to||'any'}`, 'info');
+}
+
+// ── Tab switch ─────────────────────────────────────
+function switchTab(btn, tab) {
+  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  if (tab==='my') {
+    if (currentUser) loadMyBookings();
+    else {
+      document.getElementById('my-guest-state').style.display='flex';
+      document.getElementById('my-authed-state').style.display='none';
+    }
+  }
+}
+
+// ── Toast ──────────────────────────────────────────
+function toast(msg, type='info') {
+  const wrap = document.getElementById('toast-wrap');
+  const el   = document.createElement('div');
+  el.className = `toast ${type}`;
+  const colors = {success:'var(--green)',error:'var(--red)',info:'var(--indigo)'};
+  const icons  = {success:'✓',error:'✕',info:'ℹ'};
+  el.innerHTML = `<span style="color:${colors[type]||colors.info};font-size:14px;">${icons[type]||icons.info}</span><span>${msg}</span>`;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity 0.3s'; setTimeout(()=>el.remove(),300); }, 4500);
+}
+
+// ── Init ───────────────────────────────────────────
+(async function init() {
+  const wasCallback = await handleOAuthCallback();
+  if (!wasCallback) {
+    try {
+      const u = localStorage.getItem('ptfs_user');
+      if (u) { currentUser = JSON.parse(u); await onLoggedIn(false); }
+    } catch {}
+  }
+  loadFlights();
+})();
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closePanel(); closeModal(); closeWalletModal(); closeProfileDropdown(); }
+});
+</script>
+</body>
+</html>

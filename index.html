@@ -616,61 +616,108 @@ body.authed .show-guest{display:none;}
 .panel-notes{font-size:12.5px;color:var(--text3);line-height:1.75;}
 .panel-msg-id{font-family:var(--mono);font-size:9px;color:var(--text4);}
 
-/* Cabin cards — card-nav style */
-.cabin-selector{
-  display:flex;gap:10px;margin-bottom:18px;
-  overflow-x:auto;padding-bottom:4px;
-  scroll-snap-type:x mandatory;
-  -webkit-overflow-scrolling:touch;
-}
-.cabin-selector::-webkit-scrollbar{height:3px;}
-.cabin-selector::-webkit-scrollbar-track{background:transparent;}
-.cabin-selector::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:2px;}
+/* ══════ CABIN ACCORDION ══════ */
+.cabin-accordion{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
 
-.cabin-opt{
-  border:1px solid var(--border);border-radius:12px;padding:0;
-  cursor:pointer;transition:border-color 0.18s,transform 0.18s,box-shadow 0.18s,background 0.18s;
+.cabin-row{
+  border:1px solid var(--border);border-radius:12px;
   background:var(--surface2);overflow:hidden;
-  display:flex;flex-direction:column;
-  flex:0 0 calc(33.33% - 7px);min-width:140px;
-  scroll-snap-align:start;
-  position:relative;
+  transition:border-color 0.18s,box-shadow 0.18s;
+  cursor:pointer;
 }
-.cabin-opt::after{
-  content:'';position:absolute;inset:0;border-radius:12px;
-  background:linear-gradient(135deg,rgba(255,255,255,0.025) 0%,transparent 60%);
+.cabin-row:hover{border-color:var(--border2);}
+.cabin-row.open{
+  border-color:var(--blue-border);
+  box-shadow:0 0 0 1px var(--blue-border),0 6px 24px rgba(59,107,255,0.12);
+}
+
+/* Header row — always visible */
+.cabin-row-head{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;
+  user-select:none;
+}
+.cabin-row-icon{font-size:18px;flex-shrink:0;width:28px;text-align:center;}
+.cabin-row-info{flex:1;min-width:0;}
+.cabin-row-name{font-size:13px;font-weight:700;color:var(--text);letter-spacing:-0.01em;}
+.cabin-row-tagline{font-size:10.5px;color:var(--text4);margin-top:1px;}
+.cabin-row-price{
+  font-family:var(--mono);font-size:15px;font-weight:700;
+  color:var(--text);flex-shrink:0;
+}
+.cabin-row.open .cabin-row-price{color:var(--blue3);}
+.cabin-row-chevron{
+  font-size:10px;color:var(--text4);flex-shrink:0;
+  transition:transform 0.22s cubic-bezier(0.22,1,0.36,1);
+}
+.cabin-row.open .cabin-row-chevron{transform:rotate(180deg);}
+
+/* Badge on some tiers */
+.cabin-tier-badge{
+  font-size:8px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;
+  padding:2px 7px;border-radius:20px;flex-shrink:0;
+}
+.badge-value{background:rgba(34,211,238,0.1);color:var(--cyan);border:1px solid rgba(34,211,238,0.2);}
+.badge-premium{background:rgba(167,139,250,0.1);color:var(--violet);border:1px solid rgba(167,139,250,0.2);}
+.badge-business{background:rgba(245,158,11,0.1);color:var(--amber);border:1px solid rgba(245,158,11,0.2);}
+.badge-first{background:rgba(255,215,0,0.1);color:#ffd700;border:1px solid rgba(255,215,0,0.2);}
+
+/* Expandable body */
+.cabin-row-body{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.32s cubic-bezier(0.22,1,0.36,1);
+}
+.cabin-row.open .cabin-row-body{max-height:500px;}
+
+.cabin-row-details{
+  padding:0 16px 16px;
+  border-top:1px solid var(--border);
+  display:grid;grid-template-columns:1fr 1fr;gap:14px;
+}
+.cabin-row.open .cabin-row-details{border-top-color:rgba(59,107,255,0.15);}
+
+.cabin-detail-group{display:flex;flex-direction:column;gap:6px;}
+.cabin-detail-group-label{
+  font-size:8px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--text4);margin-bottom:2px;padding-top:14px;
+  display:flex;align-items:center;gap:6px;
+}
+.cabin-detail-group-label::before{content:attr(data-icon);font-size:12px;}
+.cabin-detail-item{
+  display:flex;align-items:flex-start;gap:7px;
+  font-size:11px;color:var(--text3);line-height:1.45;
+}
+.cabin-detail-check{
+  width:14px;height:14px;border-radius:50%;flex-shrink:0;
+  background:var(--blue-dim);border:1px solid var(--blue-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:7px;color:var(--blue3);margin-top:0.5px;
+}
+.cabin-row.open .cabin-detail-check{background:var(--blue);border-color:var(--blue);color:#fff;}
+
+/* Book button inside accordion */
+.cabin-row-book{
+  padding:12px 16px 16px;display:flex;align-items:center;gap:12px;
+  border-top:1px solid rgba(59,107,255,0.12);margin-top:2px;
+}
+.cabin-row-wallet{flex:1;}
+.cabin-row-wallet-label{font-size:8.5px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text4);}
+.cabin-row-wallet-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);margin-top:2px;}
+.cabin-row-wallet-val.low{color:var(--red);}
+.btn-cabin-book{
+  background:var(--blue);color:#fff;border:none;
+  font-family:var(--font);font-size:12px;font-weight:700;
+  padding:10px 20px;border-radius:8px;cursor:pointer;
+  transition:all 0.16s;letter-spacing:0.02em;white-space:nowrap;
+  position:relative;overflow:hidden;
+}
+.btn-cabin-book::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.12) 0%,transparent 60%);
   pointer-events:none;
 }
-.cabin-opt:hover{border-color:var(--blue-border);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4),0 0 0 1px var(--blue-border);}
-.cabin-opt.selected{
-  border-color:var(--blue);background:linear-gradient(160deg,rgba(59,107,255,0.14) 0%,rgba(59,107,255,0.05) 100%);
-  box-shadow:0 0 0 1px var(--blue-border),0 8px 28px rgba(59,107,255,0.18);
-  transform:translateY(-2px);
-}
-.cabin-opt-header{padding:16px 16px 12px;border-bottom:1px solid var(--border);}
-.cabin-opt.selected .cabin-opt-header{border-bottom-color:rgba(59,107,255,0.2);}
-.cabin-icon{font-size:20px;margin-bottom:8px;}
-.cabin-name{font-size:9px;font-weight:800;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;}
-.cabin-opt.selected .cabin-name{color:var(--blue3);}
-.cabin-price{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--text);margin-top:5px;letter-spacing:-0.02em;}
-.cabin-opt.selected .cabin-price{color:var(--blue3);}
-.cabin-perks{padding:12px 16px 14px;display:flex;flex-direction:column;gap:6px;}
-.cabin-perk{font-size:10.5px;color:var(--text3);display:flex;align-items:center;gap:6px;line-height:1.35;}
-.cabin-perk-dot{width:3px;height:3px;border-radius:50%;background:var(--text4);flex-shrink:0;}
-.cabin-opt.selected .cabin-perk{color:var(--text2);}
-.cabin-opt.selected .cabin-perk-dot{background:var(--blue3);}
-
-/* Selected tick indicator */
-.cabin-opt.selected .cabin-opt-header::after{
-  content:'✓';position:absolute;top:12px;right:14px;
-  width:18px;height:18px;border-radius:50%;
-  background:var(--blue);color:#fff;
-  font-size:9px;font-weight:800;
-  display:flex;align-items:center;justify-content:center;
-  line-height:18px;text-align:center;
-  box-shadow:0 2px 8px rgba(59,107,255,0.4);
-}
-.cabin-opt.selected{position:relative;}
+.btn-cabin-book:hover{background:var(--blue2);box-shadow:0 4px 20px var(--blue-glow);transform:translateY(-1px);}
+.btn-cabin-book:disabled{background:var(--surface3);color:var(--text4);cursor:not-allowed;box-shadow:none;transform:none;}
 
 /* Wallet + book */
 .wallet-row{
@@ -1142,57 +1189,247 @@ body.authed .show-guest{display:none;}
             <span class="disc-icon">💬</span>
             Your boarding pass will be sent to your Discord DM immediately after booking.
           </div>
-          <div class="cabin-selector">
-            <div class="cabin-opt selected" onclick="selectCabin(this,'Economy',500)">
-              <div class="cabin-opt-header">
-                <div class="cabin-icon">💺</div>
-                <div class="cabin-name">Economy</div>
-                <div class="cabin-price">₹500</div>
+
+          <div class="cabin-accordion" id="cabin-accordion">
+
+            <!-- Economy -->
+            <div class="cabin-row open" id="cabin-Economy" onclick="toggleCabin('Economy',500,this)">
+              <div class="cabin-row-head">
+                <div class="cabin-row-icon">💺</div>
+                <div class="cabin-row-info">
+                  <div class="cabin-row-name">Economy</div>
+                  <div class="cabin-row-tagline">Standard travel experience</div>
+                </div>
+                <div class="cabin-row-price">₹500</div>
+                <div class="cabin-row-chevron">▾</div>
               </div>
-              <div class="cabin-perks">
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Standard seat</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Snacks &amp; water</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>1 carry-on bag</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Basic boarding</div>
+              <div class="cabin-row-body">
+                <div class="cabin-row-details">
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🍽">Meals</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Complimentary snacks &amp; water</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Beverages available for purchase</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🧳">Baggage</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>1 carry-on bag (7 kg)</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>No checked baggage included</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="💺">Comfort</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Standard 29" pitch seats</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Tray table &amp; reading light</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="✈">Boarding</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Standard boarding group</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Basic seat selection</div>
+                  </div>
+                </div>
+                <div class="cabin-row-book">
+                  <div class="cabin-row-wallet" id="wallet-Economy">
+                    <div class="cabin-row-wallet-label">Your Wallet</div>
+                    <div class="cabin-row-wallet-val" id="wbal-Economy">₹—</div>
+                  </div>
+                  <button class="btn-cabin-book" onclick="event.stopPropagation();bookCabin('Economy',500)">Book · ₹500</button>
+                </div>
               </div>
             </div>
-            <div class="cabin-opt" onclick="selectCabin(this,'Business',1200)">
-              <div class="cabin-opt-header">
-                <div class="cabin-icon">🥂</div>
-                <div class="cabin-name">Business</div>
-                <div class="cabin-price">₹1,200</div>
+
+            <!-- IndiGo Stretch -->
+            <div class="cabin-row" id="cabin-IndiGoStretch" onclick="toggleCabin('IndiGo Stretch',800,this)">
+              <div class="cabin-row-head">
+                <div class="cabin-row-icon">🦵</div>
+                <div class="cabin-row-info">
+                  <div class="cabin-row-name">IndiGo Stretch</div>
+                  <div class="cabin-row-tagline">Extra legroom &amp; comfort</div>
+                </div>
+                <div class="cabin-row-price">₹800</div>
+                <span class="cabin-tier-badge badge-value">EXTRA LEGROOM</span>
+                <div class="cabin-row-chevron">▾</div>
               </div>
-              <div class="cabin-perks">
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Recliner seat</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Full meal + drinks</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>2 checked bags</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Priority boarding</div>
+              <div class="cabin-row-body">
+                <div class="cabin-row-details">
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🍽">Meals</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Complimentary snacks &amp; water</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Beverage purchase available</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🧳">Baggage</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>1 carry-on bag (7 kg)</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>15 kg checked baggage</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="💺">Comfort</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>34"+ pitch — extra legroom</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Exit row or front seats</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="✈">Boarding</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Early boarding access</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Preferred seat selection</div>
+                  </div>
+                </div>
+                <div class="cabin-row-book">
+                  <div class="cabin-row-wallet">
+                    <div class="cabin-row-wallet-label">Your Wallet</div>
+                    <div class="cabin-row-wallet-val" id="wbal-IndiGoStretch">₹—</div>
+                  </div>
+                  <button class="btn-cabin-book" onclick="event.stopPropagation();bookCabin('IndiGo Stretch',800)">Book · ₹800</button>
+                </div>
               </div>
             </div>
-            <div class="cabin-opt" onclick="selectCabin(this,'First',2500)">
-              <div class="cabin-opt-header">
-                <div class="cabin-icon">⭐</div>
-                <div class="cabin-name">First Class</div>
-                <div class="cabin-price">₹2,500</div>
+
+            <!-- Economy Plus -->
+            <div class="cabin-row" id="cabin-EconomyPlus" onclick="toggleCabin('Economy Plus',1100,this)">
+              <div class="cabin-row-head">
+                <div class="cabin-row-icon">⭐</div>
+                <div class="cabin-row-info">
+                  <div class="cabin-row-name">Economy Plus</div>
+                  <div class="cabin-row-tagline">Enhanced comfort &amp; amenities</div>
+                </div>
+                <div class="cabin-row-price">₹1,100</div>
+                <span class="cabin-tier-badge badge-premium">PREMIUM ECONOMY</span>
+                <div class="cabin-row-chevron">▾</div>
               </div>
-              <div class="cabin-perks">
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Lie-flat suite</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Fine dining + bar</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Unlimited baggage</div>
-                <div class="cabin-perk"><span class="cabin-perk-dot"></span>VIP lounge access</div>
+              <div class="cabin-row-body">
+                <div class="cabin-row-details">
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🍽">Meals</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Hot meal included</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Complimentary beverages</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Snack basket service</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🧳">Baggage</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>1 carry-on bag (7 kg)</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>20 kg checked baggage</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="💺">Comfort</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Wider seat with 32" pitch</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Adjustable headrest</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Enhanced recline</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="✈">Boarding</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Priority boarding lane</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Complimentary seat upgrade attempt</div>
+                  </div>
+                </div>
+                <div class="cabin-row-book">
+                  <div class="cabin-row-wallet">
+                    <div class="cabin-row-wallet-label">Your Wallet</div>
+                    <div class="cabin-row-wallet-val" id="wbal-EconomyPlus">₹—</div>
+                  </div>
+                  <button class="btn-cabin-book" onclick="event.stopPropagation();bookCabin('Economy Plus',1100)">Book · ₹1,100</button>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="wallet-row">
-            <div style="display:flex;flex-direction:column;gap:2px;">
-              <span class="wallet-row-label">Your Wallet</span>
-              <span style="font-size:10px;color:var(--text4);">Balance after booking</span>
+
+            <!-- Business -->
+            <div class="cabin-row" id="cabin-Business" onclick="toggleCabin('Business',1800,this)">
+              <div class="cabin-row-head">
+                <div class="cabin-row-icon">🥂</div>
+                <div class="cabin-row-info">
+                  <div class="cabin-row-name">Business</div>
+                  <div class="cabin-row-tagline">Recliner seats &amp; full service</div>
+                </div>
+                <div class="cabin-row-price">₹1,800</div>
+                <span class="cabin-tier-badge badge-business">BUSINESS</span>
+                <div class="cabin-row-chevron">▾</div>
+              </div>
+              <div class="cabin-row-body">
+                <div class="cabin-row-details">
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🍽">Meals</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>3-course gourmet meal</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Premium wines &amp; spirits</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Dedicated cabin crew</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🧳">Baggage</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>2 carry-on bags (14 kg)</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>2 × 25 kg checked bags</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="💺">Comfort</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Recliner seat — 40" pitch</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Noise-cancelling headphones</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Blanket &amp; amenity kit</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="✈">Boarding</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>First to board</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Lounge access (if available)</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Fast-track security</div>
+                  </div>
+                </div>
+                <div class="cabin-row-book">
+                  <div class="cabin-row-wallet">
+                    <div class="cabin-row-wallet-label">Your Wallet</div>
+                    <div class="cabin-row-wallet-val" id="wbal-Business">₹—</div>
+                  </div>
+                  <button class="btn-cabin-book" onclick="event.stopPropagation();bookCabin('Business',1800)">Book · ₹1,800</button>
+                </div>
+              </div>
             </div>
-            <span class="wallet-row-val" id="panel-wallet-val">₹—</span>
-          </div>
+
+            <!-- First Class -->
+            <div class="cabin-row" id="cabin-FirstClass" onclick="toggleCabin('First Class',3000,this)">
+              <div class="cabin-row-head">
+                <div class="cabin-row-icon">👑</div>
+                <div class="cabin-row-info">
+                  <div class="cabin-row-name">First Class</div>
+                  <div class="cabin-row-tagline">Lie-flat suite &amp; VIP experience</div>
+                </div>
+                <div class="cabin-row-price">₹3,000</div>
+                <span class="cabin-tier-badge badge-first">FIRST</span>
+                <div class="cabin-row-chevron">▾</div>
+              </div>
+              <div class="cabin-row-body">
+                <div class="cabin-row-details">
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🍽">Meals</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>On-demand fine dining</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Champagne &amp; premium bar</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Chef-curated menu</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Caviar &amp; artisan snacks</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="🧳">Baggage</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Unlimited carry-on</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Unlimited checked baggage</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="💺">Comfort</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Private lie-flat suite</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Turndown bed service</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>14" personal screen</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Full pajama &amp; amenity set</div>
+                  </div>
+                  <div class="cabin-detail-group">
+                    <div class="cabin-detail-group-label" data-icon="✈">Boarding</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Dedicated check-in desk</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>VIP lounge access</div>
+                    <div class="cabin-detail-item"><span class="cabin-detail-check">✓</span>Private car to aircraft</div>
+                  </div>
+                </div>
+                <div class="cabin-row-book">
+                  <div class="cabin-row-wallet">
+                    <div class="cabin-row-wallet-label">Your Wallet</div>
+                    <div class="cabin-row-wallet-val" id="wbal-FirstClass">₹—</div>
+                  </div>
+                  <button class="btn-cabin-book" onclick="event.stopPropagation();bookCabin('First Class',3000)">Book · ₹3,000</button>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /cabin-accordion -->
+
           <div class="book-loading" id="book-loading">Processing booking…</div>
-          <button class="btn-book-lg" id="panel-book-btn" onclick="bookCurrentFlight()">Book Seat · ₹500</button>
-          <p class="panel-book-note" id="panel-book-note">Boarding pass sent to your Discord DM after booking.</p>
+          <p class="panel-book-note" id="panel-book-note"></p>
         </div>
       </div>
 
@@ -1385,7 +1622,7 @@ const REDIRECT_URI = (function() {
   // strip trailing slash for consistency
   return u.endsWith('/') ? u.slice(0, -1) : u;
 })();
-const CABIN_PRICES   = { Economy: 500, Business: 1200, First: 2500 };
+const CABIN_PRICES   = { Economy: 500, 'IndiGo Stretch': 800, 'Economy Plus': 1100, Business: 1800, 'First Class': 3000 };
 
 // ── State ─────────────────────────────────────────
 let allFlights      = [];
@@ -1631,8 +1868,11 @@ function resetBalanceUI() {
   document.getElementById('nav-balance-small').textContent = '₹—';
   document.getElementById('pd-balance').textContent = '₹—';
   document.getElementById('my-balance').textContent = '₹—';
-  document.getElementById('panel-wallet-val').textContent = '₹—';
   document.getElementById('wm-balance').textContent = '₹—';
+  Object.values(CABIN_IDS).forEach(id => {
+    const el = document.getElementById('wbal-' + id);
+    if (el) { el.textContent = '₹—'; el.className = 'cabin-row-wallet-val'; }
+  });
 }
 
 async function onLoggedIn(showToast) {
@@ -1675,9 +1915,8 @@ async function fetchWallet() {
     document.getElementById('nav-balance-small').textContent = fmt;
     document.getElementById('pd-balance').textContent        = fmt;
     document.getElementById('my-balance').textContent        = fmt;
-    document.getElementById('panel-wallet-val').textContent  = fmt;
-    document.getElementById('panel-wallet-val').className    = 'wallet-info-val' + (userBalance < selectedPrice ? ' low' : '');
     document.getElementById('wm-balance').textContent        = fmt;
+    updateCabinWalletBadges();
   } catch {}
 }
 
@@ -2054,9 +2293,8 @@ async function submitBookingConfirm() {
     document.getElementById('nav-balance-small').textContent      = fmt;
     document.getElementById('pd-balance').textContent             = fmt;
     document.getElementById('my-balance').textContent             = fmt;
-    document.getElementById('panel-wallet-val').textContent       = fmt;
-    document.getElementById('panel-wallet-val').className         = 'wallet-info-val';
     document.getElementById('wm-balance').textContent             = fmt;
+    updateCabinWalletBadges();
 
     closeBookingConfirm();
     closePanel();
@@ -2099,15 +2337,48 @@ async function bookCurrentFlight() {
   openBookingConfirm();
 }
 
-// ── Cabin selector ─────────────────────────────────
-function selectCabin(el, name, price) {
-  document.querySelectorAll('.cabin-opt').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-  selectedCabin = name; selectedPrice = price;
-  const btn = document.getElementById('panel-book-btn');
-  if (btn) btn.textContent = `Book Seat · ₹${price.toLocaleString('en-IN')}`;
-  const wv = document.getElementById('panel-wallet-val');
-  if (wv && userBalance !== null) wv.className = 'wallet-row-val' + (userBalance < price ? ' low' : '');
+// ── Cabin accordion ────────────────────────────────
+const CABIN_IDS = {
+  'Economy':'Economy',
+  'IndiGo Stretch':'IndiGoStretch',
+  'Economy Plus':'EconomyPlus',
+  'Business':'Business',
+  'First Class':'FirstClass'
+};
+
+function toggleCabin(name, price, rowEl) {
+  const isOpen = rowEl.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.cabin-row').forEach(r => r.classList.remove('open'));
+  if (!isOpen) {
+    rowEl.classList.add('open');
+    selectedCabin = name;
+    selectedPrice = price;
+    updateCabinWalletBadges();
+  } else {
+    // Clicking open row collapses, reset to economy
+    selectedCabin = 'Economy';
+    selectedPrice = 500;
+  }
+}
+
+function updateCabinWalletBadges() {
+  if (userBalance === null) return;
+  const fmt = `₹${Number(userBalance).toLocaleString('en-IN')}`;
+  Object.entries(CABIN_IDS).forEach(([name, id]) => {
+    const price = CABIN_PRICES[name] || 0;
+    const el = document.getElementById('wbal-' + id);
+    if (el) {
+      el.textContent = fmt;
+      el.className = 'cabin-row-wallet-val' + (userBalance < price ? ' low' : '');
+    }
+  });
+}
+
+function bookCabin(name, price) {
+  selectedCabin = name;
+  selectedPrice = price;
+  openBookingConfirm();
 }
 
 // ── Panel ──────────────────────────────────────────
@@ -2135,16 +2406,19 @@ function openPanel(id) {
   `;
 
   const canBook = bookable(f);
-  const btn     = document.getElementById('panel-book-btn');
-  btn.disabled  = !canBook;
-  btn.textContent = canBook ? `Book Seat · ₹${selectedPrice.toLocaleString('en-IN')}` : 'Not Bookable';
+  // Update book buttons in accordion based on bookability
+  document.querySelectorAll('.btn-cabin-book').forEach(btn => {
+    btn.disabled = !canBook;
+  });
   document.getElementById('panel-book-note').textContent = canBook
     ? ''
     : `This flight cannot be booked (status: ${f.status}).`;
-  if (userBalance !== null) {
-    document.getElementById('panel-wallet-val').textContent = `₹${Number(userBalance).toLocaleString('en-IN')}`;
-    document.getElementById('panel-wallet-val').className   = 'wallet-row-val' + (userBalance < selectedPrice ? ' low' : '');
-  }
+  // Reset accordion to Economy open, update wallet badges
+  document.querySelectorAll('.cabin-row').forEach(r => r.classList.remove('open'));
+  const econRow = document.getElementById('cabin-Economy');
+  if (econRow) econRow.classList.add('open');
+  selectedCabin = 'Economy'; selectedPrice = 500;
+  updateCabinWalletBadges();
   document.getElementById('panel-overlay').classList.add('open');
 }
 function closePanel() {

@@ -1879,15 +1879,6 @@ function openPanel(id) {
     <div class="panel-cell"><div class="pc-label">Duration</div><div class="pc-val">${durationBetween(f.depTime,f.arrTime)||'—'}</div></div>
   `;
 
-  const crewItems = [
-    {role:'Captain', val:f.captain||''},
-    {role:'First Officer', val:f.fo||''},
-    ...(f.cc||[]).map((n,i)=>({role:`Cabin Crew ${i+1}`, val:n})),
-  ];
-  document.getElementById('panel-crew').innerHTML = crewItems.map(c=>`
-    <div class="crew-item"><div class="crew-role">${c.role}</div><div class="crew-name ${c.val?'':'crew-empty'}">${c.val||'Unassigned'}</div></div>
-  `).join('');
-
   const canBook = bookable(f);
   const btn     = document.getElementById('panel-book-btn');
   btn.disabled  = !canBook;

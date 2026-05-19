@@ -532,92 +532,93 @@ body.authed .show-guest{display:none;}
 @keyframes modalIn{from{opacity:0;transform:scale(0.96) translateY(16px)}to{opacity:1;transform:none}}
 .panel-overlay{
   display:none;position:fixed;inset:0;z-index:300;
-  background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
+  background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);
   align-items:center;justify-content:center;padding:20px;
 }
 .panel-overlay.open{display:flex;}
 .side-panel{
-  width:100%;max-width:680px;max-height:90vh;
-  background:var(--surface);border:1px solid var(--border2);border-radius:14px;
+  width:100%;max-width:780px;max-height:92vh;
+  background:var(--surface);border:1px solid var(--border2);border-radius:16px;
   display:flex;flex-direction:column;z-index:301;overflow:hidden;
-  box-shadow:0 32px 80px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04);
+  box-shadow:0 40px 100px rgba(0,0,0,0.75),0 0 0 1px rgba(255,255,255,0.04);
   animation:modalIn 0.26s cubic-bezier(0.22,1,0.36,1);
 }
 .panel-head{
-  padding:22px 24px 18px;border-bottom:1px solid var(--border);
+  padding:24px 28px 20px;border-bottom:1px solid var(--border);
   display:flex;align-items:flex-start;justify-content:space-between;
   flex-shrink:0;
-  background:linear-gradient(135deg,#0d1120 0%,#111828 100%);
+  background:linear-gradient(135deg,#0a0f1e 0%,#0f1628 100%);
   position:relative;overflow:hidden;
 }
 .panel-head::before{
-  content:'✈';position:absolute;right:60px;top:50%;transform:translateY(-50%);
-  font-size:80px;opacity:0.04;pointer-events:none;line-height:1;
+  content:'✈';position:absolute;right:80px;top:50%;transform:translateY(-50%);
+  font-size:90px;opacity:0.035;pointer-events:none;line-height:1;
 }
-.panel-flight-tag{font-size:8px;letter-spacing:0.28em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:5px;font-family:var(--mono);}
-.panel-flight-num{font-family:var(--mono);font-size:28px;font-weight:600;color:var(--text);letter-spacing:0.01em;line-height:1;}
-.panel-route{font-size:13px;color:var(--text3);margin-top:5px;font-weight:500;}
+.panel-flight-tag{font-size:8px;letter-spacing:0.28em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:6px;font-family:var(--mono);}
+.panel-flight-num{font-family:var(--mono);font-size:32px;font-weight:600;color:var(--text);letter-spacing:0.01em;line-height:1;}
+.panel-route{font-size:14px;color:var(--text3);margin-top:6px;font-weight:500;}
 .panel-close{
   background:rgba(255,255,255,0.06);border:1px solid var(--border);
-  color:var(--text3);font-size:14px;cursor:pointer;
-  width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  color:var(--text3);font-size:15px;cursor:pointer;
+  width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;
   transition:all 0.12s;line-height:1;flex-shrink:0;
 }
 .panel-close:hover{color:var(--text);background:rgba(255,255,255,0.1);border-color:var(--border2);}
-.panel-body{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto 1fr;}
+.panel-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
 
 /* Panel sections */
-.panel-section{padding:18px 22px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
-.panel-section:nth-child(even){border-right:none;}
-.panel-section.full-width{grid-column:1/-1;border-right:none;}
+.panel-section{padding:20px 28px;border-bottom:1px solid var(--border);}
 .panel-section:last-child{border-bottom:none;}
-.ps-label{font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:12px;font-family:var(--mono);}
-.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
-.panel-cell{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:10px 12px;}
-.pc-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);font-weight:600;margin-bottom:3px;}
-.pc-val{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text);}
-.crew-list{display:flex;flex-direction:column;gap:5px;}
-.crew-item{display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);padding-bottom:8px;}
-.crew-item:last-child{border-bottom:none;padding-bottom:0;}
-.crew-role{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);font-weight:700;width:80px;flex-shrink:0;}
-.crew-name{font-family:var(--mono);font-size:11px;color:var(--text2);font-weight:400;}
-.crew-empty{color:var(--text4);font-style:italic;}
-.panel-notes{font-size:12px;color:var(--text3);line-height:1.7;min-height:32px;}
-.panel-status-row{display:flex;align-items:center;justify-content:space-between;}
+.ps-label{font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:14px;font-family:var(--mono);}
+.panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.panel-cell{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:11px 14px;}
+.pc-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);font-weight:600;margin-bottom:4px;}
+.pc-val{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);}
+.panel-notes{font-size:12.5px;color:var(--text3);line-height:1.75;}
 .panel-msg-id{font-family:var(--mono);font-size:9px;color:var(--text4);}
 
-/* Booking section in panel */
-.panel-book-section-wrap{padding:20px 22px 24px;}
-.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+/* Cabin cards */
+.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;}
 .cabin-opt{
-  border:1px solid var(--border);border-radius:8px;padding:14px 8px 11px;
-  cursor:pointer;text-align:center;transition:all 0.14s;background:var(--surface2);
+  border:1px solid var(--border);border-radius:10px;padding:0;
+  cursor:pointer;transition:all 0.16s;background:var(--surface2);overflow:hidden;
+  display:flex;flex-direction:column;
 }
-.cabin-opt:hover{border-color:var(--blue-border);}
-.cabin-opt.selected{border-color:var(--blue);background:var(--blue-dim);box-shadow:0 0 0 1px var(--blue-border);}
-.cabin-name{font-size:9.5px;font-weight:700;color:var(--text3);margin-bottom:5px;letter-spacing:0.04em;}
+.cabin-opt:hover{border-color:var(--blue-border);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.3);}
+.cabin-opt.selected{border-color:var(--blue);background:var(--blue-dim);box-shadow:0 0 0 1px var(--blue-border),0 4px 20px rgba(59,107,255,0.15);}
+.cabin-opt-header{padding:14px 14px 10px;border-bottom:1px solid var(--border);}
+.cabin-opt.selected .cabin-opt-header{border-bottom-color:rgba(59,107,255,0.2);}
+.cabin-icon{font-size:18px;margin-bottom:6px;}
+.cabin-name{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;}
 .cabin-opt.selected .cabin-name{color:var(--blue3);}
-.cabin-price{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);}
+.cabin-price{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--text);margin-top:4px;}
 .cabin-opt.selected .cabin-price{color:var(--blue3);}
-.wallet-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:14px;}
+.cabin-perks{padding:10px 14px 12px;display:flex;flex-direction:column;gap:5px;}
+.cabin-perk{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:5px;line-height:1.3;}
+.cabin-perk-dot{width:3px;height:3px;border-radius:50%;background:var(--text4);flex-shrink:0;}
+.cabin-opt.selected .cabin-perk{color:var(--text2);}
+.cabin-opt.selected .cabin-perk-dot{background:var(--blue3);}
+
+/* Wallet + book */
+.wallet-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:14px;}
 .wallet-row-label{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);}
-.wallet-row-val{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--green);}
+.wallet-row-val{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--green);}
 .wallet-row-val.low{color:var(--red);}
 .book-loading{text-align:center;padding:8px;font-size:11px;color:var(--text3);display:none;font-family:var(--mono);}
 .btn-book-lg{
   width:100%;background:var(--blue);color:#fff;border:none;
-  font-family:var(--font);font-size:13px;font-weight:700;
-  padding:13px;border-radius:7px;cursor:pointer;transition:all 0.14s;letter-spacing:0.02em;
+  font-family:var(--font);font-size:14px;font-weight:700;
+  padding:14px;border-radius:8px;cursor:pointer;transition:all 0.14s;letter-spacing:0.02em;
 }
-.btn-book-lg:hover{background:var(--blue2);box-shadow:0 0 28px var(--blue-glow);}
+.btn-book-lg:hover{background:var(--blue2);box-shadow:0 0 32px var(--blue-glow);}
 .btn-book-lg:disabled{background:var(--surface3);color:var(--text4);cursor:not-allowed;box-shadow:none;}
-.panel-book-note{font-size:10.5px;color:var(--text4);margin-top:9px;line-height:1.6;text-align:center;}
+.panel-book-note{font-size:10.5px;color:var(--text4);margin-top:10px;line-height:1.65;text-align:center;}
 .btn-login-prompt{
   width:100%;background:#5865F2;color:#fff;border:none;font-family:var(--font);
-  font-size:12px;font-weight:700;padding:12px;border-radius:6px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:all 0.14s;
+  font-size:13px;font-weight:700;padding:13px;border-radius:7px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.14s;
 }
-.btn-login-prompt:hover{background:#6875f5;box-shadow:0 0 18px rgba(88,101,242,0.4);}
+.btn-login-prompt:hover{background:#6875f5;box-shadow:0 0 20px rgba(88,101,242,0.4);}
 .wallet-info-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);}
 .wallet-info-val.low{color:var(--red);}
 
@@ -1001,36 +1002,37 @@ body.authed .show-guest{display:none;}
         <div class="panel-flight-num" id="panel-fnum">—</div>
         <div class="panel-route" id="panel-froute">—</div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
         <span id="panel-badge"></span>
         <button class="panel-close" onclick="closePanel()">✕</button>
       </div>
     </div>
     <div class="panel-body">
-      <!-- Col 1: Flight Info -->
+
+      <!-- Flight Info — 3-col grid -->
       <div class="panel-section">
         <div class="ps-label">Flight Info</div>
         <div class="panel-grid" id="panel-grid"></div>
       </div>
-      <!-- Col 2: Crew -->
-      <div class="panel-section">
-        <div class="ps-label">Crew</div>
-        <div class="crew-list" id="panel-crew"></div>
-      </div>
-      <!-- Col 1: Remarks + Status -->
-      <div class="panel-section">
-        <div class="ps-label">Remarks</div>
-        <div class="panel-notes" id="panel-notes">—</div>
-        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;">
+
+      <!-- Remarks + ID inline -->
+      <div class="panel-section" style="display:flex;align-items:flex-start;justify-content:space-between;gap:20px;">
+        <div style="flex:1;">
+          <div class="ps-label">Remarks</div>
+          <div class="panel-notes" id="panel-notes">—</div>
+        </div>
+        <div style="flex-shrink:0;text-align:right;">
+          <div class="ps-label">Flight ID</div>
           <span class="panel-msg-id" id="panel-msgid">—</span>
         </div>
       </div>
-      <!-- Col 2: Book a Seat -->
+
+      <!-- Book a Seat — full width -->
       <div class="panel-section" id="panel-book-section">
         <div class="ps-label">Book a Seat</div>
         <!-- Guest -->
         <div class="show-guest">
-          <p class="panel-book-note" style="margin-bottom:14px;color:var(--text3);">Login with Discord to book this flight. Your boarding pass will be sent to you as a DM.</p>
+          <p class="panel-book-note" style="margin-bottom:16px;color:var(--text3);text-align:left;">Login with Discord to book this flight. Your boarding pass will be sent to your DMs.</p>
           <button class="btn-login-prompt" onclick="openLoginModal()">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="white"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
             Login with Discord to Book
@@ -1040,16 +1042,43 @@ body.authed .show-guest{display:none;}
         <div class="show-authed" id="panel-authed-book">
           <div class="cabin-selector">
             <div class="cabin-opt selected" onclick="selectCabin(this,'Economy',500)">
-              <div class="cabin-name">Economy</div>
-              <div class="cabin-price">₹500</div>
+              <div class="cabin-opt-header">
+                <div class="cabin-icon">💺</div>
+                <div class="cabin-name">Economy</div>
+                <div class="cabin-price">₹500</div>
+              </div>
+              <div class="cabin-perks">
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Standard seat</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Snacks &amp; water</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>1 carry-on bag</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Basic boarding</div>
+              </div>
             </div>
             <div class="cabin-opt" onclick="selectCabin(this,'Business',1200)">
-              <div class="cabin-name">Business</div>
-              <div class="cabin-price">₹1,200</div>
+              <div class="cabin-opt-header">
+                <div class="cabin-icon">🥂</div>
+                <div class="cabin-name">Business</div>
+                <div class="cabin-price">₹1,200</div>
+              </div>
+              <div class="cabin-perks">
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Recliner seat</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Full meal + drinks</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>2 checked bags</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Priority boarding</div>
+              </div>
             </div>
             <div class="cabin-opt" onclick="selectCabin(this,'First',2500)">
-              <div class="cabin-name">First</div>
-              <div class="cabin-price">₹2,500</div>
+              <div class="cabin-opt-header">
+                <div class="cabin-icon">⭐</div>
+                <div class="cabin-name">First Class</div>
+                <div class="cabin-price">₹2,500</div>
+              </div>
+              <div class="cabin-perks">
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Lie-flat suite</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Fine dining + bar</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>Unlimited baggage</div>
+                <div class="cabin-perk"><span class="cabin-perk-dot"></span>VIP lounge access</div>
+              </div>
             </div>
           </div>
           <div class="wallet-row">
@@ -1061,6 +1090,7 @@ body.authed .show-guest{display:none;}
           <p class="panel-book-note" id="panel-book-note">Boarding pass sent to your Discord DM after booking.</p>
         </div>
       </div>
+
     </div>
   </div>
 </div>

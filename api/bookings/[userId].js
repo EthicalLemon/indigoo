@@ -1,12 +1,11 @@
-const { getSupabase, ok, err, preflight, getAllBookings, getAllFlights } = require('./_db');
+const { getSupabase, ok, err, preflight, getAllBookings, getAllFlights } = require('../_db');
 
-exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') return preflight();
-  if (event.httpMethod !== 'GET') return err('Method not allowed', 405);
+module.exports = async (req, res) => {
+  if (req.method === 'OPTIONS') return preflight(res);
+  if (req.method !== 'GET') return err(res, 'Method not allowed', 405);
 
-  // Path: /api/bookings/:userId
-  const userId = event.path.replace(/.*\/bookings\/?/, '').replace(/^\//, '');
-  if (!userId) return err('Missing userId', 400);
+  const { userId } = req.query;
+  if (!userId) return err(res, 'Missing userId', 400);
 
   try {
     const sb = getSupabase();
@@ -32,8 +31,8 @@ exports.handler = async (event) => {
       })
       .sort((a, b) => new Date(b.bookedAt) - new Date(a.bookedAt));
 
-    return ok({ bookings: mine, total: mine.length });
+    return ok(res, { bookings: mine, total: mine.length });
   } catch (e) {
-    return err('Failed to load bookings: ' + e.message, 500);
+    return err(res, 'Failed to load bookings: ' + e.message, 500);
   }
 };

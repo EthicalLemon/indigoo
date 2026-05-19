@@ -1,0 +1,10 @@
+{
+  "rewrites": [
+    { "source": "/api/auth",              "destination": "/api/auth" },
+    { "source": "/api/flights",           "destination": "/api/flights" },
+    { "source": "/api/book",              "destination": "/api/book" },
+    { "source": "/api/bookings/:userId",  "destination": "/api/bookings/[userId]" },
+    { "source": "/api/checkin",           "destination": "/api/checkin" },
+    { "source": "/api/wallet/:action",    "destination": "/api/wallet/[action]" }
+  ]
+}

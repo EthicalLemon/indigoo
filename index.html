@@ -1603,7 +1603,7 @@ body.authed .show-guest{display:none;}
 // API_BASE: URL of your api-server.js
 const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
                  ? 'http://localhost:3001'
-                 : '/api'; // Netlify Functions via redirect in netlify.toml
+                 : '/api'; // Vercel Serverless Functions (see vercel.json for rewrites)
 
 // DISCORD_CLIENT: your Discord Application ID (from Discord Developer Portal)
 const DISCORD_CLIENT = '1472625958769922170';

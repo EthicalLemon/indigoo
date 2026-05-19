@@ -1,6 +1,6 @@
 /**
- * Shared Supabase helpers — imported by every Netlify function.
- * Set these in Netlify → Site configuration → Environment variables:
+ * Shared Supabase helpers — imported by every Vercel API route.
+ * Set these in Vercel → Project Settings → Environment Variables:
  *   SUPABASE_URL
  *   SUPABASE_KEY
  *   CLIENT_ID
@@ -22,14 +22,17 @@ const CORS = {
   'Access-Control-Allow-Headers': 'Content-Type',
 };
 
-function ok(body, code = 200) {
-  return { statusCode: code, headers: { ...CORS, 'Content-Type': 'application/json' }, body: JSON.stringify(body) };
+function ok(res, body, code = 200) {
+  Object.entries({ ...CORS, 'Content-Type': 'application/json' }).forEach(([k, v]) => res.setHeader(k, v));
+  return res.status(code).json(body);
 }
-function err(msg, code = 400) {
-  return { statusCode: code, headers: { ...CORS, 'Content-Type': 'application/json' }, body: JSON.stringify({ error: msg }) };
+function err(res, msg, code = 400) {
+  Object.entries({ ...CORS, 'Content-Type': 'application/json' }).forEach(([k, v]) => res.setHeader(k, v));
+  return res.status(code).json({ error: msg });
 }
-function preflight() {
-  return { statusCode: 204, headers: CORS, body: '' };
+function preflight(res) {
+  Object.entries(CORS).forEach(([k, v]) => res.setHeader(k, v));
+  return res.status(204).end();
 }
 
 // ── DB helpers ────────────────────────────────────────────────────────────────

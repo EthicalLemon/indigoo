@@ -1,17 +1,18 @@
 const { getSupabase, ok, err, preflight, getAllFlights, getAllBookings, getOrCreateWallet, saveWallet, saveBooking, queueDM } = require('./_db');
 
-exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') return preflight();
-  if (event.httpMethod !== 'POST') return err('Method not allowed', 405);
+module.exports = async (req, res) => {
+  if (req.method === 'OPTIONS') return preflight(res);
+  if (req.method !== 'POST') return err(res, 'Method not allowed', 405);
 
   let body;
-  try { body = JSON.parse(event.body || '{}'); } catch { return err('Invalid JSON'); }
+  try { body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body; }
+  catch { return err(res, 'Invalid JSON'); }
 
   const { userId, messageId, cabinClass, price, name, seatPref } = body;
-  if (!userId || !messageId || !name || price == null) return err('Missing required fields');
+  if (!userId || !messageId || !name || price == null) return err(res, 'Missing required fields');
 
   const priceParsed = Number(price);
-  if (isNaN(priceParsed) || priceParsed <= 0) return err('Invalid price');
+  if (isNaN(priceParsed) || priceParsed <= 0) return err(res, 'Invalid price');
 
   try {
     const sb = getSupabase();
@@ -19,20 +20,20 @@ exports.handler = async (event) => {
     // Find flight
     const flights = await getAllFlights(sb);
     const flight  = flights.find(f => f.messageId === messageId);
-    if (!flight) return err('Flight not found', 404);
+    if (!flight) return err(res, 'Flight not found', 404);
     if (['Cancelled','Arrived','Departed'].includes(flight.status))
-      return err(`Flight cannot be booked (status: ${flight.status})`);
+      return err(res, `Flight cannot be booked (status: ${flight.status})`);
 
     // Check wallet
     const wallet = await getOrCreateWallet(sb, userId);
     const currentBalance = wallet.balance ?? 0;
     if (currentBalance < priceParsed)
-      return err(`Insufficient balance — need ₹${priceParsed.toLocaleString()}, you have ₹${currentBalance.toLocaleString()}`, 400);
+      return err(res, `Insufficient balance — need ₹${priceParsed.toLocaleString()}, you have ₹${currentBalance.toLocaleString()}`, 400);
 
     // Check duplicate
     const allBookings = await getAllBookings(sb);
     const duplicate   = allBookings.some(b => b.userId === userId && b.messageId === messageId && b.checkedIn !== false);
-    if (duplicate) return err('You already have an active booking on this flight');
+    if (duplicate) return err(res, 'You already have an active booking on this flight');
 
     // Deduct wallet
     const newBalance = currentBalance - priceParsed;
@@ -58,7 +59,7 @@ exports.handler = async (event) => {
     };
     await saveBooking(sb, booking);
 
-    // Queue DM (bot drains this and sends boarding pass image)
+    // Queue DM
     const dmText =
       `🎫 **Booking Confirmed!**\n` +
       `> **Flight:** ${flight.flightNum}  ·  ${flight.depAirport} → ${flight.arrAirport}\n` +
@@ -68,8 +69,8 @@ exports.handler = async (event) => {
       `Use \`/cancelbooking ${bookingRef}\` in Discord to cancel (50% refund).`;
     await queueDM(sb, userId, dmText);
 
-    return ok({ success: true, bookingRef, newBalance });
+    return ok(res, { success: true, bookingRef, newBalance });
   } catch (e) {
-    return err('Booking failed: ' + e.message, 500);
+    return err(res, 'Booking failed: ' + e.message, 500);
   }
 };

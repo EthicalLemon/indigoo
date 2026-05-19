@@ -1,20 +1,21 @@
 const { getSupabase, ok, err, preflight, getOrCreateWallet } = require('./_db');
 
-exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') return preflight();
-  if (event.httpMethod !== 'POST') return err('Method not allowed', 405);
+module.exports = async (req, res) => {
+  if (req.method === 'OPTIONS') return preflight(res);
+  if (req.method !== 'POST') return err(res, 'Method not allowed', 405);
 
   const CLIENT_ID     = process.env.CLIENT_ID;
   const CLIENT_SECRET = process.env.CLIENT_SECRET;
 
   if (!CLIENT_ID || !CLIENT_SECRET)
-    return err('SERVER CONFIG: CLIENT_ID and CLIENT_SECRET must be set in Netlify environment variables', 500);
+    return err(res, 'SERVER CONFIG: CLIENT_ID and CLIENT_SECRET must be set in Vercel environment variables', 500);
 
   let body;
-  try { body = JSON.parse(event.body || '{}'); } catch { return err('Invalid JSON'); }
+  try { body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body; }
+  catch { return err(res, 'Invalid JSON'); }
 
   const { code, redirectUri } = body;
-  if (!code || !redirectUri) return err('Missing code or redirectUri');
+  if (!code || !redirectUri) return err(res, 'Missing code or redirectUri');
 
   try {
     // Exchange code for token
@@ -30,14 +31,14 @@ exports.handler = async (event) => {
       }),
     });
     const tokenData = await tokenRes.json();
-    if (!tokenRes.ok) return err(tokenData.error_description || 'OAuth token exchange failed');
+    if (!tokenRes.ok) return err(res, tokenData.error_description || 'OAuth token exchange failed');
 
     // Get Discord user
     const userRes = await fetch('https://discord.com/api/users/@me', {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     });
     const user = await userRes.json();
-    if (!userRes.ok) return err('Failed to fetch Discord user');
+    if (!userRes.ok) return err(res, 'Failed to fetch Discord user');
 
     // Create wallet if new user
     const sb = getSupabase();
@@ -45,7 +46,7 @@ exports.handler = async (event) => {
 
     console.log(`[Auth] Login: ${user.username} (${user.id})`);
 
-    return ok({
+    return ok(res, {
       user: {
         id:         user.id,
         username:   user.username,
@@ -55,6 +56,6 @@ exports.handler = async (event) => {
       accessToken: tokenData.access_token,
     });
   } catch (e) {
-    return err('Login failed: ' + e.message, 500);
+    return err(res, 'Login failed: ' + e.message, 500);
   }
 };

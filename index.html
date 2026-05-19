@@ -528,34 +528,48 @@ body.authed .show-guest{display:none;}
 .loading-state{display:flex;flex-direction:column;align-items:center;gap:8px;padding:60px 0;}
 .loading-spin{font-size:22px;animation:spin 1s linear infinite;display:inline-block;color:var(--blue3);}
 
-/* ══════ SIDE PANEL ══════ */
-.panel-overlay{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);}
-.panel-overlay.open{display:block;}
+/* ══════ FLIGHT DETAIL MODAL ══════ */
+@keyframes modalIn{from{opacity:0;transform:scale(0.96) translateY(16px)}to{opacity:1;transform:none}}
+.panel-overlay{
+  display:none;position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.panel-overlay.open{display:flex;}
 .side-panel{
-  position:fixed;top:0;right:0;bottom:0;width:420px;
-  background:var(--surface);border-left:1px solid var(--border);
-  display:flex;flex-direction:column;z-index:301;
-  animation:slideIn 0.24s cubic-bezier(0.22,1,0.36,1);
+  width:100%;max-width:680px;max-height:90vh;
+  background:var(--surface);border:1px solid var(--border2);border-radius:14px;
+  display:flex;flex-direction:column;z-index:301;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,0.7),0 0 0 1px rgba(255,255,255,0.04);
+  animation:modalIn 0.26s cubic-bezier(0.22,1,0.36,1);
 }
 .panel-head{
-  padding:20px 20px 16px;border-bottom:1px solid var(--border);
+  padding:22px 24px 18px;border-bottom:1px solid var(--border);
   display:flex;align-items:flex-start;justify-content:space-between;
-  flex-shrink:0;background:var(--surface2);
+  flex-shrink:0;
+  background:linear-gradient(135deg,#0d1120 0%,#111828 100%);
+  position:relative;overflow:hidden;
+}
+.panel-head::before{
+  content:'✈';position:absolute;right:60px;top:50%;transform:translateY(-50%);
+  font-size:80px;opacity:0.04;pointer-events:none;line-height:1;
 }
 .panel-flight-tag{font-size:8px;letter-spacing:0.28em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:5px;font-family:var(--mono);}
-.panel-flight-num{font-family:var(--mono);font-size:22px;font-weight:600;color:var(--text);letter-spacing:0.01em;line-height:1;}
-.panel-route{font-size:12px;color:var(--text3);margin-top:4px;font-weight:500;}
+.panel-flight-num{font-family:var(--mono);font-size:28px;font-weight:600;color:var(--text);letter-spacing:0.01em;line-height:1;}
+.panel-route{font-size:13px;color:var(--text3);margin-top:5px;font-weight:500;}
 .panel-close{
-  background:var(--surface3);border:1px solid var(--border);
-  color:var(--text3);font-size:12px;cursor:pointer;
-  width:26px;height:26px;border-radius:4px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.06);border:1px solid var(--border);
+  color:var(--text3);font-size:14px;cursor:pointer;
+  width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;
   transition:all 0.12s;line-height:1;flex-shrink:0;
 }
-.panel-close:hover{color:var(--text);border-color:var(--border2);}
-.panel-body{flex:1;overflow-y:auto;padding:0;display:flex;flex-direction:column;}
+.panel-close:hover{color:var(--text);background:rgba(255,255,255,0.1);border-color:var(--border2);}
+.panel-body{flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto 1fr;}
 
 /* Panel sections */
-.panel-section{padding:16px 20px;border-bottom:1px solid var(--border);}
+.panel-section{padding:18px 22px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);}
+.panel-section:nth-child(even){border-right:none;}
+.panel-section.full-width{grid-column:1/-1;border-right:none;}
 .panel-section:last-child{border-bottom:none;}
 .ps-label{font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:12px;font-family:var(--mono);}
 .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
@@ -573,31 +587,31 @@ body.authed .show-guest{display:none;}
 .panel-msg-id{font-family:var(--mono);font-size:9px;color:var(--text4);}
 
 /* Booking section in panel */
-.panel-book-section-wrap{padding:16px 20px 24px;}
-.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
+.panel-book-section-wrap{padding:20px 22px 24px;}
+.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
 .cabin-opt{
-  border:1px solid var(--border);border-radius:6px;padding:11px 8px 9px;
+  border:1px solid var(--border);border-radius:8px;padding:14px 8px 11px;
   cursor:pointer;text-align:center;transition:all 0.14s;background:var(--surface2);
 }
 .cabin-opt:hover{border-color:var(--blue-border);}
-.cabin-opt.selected{border-color:var(--blue);background:var(--blue-dim);}
-.cabin-name{font-size:9.5px;font-weight:700;color:var(--text3);margin-bottom:4px;letter-spacing:0.04em;}
+.cabin-opt.selected{border-color:var(--blue);background:var(--blue-dim);box-shadow:0 0 0 1px var(--blue-border);}
+.cabin-name{font-size:9.5px;font-weight:700;color:var(--text3);margin-bottom:5px;letter-spacing:0.04em;}
 .cabin-opt.selected .cabin-name{color:var(--blue3);}
-.cabin-price{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text);}
+.cabin-price{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--text);}
 .cabin-opt.selected .cabin-price{color:var(--blue3);}
-.wallet-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:12px;}
+.wallet-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:14px;}
 .wallet-row-label{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);}
-.wallet-row-val{font-family:var(--mono);font-size:14px;font-weight:600;color:var(--green);}
+.wallet-row-val{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--green);}
 .wallet-row-val.low{color:var(--red);}
 .book-loading{text-align:center;padding:8px;font-size:11px;color:var(--text3);display:none;font-family:var(--mono);}
 .btn-book-lg{
   width:100%;background:var(--blue);color:#fff;border:none;
-  font-family:var(--font);font-size:12px;font-weight:700;
-  padding:12px;border-radius:6px;cursor:pointer;transition:all 0.14s;
+  font-family:var(--font);font-size:13px;font-weight:700;
+  padding:13px;border-radius:7px;cursor:pointer;transition:all 0.14s;letter-spacing:0.02em;
 }
-.btn-book-lg:hover{background:var(--blue2);box-shadow:0 0 24px var(--blue-glow);}
+.btn-book-lg:hover{background:var(--blue2);box-shadow:0 0 28px var(--blue-glow);}
 .btn-book-lg:disabled{background:var(--surface3);color:var(--text4);cursor:not-allowed;box-shadow:none;}
-.panel-book-note{font-size:10.5px;color:var(--text4);margin-top:8px;line-height:1.6;text-align:center;}
+.panel-book-note{font-size:10.5px;color:var(--text4);margin-top:9px;line-height:1.6;text-align:center;}
 .btn-login-prompt{
   width:100%;background:#5865F2;color:#fff;border:none;font-family:var(--font);
   font-size:12px;font-weight:700;padding:12px;border-radius:6px;
@@ -978,7 +992,7 @@ body.authed .show-guest{display:none;}
   </div>
 </div>
 
-<!-- ══ FLIGHT DETAIL PANEL ══ -->
+<!-- ══ FLIGHT DETAIL MODAL ══ -->
 <div class="panel-overlay" id="panel-overlay" onclick="closePanelOutside(event)">
   <div class="side-panel">
     <div class="panel-head">
@@ -987,16 +1001,31 @@ body.authed .show-guest{display:none;}
         <div class="panel-flight-num" id="panel-fnum">—</div>
         <div class="panel-route" id="panel-froute">—</div>
       </div>
-      <button class="panel-close" onclick="closePanel()">✕</button>
+      <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+        <span id="panel-badge"></span>
+        <button class="panel-close" onclick="closePanel()">✕</button>
+      </div>
     </div>
     <div class="panel-body">
-      <div class="panel-section"><div class="ps-label">Flight Info</div><div class="panel-grid" id="panel-grid"></div></div>
-      <div class="panel-section"><div class="ps-label">Crew</div><div class="crew-list" id="panel-crew"></div></div>
-      <div class="panel-section"><div class="ps-label">Remarks</div><div class="panel-notes" id="panel-notes">—</div></div>
+      <!-- Col 1: Flight Info -->
       <div class="panel-section">
-        <div class="ps-label">Status</div>
-        <div class="panel-status-row"><span id="panel-badge"></span><span class="panel-msg-id" id="panel-msgid">—</span></div>
+        <div class="ps-label">Flight Info</div>
+        <div class="panel-grid" id="panel-grid"></div>
       </div>
+      <!-- Col 2: Crew -->
+      <div class="panel-section">
+        <div class="ps-label">Crew</div>
+        <div class="crew-list" id="panel-crew"></div>
+      </div>
+      <!-- Col 1: Remarks + Status -->
+      <div class="panel-section">
+        <div class="ps-label">Remarks</div>
+        <div class="panel-notes" id="panel-notes">—</div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:flex-end;">
+          <span class="panel-msg-id" id="panel-msgid">—</span>
+        </div>
+      </div>
+      <!-- Col 2: Book a Seat -->
       <div class="panel-section" id="panel-book-section">
         <div class="ps-label">Book a Seat</div>
         <!-- Guest -->

@@ -290,6 +290,38 @@ body.authed .show-guest{display:none;}
 }
 .wm-close-btn:hover{border-color:var(--border2);color:var(--text);}
 
+/* Airport autocomplete dropdown */
+.apt-dropdown{
+  position:absolute;top:calc(100% + 4px);left:0;right:0;z-index:999;
+  background:var(--surface2);border:1px solid var(--border2);
+  border-radius:8px;box-shadow:var(--shadow-lg);
+  overflow:hidden;display:none;
+  animation:dropIn 0.14s cubic-bezier(0.22,1,0.36,1) both;
+  max-height:220px;overflow-y:auto;
+}
+.apt-dropdown.open{display:block;}
+.apt-dd-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;cursor:pointer;transition:background 0.1s;
+  border-bottom:1px solid var(--border);
+}
+.apt-dd-item:last-child{border-bottom:none;}
+.apt-dd-item:hover,.apt-dd-item.focused{background:var(--surface3);}
+.apt-dd-code{
+  font-family:var(--mono);font-size:11px;font-weight:700;
+  color:var(--blue3);background:var(--blue-dim);
+  border:1px solid var(--blue-border);padding:2px 6px;border-radius:4px;
+  flex-shrink:0;min-width:38px;text-align:center;
+}
+.apt-dd-info{flex:1;min-width:0;}
+.apt-dd-name{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.apt-dd-city{font-size:10px;color:var(--text4);margin-top:1px;}
+.apt-dd-live{font-size:8px;font-weight:700;color:var(--green);background:var(--green-bg);border:1px solid var(--green-border);padding:1px 5px;border-radius:3px;letter-spacing:0.06em;flex-shrink:0;}
+.apt-dd-empty{padding:12px;font-size:11px;color:var(--text4);text-align:center;}
+
+/* wider sf-input for search card */
+.sf.wide .sf-input{width:180px;}
+
 /* ══════ HERO ══════ */
 .hero{
   background:var(--bg2);
@@ -532,75 +564,120 @@ body.authed .show-guest{display:none;}
 @keyframes modalIn{from{opacity:0;transform:scale(0.96) translateY(16px)}to{opacity:1;transform:none}}
 .panel-overlay{
   display:none;position:fixed;inset:0;z-index:300;
-  background:rgba(0,0,0,0.8);backdrop-filter:blur(10px);
+  background:rgba(0,0,0,0.85);backdrop-filter:blur(14px);
   align-items:center;justify-content:center;padding:20px;
 }
 .panel-overlay.open{display:flex;}
 .side-panel{
-  width:100%;max-width:780px;max-height:92vh;
-  background:var(--surface);border:1px solid var(--border2);border-radius:16px;
+  width:100%;max-width:760px;max-height:92vh;
+  background:var(--surface);border:1px solid rgba(255,255,255,0.08);border-radius:18px;
   display:flex;flex-direction:column;z-index:301;overflow:hidden;
-  box-shadow:0 40px 100px rgba(0,0,0,0.75),0 0 0 1px rgba(255,255,255,0.04);
-  animation:modalIn 0.26s cubic-bezier(0.22,1,0.36,1);
+  box-shadow:0 40px 100px rgba(0,0,0,0.8),0 0 0 1px rgba(255,255,255,0.05);
+  animation:modalIn 0.28s cubic-bezier(0.22,1,0.36,1);
 }
 .panel-head{
-  padding:24px 28px 20px;border-bottom:1px solid var(--border);
+  padding:26px 28px 22px;border-bottom:1px solid var(--border);
   display:flex;align-items:flex-start;justify-content:space-between;
   flex-shrink:0;
-  background:linear-gradient(135deg,#0a0f1e 0%,#0f1628 100%);
+  background:linear-gradient(140deg,#080d1f 0%,#0c1226 50%,#0f1830 100%);
   position:relative;overflow:hidden;
 }
 .panel-head::before{
-  content:'✈';position:absolute;right:80px;top:50%;transform:translateY(-50%);
-  font-size:90px;opacity:0.035;pointer-events:none;line-height:1;
+  content:'✈';position:absolute;right:70px;top:50%;transform:translateY(-50%);
+  font-size:100px;opacity:0.04;pointer-events:none;line-height:1;
+  filter:blur(0px);
 }
-.panel-flight-tag{font-size:8px;letter-spacing:0.28em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:6px;font-family:var(--mono);}
-.panel-flight-num{font-family:var(--mono);font-size:32px;font-weight:600;color:var(--text);letter-spacing:0.01em;line-height:1;}
-.panel-route{font-size:14px;color:var(--text3);margin-top:6px;font-weight:500;}
+.panel-head::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 100% at 90% 50%,rgba(59,107,255,0.08) 0%,transparent 70%);
+}
+.panel-flight-tag{font-size:8px;letter-spacing:0.28em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:8px;font-family:var(--mono);}
+.panel-flight-num{font-family:var(--mono);font-size:34px;font-weight:600;color:var(--text);letter-spacing:0.01em;line-height:1;}
+.panel-route{font-size:14px;color:var(--text3);margin-top:7px;font-weight:500;}
 .panel-close{
-  background:rgba(255,255,255,0.06);border:1px solid var(--border);
-  color:var(--text3);font-size:15px;cursor:pointer;
-  width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;
-  transition:all 0.12s;line-height:1;flex-shrink:0;
+  background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);
+  color:var(--text3);font-size:14px;cursor:pointer;
+  width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;line-height:1;flex-shrink:0;position:relative;z-index:1;
 }
-.panel-close:hover{color:var(--text);background:rgba(255,255,255,0.1);border-color:var(--border2);}
+.panel-close:hover{color:var(--text);background:rgba(255,255,255,0.14);border-color:rgba(255,255,255,0.2);}
 .panel-body{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
 
 /* Panel sections */
-.panel-section{padding:20px 28px;border-bottom:1px solid var(--border);}
+.panel-section{padding:22px 28px;border-bottom:1px solid var(--border);}
 .panel-section:last-child{border-bottom:none;}
-.ps-label{font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:14px;font-family:var(--mono);}
+.ps-label{font-size:8px;letter-spacing:0.24em;text-transform:uppercase;color:var(--text4);font-weight:700;margin-bottom:16px;font-family:var(--mono);display:flex;align-items:center;gap:8px;}
+.ps-label::after{content:'';flex:1;height:1px;background:var(--border);}
 .panel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-.panel-cell{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:11px 14px;}
-.pc-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);font-weight:600;margin-bottom:4px;}
+.panel-cell{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;transition:border-color 0.15s;}
+.panel-cell:hover{border-color:var(--border2);}
+.pc-label{font-size:8px;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);font-weight:600;margin-bottom:5px;}
 .pc-val{font-family:var(--mono);font-size:13px;font-weight:500;color:var(--text);}
 .panel-notes{font-size:12.5px;color:var(--text3);line-height:1.75;}
 .panel-msg-id{font-family:var(--mono);font-size:9px;color:var(--text4);}
 
-/* Cabin cards */
-.cabin-selector{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px;}
-.cabin-opt{
-  border:1px solid var(--border);border-radius:10px;padding:0;
-  cursor:pointer;transition:all 0.16s;background:var(--surface2);overflow:hidden;
-  display:flex;flex-direction:column;
+/* Cabin cards — card-nav style */
+.cabin-selector{
+  display:flex;gap:10px;margin-bottom:18px;
+  overflow-x:auto;padding-bottom:4px;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
 }
-.cabin-opt:hover{border-color:var(--blue-border);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,0,0,0.3);}
-.cabin-opt.selected{border-color:var(--blue);background:var(--blue-dim);box-shadow:0 0 0 1px var(--blue-border),0 4px 20px rgba(59,107,255,0.15);}
-.cabin-opt-header{padding:14px 14px 10px;border-bottom:1px solid var(--border);}
+.cabin-selector::-webkit-scrollbar{height:3px;}
+.cabin-selector::-webkit-scrollbar-track{background:transparent;}
+.cabin-selector::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:2px;}
+
+.cabin-opt{
+  border:1px solid var(--border);border-radius:12px;padding:0;
+  cursor:pointer;transition:border-color 0.18s,transform 0.18s,box-shadow 0.18s,background 0.18s;
+  background:var(--surface2);overflow:hidden;
+  display:flex;flex-direction:column;
+  flex:0 0 calc(33.33% - 7px);min-width:140px;
+  scroll-snap-align:start;
+  position:relative;
+}
+.cabin-opt::after{
+  content:'';position:absolute;inset:0;border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,255,255,0.025) 0%,transparent 60%);
+  pointer-events:none;
+}
+.cabin-opt:hover{border-color:var(--blue-border);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4),0 0 0 1px var(--blue-border);}
+.cabin-opt.selected{
+  border-color:var(--blue);background:linear-gradient(160deg,rgba(59,107,255,0.14) 0%,rgba(59,107,255,0.05) 100%);
+  box-shadow:0 0 0 1px var(--blue-border),0 8px 28px rgba(59,107,255,0.18);
+  transform:translateY(-2px);
+}
+.cabin-opt-header{padding:16px 16px 12px;border-bottom:1px solid var(--border);}
 .cabin-opt.selected .cabin-opt-header{border-bottom-color:rgba(59,107,255,0.2);}
-.cabin-icon{font-size:18px;margin-bottom:6px;}
-.cabin-name{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;}
+.cabin-icon{font-size:20px;margin-bottom:8px;}
+.cabin-name{font-size:9px;font-weight:800;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;}
 .cabin-opt.selected .cabin-name{color:var(--blue3);}
-.cabin-price{font-family:var(--mono);font-size:17px;font-weight:600;color:var(--text);margin-top:4px;}
+.cabin-price{font-family:var(--mono);font-size:18px;font-weight:600;color:var(--text);margin-top:5px;letter-spacing:-0.02em;}
 .cabin-opt.selected .cabin-price{color:var(--blue3);}
-.cabin-perks{padding:10px 14px 12px;display:flex;flex-direction:column;gap:5px;}
-.cabin-perk{font-size:10px;color:var(--text3);display:flex;align-items:center;gap:5px;line-height:1.3;}
+.cabin-perks{padding:12px 16px 14px;display:flex;flex-direction:column;gap:6px;}
+.cabin-perk{font-size:10.5px;color:var(--text3);display:flex;align-items:center;gap:6px;line-height:1.35;}
 .cabin-perk-dot{width:3px;height:3px;border-radius:50%;background:var(--text4);flex-shrink:0;}
 .cabin-opt.selected .cabin-perk{color:var(--text2);}
 .cabin-opt.selected .cabin-perk-dot{background:var(--blue3);}
 
+/* Selected tick indicator */
+.cabin-opt.selected .cabin-opt-header::after{
+  content:'✓';position:absolute;top:12px;right:14px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--blue);color:#fff;
+  font-size:9px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;
+  line-height:18px;text-align:center;
+  box-shadow:0 2px 8px rgba(59,107,255,0.4);
+}
+.cabin-opt.selected{position:relative;}
+
 /* Wallet + book */
-.wallet-row{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);margin-bottom:14px;}
+.wallet-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-radius:10px;margin-bottom:14px;
+  background:var(--surface2);border:1px solid var(--border);
+}
 .wallet-row-label{font-size:9px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--text4);}
 .wallet-row-val{font-family:var(--mono);font-size:16px;font-weight:600;color:var(--green);}
 .wallet-row-val.low{color:var(--red);}
@@ -608,21 +685,35 @@ body.authed .show-guest{display:none;}
 .btn-book-lg{
   width:100%;background:var(--blue);color:#fff;border:none;
   font-family:var(--font);font-size:14px;font-weight:700;
-  padding:14px;border-radius:8px;cursor:pointer;transition:all 0.14s;letter-spacing:0.02em;
+  padding:15px;border-radius:10px;cursor:pointer;transition:all 0.18s;letter-spacing:0.02em;
+  position:relative;overflow:hidden;
 }
-.btn-book-lg:hover{background:var(--blue2);box-shadow:0 0 32px var(--blue-glow);}
-.btn-book-lg:disabled{background:var(--surface3);color:var(--text4);cursor:not-allowed;box-shadow:none;}
+.btn-book-lg::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.1) 0%,transparent 60%);
+  pointer-events:none;
+}
+.btn-book-lg:hover{background:var(--blue2);box-shadow:0 4px 32px var(--blue-glow),0 0 0 1px rgba(59,107,255,0.4);transform:translateY(-1px);}
+.btn-book-lg:active{transform:translateY(0);}
+.btn-book-lg:disabled{background:var(--surface3);color:var(--text4);cursor:not-allowed;box-shadow:none;transform:none;}
 .panel-book-note{font-size:10.5px;color:var(--text4);margin-top:10px;line-height:1.65;text-align:center;}
 .btn-login-prompt{
   width:100%;background:#5865F2;color:#fff;border:none;font-family:var(--font);
-  font-size:13px;font-weight:700;padding:13px;border-radius:7px;
-  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.14s;
+  font-size:13px;font-weight:700;padding:14px;border-radius:10px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.16s;
 }
-.btn-login-prompt:hover{background:#6875f5;box-shadow:0 0 20px rgba(88,101,242,0.4);}
+.btn-login-prompt:hover{background:#6875f5;box-shadow:0 4px 24px rgba(88,101,242,0.4);transform:translateY(-1px);}
 .wallet-info-val{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);}
 .wallet-info-val.low{color:var(--red);}
 
-/* ══════ MY BOOKINGS ══════ */
+/* Boarding pass info note in panel */
+.panel-discord-note{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:8px;margin-bottom:14px;
+  background:rgba(88,101,242,0.08);border:1px solid rgba(88,101,242,0.18);
+  font-size:11px;color:rgba(160,170,255,0.8);line-height:1.5;
+}
+.panel-discord-note .disc-icon{font-size:14px;flex-shrink:0;opacity:0.8;}
 .bookings-list{display:flex;flex-direction:column;gap:7px;max-width:640px;width:100%;}
 .booking-card{
   background:var(--surface);border:1px solid var(--border);border-radius:7px;
@@ -891,10 +982,17 @@ body.authed .show-guest{display:none;}
     <p class="hero-sub">Browse live flights, check real-time status, and reserve your seat instantly.</p>
     <div class="search-card">
       <div class="search-row">
-        <div class="sf wide"><div class="sf-label">From</div><input class="sf-input" id="s-from" placeholder="DEL" maxlength="3"/></div>
+        <div class="sf wide" style="position:relative;">
+          <div class="sf-label">From</div>
+          <input class="sf-input" id="s-from" placeholder="City, airport or ICAO…" autocomplete="off" oninput="airportSuggest('s-from','s-from-dd')" onfocus="airportSuggest('s-from','s-from-dd')" onblur="setTimeout(()=>closeDd('s-from-dd'),180)"/>
+          <div class="apt-dropdown" id="s-from-dd"></div>
+        </div>
         <button class="sf-swap" onclick="swapAirports()">⇄</button>
-        <div class="sf wide"><div class="sf-label">To</div><input class="sf-input" id="s-to" placeholder="BOM" maxlength="3"/></div>
-        <div class="sf narrow"><div class="sf-label">Date</div><input class="sf-input" id="s-date" placeholder="Any"/></div>
+        <div class="sf wide" style="position:relative;">
+          <div class="sf-label">To</div>
+          <input class="sf-input" id="s-to" placeholder="City, airport or ICAO…" autocomplete="off" oninput="airportSuggest('s-to','s-to-dd')" onfocus="airportSuggest('s-to','s-to-dd')" onblur="setTimeout(()=>closeDd('s-to-dd'),180)"/>
+          <div class="apt-dropdown" id="s-to-dd"></div>
+        </div>
         <button class="btn-search" onclick="doSearch()">Search Flights</button>
       </div>
     </div>
@@ -1040,6 +1138,10 @@ body.authed .show-guest{display:none;}
         </div>
         <!-- Authed -->
         <div class="show-authed" id="panel-authed-book">
+          <div class="panel-discord-note">
+            <span class="disc-icon">💬</span>
+            Your boarding pass will be sent to your Discord DM immediately after booking.
+          </div>
           <div class="cabin-selector">
             <div class="cabin-opt selected" onclick="selectCabin(this,'Economy',500)">
               <div class="cabin-opt-header">
@@ -1082,7 +1184,10 @@ body.authed .show-guest{display:none;}
             </div>
           </div>
           <div class="wallet-row">
-            <span class="wallet-row-label">Your Wallet</span>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <span class="wallet-row-label">Your Wallet</span>
+              <span style="font-size:10px;color:var(--text4);">Balance after booking</span>
+            </div>
             <span class="wallet-row-val" id="panel-wallet-val">₹—</span>
           </div>
           <div class="book-loading" id="book-loading">Processing booking…</div>
@@ -1294,13 +1399,161 @@ let selectedCabin   = 'Economy';
 let selectedPrice   = 500;
 let dropdownOpen    = false;
 
-const CITIES = {
-  DEL:'Delhi',BOM:'Mumbai',HYD:'Hyderabad',MAA:'Chennai',CCU:'Kolkata',
-  BLR:'Bengaluru',GOI:'Goa',AMD:'Ahmedabad',PNQ:'Pune',COK:'Kochi',
-  JAI:'Jaipur',LKO:'Lucknow',ATQ:'Amritsar',IXC:'Chandigarh',PAT:'Patna',
-  BBI:'Bhubaneswar',NAG:'Nagpur',SXR:'Srinagar',GAU:'Guwahati',
+// ── Airport Database ──────────────────────────────
+// Format: ICAO: [full name, city, country]
+const AIRPORT_DB = {
+  // India
+  DEL:['Indira Gandhi International Airport','New Delhi','India'],
+  BOM:['Chhatrapati Shivaji Maharaj International Airport','Mumbai','India'],
+  HYD:['Rajiv Gandhi International Airport','Hyderabad','India'],
+  MAA:['Chennai International Airport','Chennai','India'],
+  CCU:['Netaji Subhas Chandra Bose International Airport','Kolkata','India'],
+  BLR:['Kempegowda International Airport','Bengaluru','India'],
+  GOI:['Goa International Airport','Goa','India'],
+  AMD:['Sardar Vallabhbhai Patel International Airport','Ahmedabad','India'],
+  PNQ:['Pune Airport','Pune','India'],
+  COK:['Cochin International Airport','Kochi','India'],
+  JAI:['Jaipur International Airport','Jaipur','India'],
+  LKO:['Chaudhary Charan Singh International Airport','Lucknow','India'],
+  ATQ:['Sri Guru Ram Dass Jee International Airport','Amritsar','India'],
+  IXC:['Chandigarh Airport','Chandigarh','India'],
+  PAT:['Jay Prakash Narayan Airport','Patna','India'],
+  BBI:['Biju Patnaik International Airport','Bhubaneswar','India'],
+  NAG:['Dr. Babasaheb Ambedkar International Airport','Nagpur','India'],
+  SXR:['Sheikh ul-Alam International Airport','Srinagar','India'],
+  GAU:['Lokpriya Gopinath Bordoloi International Airport','Guwahati','India'],
+  IXB:['Bagdogra Airport','Siliguri','India'],
+  VTZ:['Visakhapatnam Airport','Visakhapatnam','India'],
+  TRV:['Trivandrum International Airport','Thiruvananthapuram','India'],
+  IXM:['Madurai Airport','Madurai','India'],
+  VGA:['Vijayawada Airport','Vijayawada','India'],
+  RPR:['Swami Vivekananda Airport','Raipur','India'],
+  BHO:['Raja Bhoj Airport','Bhopal','India'],
+  IDR:['Devi Ahilyabai Holkar Airport','Indore','India'],
+  UDR:['Maharana Pratap Airport','Udaipur','India'],
+  JDH:['Jodhpur Airport','Jodhpur','India'],
+  IXJ:['Jammu Airport','Jammu','India'],
+  AGR:['Agra Airport','Agra','India'],
+  VNS:['Lal Bahadur Shastri Airport','Varanasi','India'],
+  GWL:['Gwalior Airport','Gwalior','India'],
+  // International
+  DXB:['Dubai International Airport','Dubai','UAE'],
+  AUH:['Abu Dhabi International Airport','Abu Dhabi','UAE'],
+  SIN:['Singapore Changi Airport','Singapore','Singapore'],
+  LHR:['Heathrow Airport','London','United Kingdom'],
+  JFK:['John F. Kennedy International Airport','New York','USA'],
+  LAX:['Los Angeles International Airport','Los Angeles','USA'],
+  CDG:['Charles de Gaulle Airport','Paris','France'],
+  FRA:['Frankfurt Airport','Frankfurt','Germany'],
+  HKG:['Hong Kong International Airport','Hong Kong','China'],
+  NRT:['Narita International Airport','Tokyo','Japan'],
+  ICN:['Incheon International Airport','Seoul','South Korea'],
+  SYD:['Sydney Kingsford Smith Airport','Sydney','Australia'],
+  KUL:['Kuala Lumpur International Airport','Kuala Lumpur','Malaysia'],
+  BKK:['Suvarnabhumi Airport','Bangkok','Thailand'],
+  DOH:['Hamad International Airport','Doha','Qatar'],
+  IST:['Istanbul Airport','Istanbul','Turkey'],
+  ORD:["O'Hare International Airport",'Chicago','USA'],
+  YYZ:['Toronto Pearson International Airport','Toronto','Canada'],
+  MEL:['Melbourne Airport','Melbourne','Australia'],
+  MUC:['Munich Airport','Munich','Germany'],
+  ZRH:['Zürich Airport','Zürich','Switzerland'],
+  AMS:['Amsterdam Schiphol Airport','Amsterdam','Netherlands'],
+  BCN:['Barcelona–El Prat Airport','Barcelona','Spain'],
+  MAD:['Adolfo Suárez Madrid–Barajas Airport','Madrid','Spain'],
 };
-const cityOf = c => CITIES[c] || c;
+
+const cityOf = code => AIRPORT_DB[code] ? AIRPORT_DB[code][1] : (code || '—');
+const airportName = code => AIRPORT_DB[code] ? AIRPORT_DB[code][0] : code;
+
+// Get airports that have live flights — pulled from allFlights
+function liveAirportCodes() {
+  const codes = new Set();
+  allFlights.forEach(f => { if(f.depAirport) codes.add(f.depAirport); if(f.arrAirport) codes.add(f.arrAirport); });
+  return codes;
+}
+
+// Build airport suggestions matching a query string
+function getAirportSuggestions(q) {
+  q = q.trim().toUpperCase();
+  if (!q) {
+    // Show live airports first when empty
+    const live = liveAirportCodes();
+    return [...live].slice(0,8).map(code => ({ code, isLive: true }));
+  }
+  const ql = q.toLowerCase();
+  const live = liveAirportCodes();
+  const results = [];
+  const seen = new Set();
+
+  // Exact ICAO match first
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (code === q && !seen.has(code)) {
+      results.push({ code, isLive: live.has(code) });
+      seen.add(code);
+    }
+  }
+  // ICAO starts with
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (code.startsWith(q) && !seen.has(code)) {
+      results.push({ code, isLive: live.has(code) });
+      seen.add(code);
+    }
+  }
+  // Name or city contains
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (!seen.has(code) && (info[0].toLowerCase().includes(ql) || info[1].toLowerCase().includes(ql) || info[2].toLowerCase().includes(ql))) {
+      results.push({ code, isLive: live.has(code) });
+      seen.add(code);
+    }
+  }
+  // Also check live airport codes not in DB
+  for (const code of live) {
+    if (!seen.has(code) && code.includes(q)) {
+      results.push({ code, isLive: true });
+      seen.add(code);
+    }
+  }
+  // Sort: live flights first
+  results.sort((a,b) => (b.isLive?1:0)-(a.isLive?1:0));
+  return results.slice(0, 8);
+}
+
+function airportSuggest(inputId, ddId) {
+  const input = document.getElementById(inputId);
+  const dd = document.getElementById(ddId);
+  const q = input.value;
+  const suggestions = getAirportSuggestions(q);
+  if (!suggestions.length) {
+    dd.innerHTML = `<div class="apt-dd-empty">No airports found</div>`;
+    dd.classList.add('open');
+    return;
+  }
+  dd.innerHTML = suggestions.map(({code, isLive}) => {
+    const info = AIRPORT_DB[code];
+    const name = info ? info[0] : 'Unknown Airport';
+    const city = info ? `${info[1]}, ${info[2]}` : '';
+    return `<div class="apt-dd-item" onmousedown="selectAirport('${inputId}','${ddId}','${code}')">
+      <span class="apt-dd-code">${code}</span>
+      <div class="apt-dd-info">
+        <div class="apt-dd-name">${name}</div>
+        <div class="apt-dd-city">${city}</div>
+      </div>
+      ${isLive ? '<span class="apt-dd-live">LIVE</span>' : ''}
+    </div>`;
+  }).join('');
+  dd.classList.add('open');
+}
+
+function selectAirport(inputId, ddId, code) {
+  document.getElementById(inputId).value = code;
+  closeDd(ddId);
+}
+
+function closeDd(ddId) {
+  const dd = document.getElementById(ddId);
+  if (dd) dd.classList.remove('open');
+}
 
 // ── UTC Clock ──────────────────────────────────────
 (function clock(){
@@ -1606,6 +1859,8 @@ function applyFilter(filter) {
     (f.arrAirport||'').toLowerCase().includes(q)||
     cityOf(f.depAirport).toLowerCase().includes(q)||
     cityOf(f.arrAirport).toLowerCase().includes(q)||
+    airportName(f.depAirport).toLowerCase().includes(q)||
+    airportName(f.arrAirport).toLowerCase().includes(q)||
     (f.aircraft||'').toLowerCase().includes(q)||
     (f.status||'').toLowerCase().includes(q)
   );
@@ -1884,11 +2139,11 @@ function openPanel(id) {
   btn.disabled  = !canBook;
   btn.textContent = canBook ? `Book Seat · ₹${selectedPrice.toLocaleString('en-IN')}` : 'Not Bookable';
   document.getElementById('panel-book-note').textContent = canBook
-    ? 'Boarding pass sent to your Discord DM immediately after booking.'
+    ? ''
     : `This flight cannot be booked (status: ${f.status}).`;
   if (userBalance !== null) {
     document.getElementById('panel-wallet-val').textContent = `₹${Number(userBalance).toLocaleString('en-IN')}`;
-    document.getElementById('panel-wallet-val').className   = 'wallet-info-val' + (userBalance < selectedPrice ? ' low' : '');
+    document.getElementById('panel-wallet-val').className   = 'wallet-row-val' + (userBalance < selectedPrice ? ' low' : '');
   }
   document.getElementById('panel-overlay').classList.add('open');
 }
@@ -1964,9 +2219,27 @@ function swapAirports() {
 function doSearch() {
   const from = document.getElementById('s-from').value.trim().toUpperCase();
   const to   = document.getElementById('s-to').value.trim().toUpperCase();
-  document.getElementById('search-input').value = (from+' '+to).trim();
+  // Extract ICAO codes — user may have typed full name, find best match
+  const fromCode = resolveToIcao(from);
+  const toCode   = resolveToIcao(to);
+  // Set search input to trigger filter
+  const q = [fromCode, toCode].filter(Boolean).join(' ');
+  document.getElementById('search-input').value = q;
   applySearch();
-  if (from||to) toast(`Searching: ${from||'any'} → ${to||'any'}`, 'info');
+  if (fromCode || toCode) toast(`Searching: ${fromCode||'any'} → ${toCode||'any'}`, 'info');
+}
+
+function resolveToIcao(q) {
+  if (!q) return '';
+  // Already a 3-letter ICAO code
+  if (/^[A-Z]{3}$/.test(q) && AIRPORT_DB[q]) return q;
+  if (/^[A-Z]{3}$/.test(q)) return q; // pass through unknown codes
+  // Try matching by name or city
+  const ql = q.toLowerCase();
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (info[0].toLowerCase().includes(ql) || info[1].toLowerCase().includes(ql)) return code;
+  }
+  return q;
 }
 
 // ── Tab switch ─────────────────────────────────────

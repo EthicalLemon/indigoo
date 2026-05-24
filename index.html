@@ -314,6 +314,119 @@ body.authed .show-guest{display:none;}
 }
 .wm-close-btn:hover{border-color:var(--border2);color:var(--text);}
 
+/* Wallet card watermarks */
+.wm-plane-bg{position:absolute;width:180px;height:180px;right:-20px;bottom:-20px;pointer-events:none;}
+.wm-dots-bg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0.6;}
+
+/* Transaction list */
+.wm-txn{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);margin-bottom:7px;transition:border-color 0.14s;}
+.wm-txn:hover{border-color:var(--border2);}
+.wm-txn-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
+.wm-txn-icon.debit{background:rgba(255,79,109,0.12);border:1px solid rgba(255,79,109,0.2);}
+.wm-txn-icon.credit{background:rgba(0,229,160,0.1);border:1px solid rgba(0,229,160,0.2);}
+.wm-txn-icon.starter{background:rgba(79,114,255,0.12);border:1px solid rgba(79,114,255,0.2);}
+.wm-txn-info{flex:1;min-width:0;}
+.wm-txn-label{font-size:12px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wm-txn-sub{font-size:10px;color:var(--text4);margin-top:1px;}
+.wm-txn-amount{font-family:var(--mono);font-size:13px;font-weight:700;flex-shrink:0;}
+.wm-txn-amount.debit{color:var(--red);}
+.wm-txn-amount.credit{color:var(--green);}
+.wm-txn-amount.starter{color:var(--blue3);}
+
+/* ══════ BOARDING PASS MODAL ══════ */
+@keyframes bpIn{from{opacity:0;transform:scale(0.93) translateY(22px)}to{opacity:1;transform:none}}
+.bp-overlay{
+  display:none;position:fixed;inset:0;z-index:900;
+  background:rgba(0,0,0,0.92);backdrop-filter:blur(24px);
+  align-items:center;justify-content:center;padding:20px;
+}
+.bp-overlay.open{display:flex;animation:overlayIn 0.16s ease;}
+.bp-modal{
+  width:420px;max-width:100%;
+  animation:bpIn 0.3s cubic-bezier(0.22,1,0.36,1) both;
+  position:relative;
+}
+.bp-close-btn{
+  position:absolute;top:-14px;right:-14px;
+  width:36px;height:36px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--border2);
+  color:var(--text3);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.14s;z-index:10;
+}
+.bp-close-btn:hover{color:#fff;border-color:var(--blue-border);}
+.bp-pass{
+  background:#fff;border-radius:20px;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,0.8),0 8px 20px rgba(0,0,0,0.5);
+}
+.bp-top{
+  background:linear-gradient(140deg,#1a237e 0%,#283593 40%,#3949ab 70%,#1565c0 100%);
+  padding:22px 24px 18px;position:relative;overflow:hidden;
+}
+.bp-top::before{
+  content:'';position:absolute;right:-30px;top:-30px;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,0.05);
+}
+.bp-top::after{
+  content:'✈';position:absolute;right:20px;top:50%;transform:translateY(-50%) rotate(45deg);
+  font-size:90px;opacity:0.05;pointer-events:none;
+}
+.bp-airline-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;position:relative;}
+.bp-airline-logo{display:flex;align-items:center;gap:8px;}
+.bp-airline-logo img{width:28px;height:28px;border-radius:6px;object-fit:cover;}
+.bp-airline-name{font-size:11px;font-weight:800;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.9);}
+.bp-boarding-badge{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);padding:4px 10px;border-radius:var(--pill);font-size:8px;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#fff;}
+.bp-route-row{display:flex;align-items:center;justify-content:space-between;position:relative;}
+.bp-apt-block{}
+.bp-apt-code{font-family:'Sora',sans-serif;font-size:42px;font-weight:800;color:#fff;letter-spacing:-0.04em;line-height:1;}
+.bp-apt-city{font-size:10px;color:rgba(255,255,255,0.65);font-weight:500;margin-top:4px;letter-spacing:0.02em;}
+.bp-apt-country{font-size:8px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.1em;margin-top:2px;}
+.bp-route-mid{display:flex;flex-direction:column;align-items:center;gap:8px;flex:1;padding:0 16px;}
+.bp-route-line{width:100%;display:flex;align-items:center;gap:0;}
+.bp-route-dash{flex:1;height:1px;border-top:1.5px dashed rgba(255,255,255,0.3);}
+.bp-route-plane{font-size:20px;color:rgba(255,255,255,0.9);transform:rotate(0deg);}
+.bp-route-dur{font-size:8.5px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:0.1em;text-transform:uppercase;}
+.bp-mid{background:#f8f9ff;padding:18px 24px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;border-bottom:2px dashed #dde2f5;}
+.bp-field{}
+.bp-field-label{font-size:7.5px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:#7b87b4;margin-bottom:3px;}
+.bp-field-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:#1a237e;letter-spacing:-0.01em;}
+.bp-field-val.big{font-size:16px;}
+.bp-pax{background:#f0f3ff;padding:16px 24px;display:flex;align-items:center;gap:12px;border-bottom:2px dashed #dde2f5;}
+.bp-pax-avatar{width:40px;height:40px;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,#1a237e,#3949ab);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;}
+.bp-pax-avatar img{width:40px;height:40px;object-fit:cover;border-radius:10px;}
+.bp-pax-info{flex:1;}
+.bp-pax-name{font-size:14px;font-weight:800;color:#1a237e;letter-spacing:-0.01em;}
+.bp-pax-role{font-size:9px;color:#7b87b4;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;margin-top:2px;}
+.bp-pax-right{text-align:right;}
+.bp-pax-class{font-size:9px;font-weight:800;padding:4px 10px;border-radius:var(--pill);text-transform:uppercase;letter-spacing:0.08em;}
+.bp-pax-class.Economy{background:#e8eeff;color:#3949ab;border:1px solid #c5cff7;}
+.bp-pax-class.Business{background:#e0f9ff;color:#0277bd;border:1px solid #b3eeff;}
+.bp-pax-class.First{background:#fff8e0;color:#e65100;border:1px solid #ffe0a0;}
+.bp-pax-ref{font-family:'JetBrains Mono',monospace;font-size:9px;color:#7b87b4;margin-top:3px;}
+.bp-barcode-section{background:#fff;padding:16px 24px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.bp-barcode{display:flex;align-items:flex-end;gap:1px;height:52px;}
+.bp-barcode-bar{background:#1a237e;border-radius:1px;}
+.bp-barcode-num{font-family:'JetBrains Mono',monospace;font-size:8px;color:#9aa5c4;letter-spacing:0.08em;}
+.bp-status-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:2px;}
+.bp-status-dot{width:6px;height:6px;border-radius:50%;animation:pulse 2s infinite;}
+.bp-status-dot.Boarding{background:#00c853;}
+.bp-status-dot.Scheduled{background:#2979ff;}
+.bp-status-dot.Departed{background:#aa00ff;}
+.bp-status-dot.Delayed{background:#ff6d00;}
+.bp-status-dot.Cancelled{background:#d50000;}
+.bp-status-label{font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#7b87b4;}
+
+/* Roblox verification */
+.rblx-status{display:flex;align-items:center;gap:8px;margin-top:6px;min-height:22px;}
+.rblx-spinner{width:14px;height:14px;border:2px solid var(--border2);border-top-color:var(--blue3);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;}
+.rblx-ok{display:flex;align-items:center;gap:7px;}
+.rblx-ok-avatar{width:20px;height:20px;border-radius:5px;object-fit:cover;border:1px solid var(--green-border);}
+.rblx-ok-name{font-size:10px;font-weight:700;color:var(--green);}
+.rblx-ok-check{font-size:11px;color:var(--green);}
+.rblx-err{font-size:10px;font-weight:600;color:var(--red);display:flex;align-items:center;gap:5px;}
+
+
 /* ── Airport dropdown ── */
 .apt-dropdown{
   position:fixed;z-index:9999;
@@ -340,15 +453,18 @@ body.authed .show-guest{display:none;}
 .apt-dd-live{font-size:8px;font-weight:700;color:var(--green);background:var(--green-bg);border:1px solid var(--green-border);padding:2px 7px;border-radius:var(--pill);letter-spacing:0.06em;flex-shrink:0;}
 .apt-dd-empty{padding:16px;font-size:11px;color:var(--text4);text-align:center;}
 
-/* ══════ HERO — full bleed SE airline style ══════ */
+/* ══════ HERO — full bleed, fullscreen landing ══════ */
 #tab-flights{display:none;flex-direction:column;}
 #tab-flights.active{display:flex;}
 
 .hero-section{
   position:relative;
-  min-height:100vh;
-  display:flex;flex-direction:column;
+  height:100vh;
+  min-height:640px;
+  display:flex;
+  flex-direction:column;
   overflow:hidden;
+  flex-shrink:0;
 }
 
 /* Sky/cloud BG */
@@ -398,35 +514,40 @@ body.authed .show-guest{display:none;}
   background:radial-gradient(ellipse 70% 60% at 30% 30%,rgba(79,114,255,0.18) 0%,transparent 65%);
 }
 
-/* Hero content layout */
-.hero-content{
+/* Hero body — vertically centers everything */
+.hero-body{
   position:relative;z-index:10;
-  padding:calc(var(--nav-h) + 60px) 60px 0;
-  flex:1;display:flex;flex-direction:column;
-  max-width:1200px;margin:0 auto;width:100%;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:calc(var(--nav-h) + 20px) 24px 80px;
+  gap:36px;
+  text-align:center;
 }
+
 .hero-text-block{
-  max-width:560px;
+  max-width:640px;
   animation:fadeUp 0.7s 0.1s both;
-  margin-bottom:40px;
 }
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:8px;
   background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);
   backdrop-filter:blur(10px);padding:5px 14px;border-radius:var(--pill);
   font-size:9px;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;
-  color:rgba(255,255,255,0.7);margin-bottom:18px;
+  color:rgba(255,255,255,0.7);margin-bottom:20px;
 }
 .hero-dot-live{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;}
 .hero-title{
   font-family:var(--display);
-  font-size:clamp(38px,5vw,62px);
+  font-size:clamp(36px,5.5vw,68px);
   font-weight:800;
   color:#fff;
-  line-height:1.08;
+  line-height:1.06;
   letter-spacing:-0.04em;
-  margin-bottom:16px;
-  text-shadow:0 2px 30px rgba(0,0,0,0.3);
+  margin-bottom:18px;
+  text-shadow:0 4px 40px rgba(0,0,0,0.35);
 }
 .hero-title em{
   font-style:normal;
@@ -434,31 +555,62 @@ body.authed .show-guest{display:none;}
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .hero-sub{
-  font-size:15px;color:rgba(255,255,255,0.65);
-  line-height:1.7;max-width:420px;font-weight:400;
+  font-size:16px;color:rgba(255,255,255,0.6);
+  line-height:1.75;font-weight:400;
 }
 
-/* ── Search card embedded in hero bottom ── */
+/* ── Search card — centred in hero ── */
 .search-card-wrap{
+  width:100%;
+  max-width:860px;
+  animation:fadeUp 0.7s 0.28s both;
   position:relative;z-index:10;
-  margin-top:auto;
-  padding:0 60px;
-  max-width:1200px;margin-left:auto;margin-right:auto;width:100%;
-  animation:fadeUp 0.7s 0.3s both;
 }
 .search-card{
-  background:rgba(255,255,255,0.1);
-  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:20px 20px 0 0;
-  padding:22px 22px 0;
-  overflow:visible;
+  background:rgba(10,14,40,0.55);
+  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:22px;
+  padding:22px 24px 24px;
+  box-shadow:0 24px 60px rgba(0,0,0,0.45),0 2px 0 rgba(255,255,255,0.06) inset;
 }
-/* Trip type tabs */
+
+/* Scroll-down cue */
+.hero-scroll-cue{
+  position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  z-index:10;cursor:pointer;
+  animation:fadeUp 0.7s 0.6s both;
+}
+.hero-scroll-cue:hover .hsc-chevron{transform:translateY(3px);}
+.hsc-label{font-size:8.5px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.hsc-chevron{
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;
+  color:rgba(255,255,255,0.4);font-size:11px;
+  transition:transform 0.2s ease;
+}
+@keyframes cueBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+.hsc-chevron{animation:cueBounce 2.2s ease-in-out infinite;}
+
+/* ── Flights section — fully below the fold ── */
+.flights-section{
+  background:var(--bg);
+  flex:1;display:flex;flex-direction:column;
+  position:relative;z-index:5;
+  border-top:none;
+  padding-top:0;
+}
+.flights-section::before{
+  content:'';display:block;height:0px;
+  background:linear-gradient(to bottom,rgba(79,114,255,0.06) 0%,transparent 100%);
+}
+.search-section-gap{ display:none; }/* no longer needed */
 .trip-tabs{
-  display:flex;gap:0;background:rgba(0,0,0,0.2);border-radius:var(--pill);
-  padding:3px;width:fit-content;margin-bottom:18px;
-  border:1px solid rgba(255,255,255,0.12);
+  display:flex;gap:0;background:rgba(0,0,0,0.28);border-radius:var(--pill);
+  padding:3px;width:fit-content;margin-bottom:14px;
+  border:1px solid rgba(255,255,255,0.1);
 }
 .trip-tab{
   padding:6px 18px;border-radius:var(--pill);font-size:12px;font-weight:600;
@@ -469,47 +621,47 @@ body.authed .show-guest{display:none;}
 .trip-tab:hover:not(.active){color:#fff;}
 
 .search-row{
-  display:flex;align-items:stretch;gap:10px;
-  height:62px;margin-bottom:22px;
+  display:flex;align-items:stretch;gap:8px;
+  height:60px;
 }
 .sf{display:flex;flex-direction:column;justify-content:center;position:relative;}
 .sf.wide{flex:1;min-width:0;}
 .sf-inner{
   display:flex;flex-direction:column;justify-content:center;
   padding:0 18px;height:100%;gap:2px;
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);
   border-radius:14px;
   cursor:text;transition:all 0.18s;
 }
 .sf-inner:focus-within{
-  border-color:rgba(255,255,255,0.5);
-  background:rgba(255,255,255,0.15);
-  box-shadow:0 0 0 3px rgba(255,255,255,0.1);
+  border-color:rgba(255,255,255,0.45);
+  background:rgba(255,255,255,0.13);
+  box-shadow:0 0 0 3px rgba(255,255,255,0.07);
 }
 .sf-label{
   font-size:8px;font-weight:700;letter-spacing:0.18em;
-  text-transform:uppercase;color:rgba(255,255,255,0.45);line-height:1;
+  text-transform:uppercase;color:rgba(255,255,255,0.4);line-height:1;
 }
 .sf-input{
   background:transparent;border:none;outline:none;
   color:#fff;font-family:var(--font);font-size:14px;font-weight:600;
   padding:0;width:100%;min-width:0;
 }
-.sf-input::placeholder{color:rgba(255,255,255,0.35);font-size:13px;font-weight:400;}
-.sf-inner:focus-within .sf-label{color:rgba(255,255,255,0.8);}
+.sf-input::placeholder{color:rgba(255,255,255,0.28);font-size:13px;font-weight:400;}
+.sf-inner:focus-within .sf-label{color:rgba(255,255,255,0.75);}
 .sf-swap{
-  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);
-  color:rgba(255,255,255,0.7);font-size:16px;cursor:pointer;
-  width:52px;flex-shrink:0;border-radius:14px;
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.16);
+  color:rgba(255,255,255,0.65);font-size:16px;cursor:pointer;
+  width:48px;flex-shrink:0;border-radius:14px;
   display:flex;align-items:center;justify-content:center;
   transition:all 0.18s;
 }
-.sf-swap:hover{color:#fff;background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.35);}
+.sf-swap:hover{color:#fff;background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.3);}
 .btn-search{
   background:var(--blue);color:#fff;border:none;font-family:var(--font);
   font-size:13px;font-weight:700;letter-spacing:0.02em;
-  padding:0 30px;border-radius:14px;cursor:pointer;
+  padding:0 28px;border-radius:14px;cursor:pointer;
   transition:all 0.18s;white-space:nowrap;flex-shrink:0;
   box-shadow:0 4px 20px var(--blue-glow);
 }
@@ -792,7 +944,7 @@ body.authed .show-guest{display:none;}
 
 /* My bookings */
 .bookings-list{display:flex;flex-direction:column;gap:10px;max-width:640px;width:100%;}
-.booking-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:cardIn 0.22s ease both;transition:border-color 0.14s,box-shadow 0.14s;}
+.booking-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;animation:cardIn 0.22s ease both;transition:border-color 0.14s,box-shadow 0.14s;cursor:pointer;}
 .booking-card:hover{border-color:var(--blue-border);box-shadow:0 4px 22px rgba(79,114,255,0.1);}
 .bk-head{background:var(--surface2);padding:9px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
 .bk-ref{font-family:var(--mono);font-size:10px;font-weight:600;color:var(--blue3);letter-spacing:0.08em;}
@@ -1010,13 +1162,13 @@ body.boot-done > #boot-screen{display:none;}
           <div class="pwc-balance" id="pd-balance">₹—</div>
           <div class="pwc-footer">
             <span class="pwc-user" id="pd-wallet-name">—</span>
-            <span class="pwc-tap"><span class="pwc-tap-dot"></span>Tap to view passes</span>
+            <span class="pwc-tap"><span class="pwc-tap-dot"></span>Tap to view transactions</span>
           </div>
         </div>
         <div class="pd-actions">
           <button class="pd-action" onclick="openWalletModal()">
             <div class="pd-action-icon" style="background:#eef1fd;font-size:16px;">💳</div>
-            <div class="pd-action-text"><div class="pd-action-label">My Wallet</div><div class="pd-action-sub">View balance & all passes</div></div>
+            <div class="pd-action-text"><div class="pd-action-label">My Wallet</div><div class="pd-action-sub">Balance & transaction history</div></div>
             <span class="pd-action-arrow">›</span>
           </button>
           <button class="pd-action" onclick="closeDropdownSwitchTab('my')">
@@ -1040,44 +1192,54 @@ body.boot-done > #boot-screen{display:none;}
     <div class="hero-bg"></div>
     <div class="hero-clouds"></div>
 
-    <div class="hero-content">
+    <!-- Centred hero body -->
+    <div class="hero-body">
       <div class="hero-text-block">
         <div class="hero-eyebrow"><span class="hero-dot-live"></span>IndiGo PTFS Virtual Airline</div>
         <h1 class="hero-title">Take Off With<br/><em>Confidence</em></h1>
         <p class="hero-sub">Browse live flights, check real-time status, and reserve your virtual seat instantly — boarding pass straight to your Discord.</p>
       </div>
-    </div>
 
-    <!-- Search card sits at the base of the hero -->
-    <div class="search-card-wrap">
-      <div class="search-card">
-        <div class="trip-tabs">
-          <button class="trip-tab active">Book</button>
-          <button class="trip-tab">My Trip</button>
-          <button class="trip-tab">Flight Info</button>
-          <button class="trip-tab">Flight Status</button>
-        </div>
-        <div class="search-row">
-          <div class="sf wide" style="position:relative;">
-            <div class="sf-inner" onclick="document.getElementById('s-from').focus()">
-              <div class="sf-label">From</div>
-              <input class="sf-input" id="s-from" placeholder="City, airport or ICAO…" autocomplete="off" oninput="airportSuggest('s-from','s-from-dd')" onfocus="airportSuggest('s-from','s-from-dd')" onblur="setTimeout(()=>closeDd('s-from-dd'),180)"/>
-            </div>
-            <div class="apt-dropdown" id="s-from-dd"></div>
+      <!-- Search card floats in the centre -->
+      <div class="search-card-wrap">
+        <div class="search-card">
+          <div class="trip-tabs">
+            <button class="trip-tab active">Book</button>
+            <button class="trip-tab">My Trip</button>
+            <button class="trip-tab">Flight Info</button>
+            <button class="trip-tab">Flight Status</button>
           </div>
-          <button class="sf-swap" onclick="swapAirports()">⇄</button>
-          <div class="sf wide" style="position:relative;">
-            <div class="sf-inner" onclick="document.getElementById('s-to').focus()">
-              <div class="sf-label">To</div>
-              <input class="sf-input" id="s-to" placeholder="City, airport or ICAO…" autocomplete="off" oninput="airportSuggest('s-to','s-to-dd')" onfocus="airportSuggest('s-to','s-to-dd')" onblur="setTimeout(()=>closeDd('s-to-dd'),180)"/>
+          <div class="search-row">
+            <div class="sf wide" style="position:relative;">
+              <div class="sf-inner" onclick="document.getElementById('s-from').focus()">
+                <div class="sf-label">From</div>
+                <input class="sf-input" id="s-from" placeholder="City, airport or ICAO…" autocomplete="off" oninput="airportSuggest('s-from','s-from-dd')" onfocus="airportSuggest('s-from','s-from-dd')" onblur="setTimeout(()=>closeDd('s-from-dd'),180)"/>
+              </div>
+              <div class="apt-dropdown" id="s-from-dd"></div>
             </div>
-            <div class="apt-dropdown" id="s-to-dd"></div>
+            <button class="sf-swap" onclick="swapAirports()">⇄</button>
+            <div class="sf wide" style="position:relative;">
+              <div class="sf-inner" onclick="document.getElementById('s-to').focus()">
+                <div class="sf-label">To</div>
+                <input class="sf-input" id="s-to" placeholder="City, airport or ICAO…" autocomplete="off" oninput="airportSuggest('s-to','s-to-dd')" onfocus="airportSuggest('s-to','s-to-dd')" onblur="setTimeout(()=>closeDd('s-to-dd'),180)"/>
+              </div>
+              <div class="apt-dropdown" id="s-to-dd"></div>
+            </div>
+            <button class="btn-search" onclick="doSearch()">Show Flights</button>
           </div>
-          <button class="btn-search" onclick="doSearch()">Show Flights</button>
         </div>
       </div>
     </div>
+
+    <!-- Scroll-down cue -->
+    <div class="hero-scroll-cue" onclick="scrollToFlights()">
+      <span class="hsc-label">Scroll for flights</span>
+      <div class="hsc-chevron">&#8964;</div>
+    </div>
   </div>
+
+  <!-- GAP between hero search and flights -->
+  <div class="search-section-gap"></div>
 
   <!-- FLIGHTS BELOW HERO — scrolls into view -->
   <div class="flights-section">
@@ -1283,7 +1445,17 @@ body.boot-done > #boot-screen{display:none;}
 <div class="wallet-modal-overlay" id="wallet-modal-overlay" onclick="closeWalletModalOutside(event)">
   <div class="wallet-modal">
     <div class="wm-card">
-      <div class="wm-card-top"><span class="wm-logo">IndiGo</span><div class="wm-chip-wrap"><div class="wm-chip"></div></div></div>
+      <!-- Dotted plane watermark -->
+      <svg class="wm-plane-bg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M190 90l-80-50V10c0-5.5-4.5-10-10-10S90 4.5 90 10v30L10 90v15l80-25v50l-18 12V155l28-8 28 8v-13l-18-12V80l80 25V90z" fill="white" fill-opacity="0.04"/></svg>
+      <!-- Dot grid pattern -->
+      <svg class="wm-dots-bg" viewBox="0 0 200 100"><pattern id="dots" x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="white" fill-opacity="0.07"/></pattern><rect width="200" height="100" fill="url(#dots)"/></svg>
+      <div class="wm-card-top">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" style="width:22px;height:22px;border-radius:5px;object-fit:cover;opacity:0.8;" onerror="this.style.display='none'"/>
+          <span class="wm-logo">IndiGo</span>
+        </div>
+        <div class="wm-chip-wrap"><div class="wm-chip"></div></div>
+      </div>
       <div class="wm-balance-lbl">Available Balance</div>
       <div class="wm-balance" id="wm-balance">₹—</div>
       <div class="wm-card-footer">
@@ -1297,10 +1469,20 @@ body.boot-done > #boot-screen{display:none;}
       <div class="wm-stat"><div class="wm-stat-val" id="wm-fav-class">—</div><div class="wm-stat-label">Fav Class</div></div>
     </div>
     <div class="wm-passes">
-      <div class="wm-passes-head">Boarding Passes</div>
+      <div class="wm-passes-head">Transaction History</div>
       <div id="wm-passes-list"><div class="loading-state" style="padding:20px 0;"><div class="loading-spin">↻</div></div></div>
     </div>
     <button class="wm-close-btn" onclick="closeWalletModal()">Close Wallet</button>
+  </div>
+</div>
+
+<!-- BOARDING PASS MODAL -->
+<div class="bp-overlay" id="bp-overlay" onclick="if(event.target===this)closeBoardingPass()">
+  <div class="bp-modal">
+    <button class="bp-close-btn" onclick="closeBoardingPass()">✕</button>
+    <div class="bp-pass" id="bp-pass-content">
+      <!-- populated by JS -->
+    </div>
   </div>
 </div>
 
@@ -1351,8 +1533,9 @@ body.boot-done > #boot-screen{display:none;}
         <label>Roblox Username</label>
         <div class="bcm-input-wrap">
           <span class="bcm-input-icon" style="font-size:13px;">🎮</span>
-          <input class="bcm-input" id="bcm-roblox" type="text" placeholder="YourRobloxName" autocomplete="off"/>
+          <input class="bcm-input" id="bcm-roblox" type="text" placeholder="YourRobloxName" autocomplete="off" oninput="onRobloxInput()"/>
         </div>
+        <div id="rblx-status" class="rblx-status"></div>
         <div class="bcm-hint">Your exact Roblox username (for in-game seat assignment)</div>
         <div class="bcm-error-msg" id="bcm-roblox-err">Please enter your Roblox username</div>
       </div>
@@ -1416,7 +1599,12 @@ function liveAirportCodes() {
 
 function getAirportSuggestions(q) {
   q = q.trim().toUpperCase();
-  if (!q) { const live = liveAirportCodes(); return [...live].slice(0,8).map(code => ({ code, isLive: true })); }
+  if (!q) {
+    const live = liveAirportCodes();
+    const liveArr = [...live].map(code => ({ code, isLive: true }));
+    const rest = Object.keys(AIRPORT_DB).filter(c => !live.has(c)).slice(0, Math.max(0, 8 - liveArr.length)).map(code => ({ code, isLive: false }));
+    return [...liveArr, ...rest].slice(0, 8);
+  }
   const ql = q.toLowerCase();
   const live = liveAirportCodes();
   const results = [], seen = new Set();
@@ -1586,7 +1774,7 @@ function closeWalletModalOutside(e) { if (e.target.id === 'wallet-modal-overlay'
 async function loadWalletPasses() {
   const list = document.getElementById('wm-passes-list');
   list.innerHTML = '<div class="loading-state" style="padding:20px 0;"><div class="loading-spin">↻</div></div>';
-  if (!currentUser) { list.innerHTML = '<div class="wm-empty"><div class="wm-empty-icon">🔒</div><div class="wm-empty-text">Login to view passes</div></div>'; return; }
+  if (!currentUser) { list.innerHTML = '<div class="wm-empty"><div class="wm-empty-icon">🔒</div><div class="wm-empty-text">Login to view transactions</div></div>'; return; }
   try {
     const res = await fetch(`${API_BASE}/bookings/${currentUser.id}`);
     const data = await res.json();
@@ -1598,57 +1786,35 @@ async function loadWalletPasses() {
     document.getElementById('wm-total-spent').textContent = `₹${totalSpent.toLocaleString('en-IN')}`;
     document.getElementById('wm-num-trips').textContent = bks.length;
     document.getElementById('wm-fav-class').textContent = favClass;
-    if (!bks.length) { list.innerHTML = '<div class="wm-empty"><div class="wm-empty-icon">🎫</div><div class="wm-empty-text">No passes yet — book a flight!</div></div>'; return; }
-    // Boarding pass card style (image 3 inspired)
-    const userName = currentUser ? (currentUser.globalName || currentUser.username || 'Passenger') : 'Passenger';
-    const userAvatar = currentUser?.avatar ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=64` : null;
-    const avatarHtml = userAvatar
-      ? `<img src="${userAvatar}" alt="" style="width:34px;height:34px;object-fit:cover;border-radius:50%;"/>`
-      : `<span style="font-size:15px;font-weight:800;color:#fff;">${userName.charAt(0).toUpperCase()}</span>`;
-    // Generate barcode-like string
-    const fake = ref => ref.split('').map(c => c.charCodeAt(0).toString(2).padStart(8,'0')).join('').slice(0,40);
-    list.innerHTML = bks.map(b => `
-      <div class="wm-pass">
-        <div class="wm-pass-head">
-          <div class="wm-pass-passenger">
-            <div class="wm-pass-avatar">${avatarHtml}</div>
-            <div>
-              <div class="wm-pass-pname">${userName}</div>
-              <div class="wm-pass-prole">Passenger</div>
-            </div>
-          </div>
-          <svg class="wm-pass-logo" viewBox="0 0 24 24" fill="rgba(255,255,255,0.5)"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+    if (!bks.length) { list.innerHTML = '<div class="wm-empty"><div class="wm-empty-icon">💳</div><div class="wm-empty-text">No transactions yet — book a flight!</div></div>'; return; }
+    // Build transaction list — one debit per booking, credit for refunds
+    const txns = [];
+    // Starter balance entry
+    txns.push({ type:'starter', icon:'🎁', label:'Welcome Bonus', sub:'New member starter balance', amount:'+₹5,000', date:'Joined' });
+    // Each booking
+    bks.forEach(b => {
+      const isCancelled = b.checkedIn === false;
+      txns.push({ type:'debit', icon:'✈', label:`Flight Booked: ${b.flightNum||'—'}`, sub:`${b.depAirport||'—'} → ${b.arrAirport||'—'} · ${b.cabinClass||'Economy'} · Ref: ${b.bookingRef}`, amount:`-₹${Number(b.price||0).toLocaleString('en-IN')}`, date:new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) });
+      if (isCancelled) {
+        const refund = Math.round((b.price||0) * 0.5);
+        txns.push({ type:'credit', icon:'↩', label:`Cancellation Refund`, sub:`50% refund for Ref: ${b.bookingRef}`, amount:`+₹${refund.toLocaleString('en-IN')}`, date:new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}) });
+      }
+    });
+    list.innerHTML = txns.map(t => `
+      <div class="wm-txn">
+        <div class="wm-txn-icon ${t.type}">${t.icon}</div>
+        <div class="wm-txn-info">
+          <div class="wm-txn-label">${t.label}</div>
+          <div class="wm-txn-sub">${t.sub}</div>
         </div>
-        <div class="wm-pass-route">
-          <div class="wm-pass-apt">
-            <div class="wm-pass-code">${b.depAirport||'—'}</div>
-            <div class="wm-pass-city">${cityOf(b.depAirport)}</div>
-          </div>
-          <div class="wm-pass-line">
-            <div class="wm-pass-dashes"></div>
-            <div class="wm-pass-plane-icon">✈</div>
-            <div class="wm-pass-dashes"></div>
-          </div>
-          <div class="wm-pass-apt" style="text-align:right">
-            <div class="wm-pass-code">${b.arrAirport||'—'}</div>
-            <div class="wm-pass-city">${cityOf(b.arrAirport)}</div>
-          </div>
-        </div>
-        <div class="wm-pass-meta">
-          <div class="wm-pass-meta-item"><div class="wm-pass-meta-label">Date</div><div class="wm-pass-meta-val">${new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short'})}</div></div>
-          <div class="wm-pass-meta-item"><div class="wm-pass-meta-label">Time</div><div class="wm-pass-meta-val">${b.depTime||'—'}</div></div>
-          <div class="wm-pass-meta-item"><div class="wm-pass-meta-label">Flight No</div><div class="wm-pass-meta-val">${b.flightNum||'—'}</div></div>
-          <div class="wm-pass-meta-item"><div class="wm-pass-meta-label">Class</div><div class="wm-pass-meta-val">${(b.cabinClass||'Economy').split(' ')[0]}</div></div>
-        </div>
-        <div class="wm-pass-footer">
-          <span class="wm-pass-class ${b.cabinClass||'Economy'}">${b.cabinClass||'Economy'}</span>
-          <span class="wm-pass-barcode">${fake(b.bookingRef)}</span>
-          <span class="wm-pass-fare">₹${Number(b.price||0).toLocaleString('en-IN')}</span>
+        <div>
+          <div class="wm-txn-amount ${t.type}">${t.amount}</div>
+          <div style="font-size:8.5px;color:var(--text4);text-align:right;margin-top:2px;font-family:var(--mono);">${t.date}</div>
         </div>
       </div>
     `).join('');
   } catch {
-    list.innerHTML = '<div class="wm-empty"><div class="wm-empty-text">Could not load passes</div></div>';
+    list.innerHTML = '<div class="wm-empty"><div class="wm-empty-text">Could not load transactions</div></div>';
   }
 }
 
@@ -1911,6 +2077,8 @@ function openPanel(id) {
 function closePanel() { document.getElementById('panel-overlay').classList.remove('open'); activeFlightId = null; document.querySelectorAll('.flight-card').forEach(c=>c.classList.remove('selected')); }
 function closePanelOutside(e) { if(e.target.id==='panel-overlay') closePanel(); }
 
+let allMyBookings = [];
+
 async function loadMyBookings() {
   if (!currentUser) return;
   document.getElementById('my-guest-state').style.display = 'none';
@@ -1923,6 +2091,7 @@ async function loadMyBookings() {
     const res = await fetch(`${API_BASE}/bookings/${currentUser.id}`);
     const data = await res.json();
     const bks = (data.bookings||[]).sort((a,b)=>new Date(b.bookedAt)-new Date(a.bookedAt));
+    allMyBookings = bks;
     document.getElementById('bk-loading').style.display = 'none';
     document.getElementById('bk-sub').textContent = `${bks.length} booking${bks.length!==1?'s':''}`;
     if (!bks.length) { document.getElementById('bk-empty').style.display='flex'; return; }
@@ -1931,13 +2100,16 @@ async function loadMyBookings() {
       const statusIcon = isCheckedIn ? '✅' : isCancelled ? '❌' : '⏳';
       const statusLabel = isCheckedIn ? 'Checked In' : isCancelled ? 'Cancelled' : 'Pending';
       const statusColor = isCheckedIn ? 'var(--green)' : isCancelled ? 'var(--red)' : 'var(--amber)';
-      return `<div class="booking-card" style="animation-delay:${i*0.04}s;${isCancelled?'opacity:0.55;border-color:rgba(255,79,109,0.2);':''}">
+      return `<div class="booking-card" style="animation-delay:${i*0.04}s;${isCancelled?'opacity:0.55;border-color:rgba(255,79,109,0.2);':''}" onclick="openBoardingPass(${i})">
         <div class="bk-head">
           <div style="display:flex;align-items:center;gap:8px;">
             <span class="bk-ref">${b.bookingRef}</span>
             <span style="font-size:9px;font-weight:700;color:${statusColor};background:${statusColor}18;border:1px solid ${statusColor}33;padding:2px 8px;border-radius:999px;letter-spacing:0.06em;">${statusIcon} ${statusLabel}</span>
           </div>
-          <span class="bk-status">${b.flightNum||'—'} · ${new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="bk-status">${b.flightNum||'—'} · ${new Date(b.bookedAt).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})}</span>
+            <span style="font-size:9px;color:var(--blue3);font-weight:700;letter-spacing:0.06em;opacity:0.7;">🎫 View Pass</span>
+          </div>
         </div>
         <div class="bk-body">
           <div class="bk-route">
@@ -1947,13 +2119,181 @@ async function loadMyBookings() {
           <div class="bk-meta">
             <span class="bk-class-pill ${b.cabinClass||'Economy'}">${b.cabinClass||'Economy'}</span>
             <span class="bk-fare">₹${Number(b.price||0).toLocaleString('en-IN')}</span>
-            ${isPending ? `<button onclick="cancelBooking('${b.bookingRef}')" style="font-size:9px;font-weight:700;color:var(--red);background:var(--red-bg);border:1px solid rgba(255,79,109,0.2);padding:3px 10px;border-radius:999px;cursor:pointer;font-family:var(--font);transition:all 0.12s;" onmouseover="this.style.background='var(--red)';this.style.color='#fff'" onmouseout="this.style.background='var(--red-bg)';this.style.color='var(--red)'">✕ Cancel</button>` : `<span class="bk-date">Ref: ${b.bookingRef}</span>`}
+            ${isPending ? `<button onclick="event.stopPropagation();cancelBooking('${b.bookingRef}')" style="font-size:9px;font-weight:700;color:var(--red);background:var(--red-bg);border:1px solid rgba(255,79,109,0.2);padding:3px 10px;border-radius:999px;cursor:pointer;font-family:var(--font);transition:all 0.12s;" onmouseover="this.style.background='var(--red)';this.style.color='#fff'" onmouseout="this.style.background='var(--red-bg)';this.style.color='var(--red)'">✕ Cancel</button>` : `<span class="bk-date">Ref: ${b.bookingRef}</span>`}
           </div>
         </div>
         ${isCancelled ? `<div style="padding:6px 16px 9px;font-size:10px;color:var(--red);font-family:var(--mono);">Cancelled · 50% refunded to wallet</div>` : ''}
       </div>`;
     }).join('');
   } catch { document.getElementById('bk-loading').style.display = 'none'; toast('Could not load bookings', 'error'); }
+}
+
+function closeBoardingPass() { document.getElementById('bp-overlay').classList.remove('open'); }
+
+function openBoardingPass(idx) {
+  const b = allMyBookings[idx];
+  if (!b) return;
+  const userName = currentUser ? (currentUser.globalName || currentUser.username || 'Passenger') : (b.name || 'Passenger');
+  const userAvatar = currentUser?.avatar ? `https://cdn.discordapp.com/avatars/${currentUser.id}/${currentUser.avatar}.png?size=64` : null;
+  const avatarHtml = userAvatar
+    ? `<img src="${userAvatar}" alt="" onerror="this.style.display='none'">`
+    : `<span style="font-size:16px;font-weight:800;">${userName.charAt(0).toUpperCase()}</span>`;
+
+  const isCancelled = b.checkedIn === false;
+  const isBoarding = b.checkedIn === true;
+  const status = isCancelled ? 'Cancelled' : isBoarding ? 'Boarding' : 'Scheduled';
+  const statusDotClass = isCancelled ? 'Cancelled' : isBoarding ? 'Boarding' : 'Scheduled';
+  const statusLabel = isCancelled ? 'CANCELLED' : isBoarding ? 'CHECKED IN' : 'CONFIRMED';
+
+  // Generate visual barcode from booking ref
+  function genBarcode(ref) {
+    const seed = ref || 'XXXXXX';
+    let bars = '';
+    for (let i = 0; i < 60; i++) {
+      const charCode = seed.charCodeAt(i % seed.length) + i * 7;
+      const w = 1 + (charCode % 3);
+      const h = 26 + (charCode % 26);
+      const gap = 1 + (charCode % 2);
+      bars += `<div class="bp-barcode-bar" style="width:${w}px;height:${h}px;margin-right:${gap}px;"></div>`;
+    }
+    return bars;
+  }
+
+  const depCity = cityOf(b.depAirport);
+  const arrCity = cityOf(b.arrAirport);
+  const depInfo = AIRPORT_DB[b.depAirport];
+  const arrInfo = AIRPORT_DB[b.arrAirport];
+  const depCountry = depInfo ? depInfo[2] : '';
+  const arrCountry = arrInfo ? arrInfo[2] : '';
+  const depName = depInfo ? depInfo[0] : (b.depAirport||'—');
+  const arrName = arrInfo ? arrInfo[0] : (b.arrAirport||'—');
+  const bookDate = b.bookedAt ? new Date(b.bookedAt).toLocaleDateString('en-IN',{weekday:'short',day:'2-digit',month:'short',year:'numeric'}) : '—';
+  const cabinClass = b.cabinClass || 'Economy';
+  const seatNum = b.seatPref ? `${b.seatPref[0]}` : '—';
+
+  document.getElementById('bp-pass-content').innerHTML = `
+    <div class="bp-top">
+      <div class="bp-airline-row">
+        <div class="bp-airline-logo">
+          <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" onerror="this.style.display='none'" />
+          <span class="bp-airline-name">IndiGo PTFS</span>
+        </div>
+        <div class="bp-boarding-badge">${statusLabel}</div>
+      </div>
+      <div class="bp-route-row">
+        <div class="bp-apt-block">
+          <div class="bp-apt-code">${b.depAirport||'—'}</div>
+          <div class="bp-apt-city">${depCity}</div>
+          <div class="bp-apt-country">${depCountry}</div>
+        </div>
+        <div class="bp-route-mid">
+          <div class="bp-route-line">
+            <div class="bp-route-dash"></div>
+            <div class="bp-route-plane">✈</div>
+            <div class="bp-route-dash"></div>
+          </div>
+          <div class="bp-route-dur">${durationBetween(b.depTime,b.arrTime)||'NON-STOP'}</div>
+        </div>
+        <div class="bp-apt-block" style="text-align:right">
+          <div class="bp-apt-code">${b.arrAirport||'—'}</div>
+          <div class="bp-apt-city">${arrCity}</div>
+          <div class="bp-apt-country">${arrCountry}</div>
+        </div>
+      </div>
+    </div>
+    <div class="bp-mid">
+      <div class="bp-field">
+        <div class="bp-field-label">Flight</div>
+        <div class="bp-field-val big">${b.flightNum||'—'}</div>
+      </div>
+      <div class="bp-field">
+        <div class="bp-field-label">Departure</div>
+        <div class="bp-field-val big">${b.depTime||'—'}</div>
+      </div>
+      <div class="bp-field">
+        <div class="bp-field-label">Arrival</div>
+        <div class="bp-field-val big">${b.arrTime||'—'}</div>
+      </div>
+      <div class="bp-field">
+        <div class="bp-field-label">Date</div>
+        <div class="bp-field-val">${bookDate}</div>
+      </div>
+      <div class="bp-field">
+        <div class="bp-field-label">Gate</div>
+        <div class="bp-field-val big">${b.depGate && b.depGate !== 'TBA' ? b.depGate : 'TBA'}</div>
+      </div>
+      <div class="bp-field">
+        <div class="bp-field-label">Aircraft</div>
+        <div class="bp-field-val">${b.aircraft||'—'}</div>
+      </div>
+    </div>
+    <div class="bp-pax">
+      <div class="bp-pax-avatar">${avatarHtml}</div>
+      <div class="bp-pax-info">
+        <div class="bp-pax-name">${userName.toUpperCase()}</div>
+        <div class="bp-pax-role">Passenger · Roblox: ${b.robloxUsername||'—'}</div>
+      </div>
+      <div class="bp-pax-right">
+        <div class="bp-pax-class ${cabinClass.split(' ')[0]}">${cabinClass}</div>
+        <div class="bp-pax-ref">${b.bookingRef||'—'}</div>
+      </div>
+    </div>
+    <div class="bp-barcode-section">
+      <div class="bp-barcode">${genBarcode(b.bookingRef)}</div>
+      <div class="bp-barcode-num">${b.bookingRef||'XXXXXXXXXX'}</div>
+      <div class="bp-status-row">
+        <div class="bp-status-dot ${statusDotClass}"></div>
+        <div class="bp-status-label">${status} · ₹${Number(b.price||0).toLocaleString('en-IN')}</div>
+      </div>
+    </div>
+  `;
+  document.getElementById('bp-overlay').classList.add('open');
+}
+
+// ── Roblox username verification ──
+let rblxTimer = null;
+function onRobloxInput() {
+  clearTimeout(rblxTimer);
+  const val = document.getElementById('bcm-roblox').value.trim();
+  const statusEl = document.getElementById('rblx-status');
+  if (!val) { statusEl.innerHTML = ''; return; }
+  statusEl.innerHTML = '<div class="rblx-spinner"></div><span style="font-size:10px;color:var(--text4);">Verifying…</span>';
+  rblxTimer = setTimeout(() => verifyRoblox(val), 600);
+}
+
+async function verifyRoblox(username) {
+  const statusEl = document.getElementById('rblx-status');
+  try {
+    const res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ usernames: [username], excludeBannedUsers: false })
+    });
+    if (!res.ok) throw new Error('API error');
+    const data = await res.json();
+    const user = data.data?.[0];
+    if (user) {
+      let avatarHtml = '';
+      try {
+        const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=48x48&format=Png&isCircular=true`);
+        const thumbData = await thumbRes.json();
+        const imgUrl = thumbData.data?.[0]?.imageUrl;
+        if (imgUrl) avatarHtml = `<img class="rblx-ok-avatar" src="${imgUrl}" alt=""/>`;
+      } catch {}
+      statusEl.innerHTML = `<div class="rblx-ok">${avatarHtml}<span class="rblx-ok-check">✓</span><span class="rblx-ok-name">${user.name} — verified</span></div>`;
+      // Correct capitalization
+      document.getElementById('bcm-roblox').value = user.name;
+    } else {
+      statusEl.innerHTML = `<div class="rblx-err">✕ Username not found on Roblox</div>`;
+    }
+  } catch {
+    // CORS or network error — don't block the user, just clear status
+    statusEl.innerHTML = '<span style="font-size:9.5px;color:var(--text4);">Could not verify (proceed anyway)</span>';
+  }
+}
+
+function scrollToFlights() {
+  document.querySelector('.flights-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function swapAirports() { const f=document.getElementById('s-from'), t=document.getElementById('s-to'); [f.value, t.value] = [t.value, f.value]; }
@@ -1964,8 +2304,10 @@ function doSearch() {
   const q = [fromCode, toCode].filter(Boolean).join(' ');
   document.getElementById('search-input').value = q;
   applySearch();
-  // Scroll to flights section
-  document.querySelector('.flights-section').scrollIntoView({ behavior: 'smooth' });
+  // Scroll to flights section smoothly
+  setTimeout(() => {
+    document.querySelector('.flights-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
   if (fromCode || toCode) toast(`Searching: ${fromCode||'any'} → ${toCode||'any'}`, 'info');
 }
 function resolveToIcao(q) {
@@ -2010,7 +2352,7 @@ function toast(msg, type='info') {
 })();
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closePanel(); closeModal(); closeWalletModal(); closeProfileDropdown(); closeBookingConfirm(); }
+  if (e.key === 'Escape') { closePanel(); closeModal(); closeWalletModal(); closeProfileDropdown(); closeBookingConfirm(); closeBoardingPass(); }
 });
 </script>
 

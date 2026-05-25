@@ -82,54 +82,160 @@ body{
 @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
 @keyframes shimmer{0%{opacity:0.04}50%{opacity:0.09}100%{opacity:0.04}}
 
-/* ══════ NAV ══════ */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);
-  background:rgba(7,9,26,0.72);
-  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-  display:flex;align-items:center;
-  padding:0 32px;flex-shrink:0;
-  border-bottom:1px solid rgba(255,255,255,0.07);
-  transition:background 0.3s;
+/* ══════ VERTICAL PILL NAV ══════ */
+:root { --snav-w: 60px; --snav-open: 196px; }
+
+nav {
+  position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:300;
+  width:var(--snav-w);
+  background:rgba(10,14,40,0.72);
+  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:30px;
+  padding:10px 8px 12px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  transition:width 0.28s cubic-bezier(0.22,1,0.36,1),
+             box-shadow 0.28s ease;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5),0 2px 0 rgba(255,255,255,0.04) inset;
 }
-.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
-.nav-logo-wrap{
-  width:36px;height:36px;border-radius:10px;overflow:hidden;
+nav:hover {
+  width:var(--snav-open);
+  box-shadow:0 16px 48px rgba(0,0,0,0.65),0 2px 0 rgba(255,255,255,0.06) inset;
+}
+
+/* Logo chip at top of pill */
+.snav-logo {
+  width:38px;height:38px;border-radius:14px;overflow:hidden;flex-shrink:0;
   background:var(--blue-dim);border:1px solid var(--blue-border);
   display:flex;align-items:center;justify-content:center;
+  margin-bottom:4px;
 }
-.nav-logo-wrap img{width:36px;height:36px;object-fit:cover;}
-.brand-name{font-family:var(--display);font-weight:700;font-size:14px;color:var(--text);letter-spacing:-0.01em;}
-.brand-tag{font-size:8px;color:var(--text4);letter-spacing:0.18em;text-transform:uppercase;font-weight:600;margin-top:1px;}
-.nav-sep{width:1px;height:22px;background:rgba(255,255,255,0.1);margin:0 20px;}
-.nav-links{display:flex;align-items:center;gap:2px;}
-.nav-link{
-  padding:7px 16px;border-radius:var(--pill);font-size:12px;font-weight:600;
-  color:var(--text3);cursor:pointer;border:none;background:transparent;
-  font-family:var(--font);transition:all 0.18s;letter-spacing:0.01em;
+.snav-logo img{width:38px;height:38px;object-fit:cover;}
+.snav-logo-fallback{font-size:16px;font-weight:900;color:var(--blue3);}
+
+/* Thin divider */
+.snav-div {
+  width:30px;height:1px;background:rgba(255,255,255,0.08);
+  flex-shrink:0;margin:2px 0;transition:width 0.28s ease;
 }
-.nav-link:hover{color:var(--text);background:rgba(255,255,255,0.07);}
-.nav-link.active{
-  color:#fff;background:var(--blue);
-  box-shadow:0 2px 14px var(--blue-glow);
+nav:hover .snav-div { width:calc(var(--snav-open) - 20px); }
+
+/* Nav items */
+.snav-items { display:flex;flex-direction:column;gap:3px;width:100%; }
+
+.snav-item {
+  display:flex;align-items:center;gap:11px;
+  padding:9px 11px;border-radius:18px;
+  font-family:var(--font);font-size:12px;font-weight:600;
+  color:rgba(255,255,255,0.5);border:none;cursor:pointer;
+  background:transparent;
+  transition:all 0.18s ease;
+  white-space:nowrap;width:100%;
+  letter-spacing:0.01em;
+  min-height:40px;
 }
-.nav-right{display:flex;align-items:center;gap:9px;margin-left:auto;}
-.clock-pill{
-  font-family:var(--mono);font-size:10px;font-weight:500;
-  color:var(--green);background:var(--green-bg);
-  border:1px solid var(--green-border);padding:4px 11px;border-radius:var(--pill);
-  letter-spacing:0.05em;
+.snav-item:hover { color:rgba(255,255,255,0.9);background:rgba(255,255,255,0.07); }
+.snav-item.active {
+  background:#fff;color:#0d1235;
+  box-shadow:0 2px 14px rgba(0,0,0,0.3);
 }
-.btn-discord{
-  display:flex;align-items:center;gap:7px;
-  background:linear-gradient(135deg,#5865F2,#4752d6);
-  border:none;color:#fff;
-  font-family:var(--font);font-size:12px;font-weight:700;
-  padding:8px 18px;border-radius:var(--pill);cursor:pointer;transition:all 0.18s;
-  box-shadow:0 2px 16px rgba(88,101,242,0.32);
+.snav-item.active:hover { background:#f0f2ff;color:#0d1235; }
+
+.snav-icon {
+  font-size:16px;flex-shrink:0;
+  width:22px;display:flex;align-items:center;justify-content:center;
+  /* Use SVG icons instead of emoji for crispness */
 }
-.btn-discord:hover{box-shadow:0 4px 24px rgba(88,101,242,0.5);transform:translateY(-1px);}
-.disc-svg{width:14px;height:14px;fill:white;flex-shrink:0;}
+.snav-label {
+  opacity:0;transform:translateX(-6px);
+  transition:opacity 0.2s 0.05s ease, transform 0.2s 0.05s ease;
+  pointer-events:none;
+  font-size:12.5px;font-weight:600;
+}
+nav:hover .snav-label { opacity:1;transform:none; }
+
+/* Bottom cluster: clock + auth */
+.snav-bottom {
+  display:flex;flex-direction:column;align-items:flex-start;gap:5px;
+  width:100%;margin-top:4px;
+}
+.snav-clock {
+  display:flex;align-items:center;gap:9px;
+  padding:7px 11px;border-radius:14px;
+  background:rgba(0,229,160,0.07);border:1px solid rgba(0,229,160,0.14);
+  width:100%;overflow:hidden;
+}
+.snav-clock-dot {
+  width:6px;height:6px;border-radius:50%;background:var(--green);
+  flex-shrink:0;animation:blink 2s infinite;
+}
+.snav-clock-val {
+  font-family:var(--mono);font-size:9.5px;font-weight:600;color:var(--green);
+  letter-spacing:0.06em;white-space:nowrap;
+  opacity:0;transform:translateX(-4px);
+  transition:opacity 0.2s 0.05s ease,transform 0.2s 0.05s ease;
+}
+nav:hover .snav-clock-val { opacity:1;transform:none; }
+
+/* Auth button in nav */
+.snav-auth {
+  display:flex;align-items:center;gap:9px;
+  padding:8px 11px;border-radius:14px;width:100%;
+  font-family:var(--font);font-size:11px;font-weight:700;
+  border:none;cursor:pointer;transition:all 0.18s;
+  background:linear-gradient(135deg,rgba(88,101,242,0.22),rgba(88,101,242,0.12));
+  border:1px solid rgba(88,101,242,0.28);color:rgba(160,170,255,0.9);
+  overflow:hidden;
+}
+.snav-auth:hover { background:linear-gradient(135deg,rgba(88,101,242,0.36),rgba(88,101,242,0.22));color:#fff; }
+.snav-auth-icon { width:22px;text-align:center;flex-shrink:0;font-size:14px; }
+.snav-auth-label {
+  white-space:nowrap;
+  opacity:0;transform:translateX(-4px);
+  transition:opacity 0.2s 0.05s ease,transform 0.2s 0.05s ease;
+}
+nav:hover .snav-auth-label { opacity:1;transform:none; }
+
+/* Profile chip inside nav */
+.snav-profile {
+  display:flex;align-items:center;gap:9px;
+  padding:6px 10px 6px 6px;border-radius:16px;width:100%;
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.09);
+  cursor:pointer;transition:all 0.18s;position:relative;
+  overflow:hidden;
+}
+.snav-profile:hover { background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.18); }
+.snav-avatar-sm {
+  width:28px;height:28px;border-radius:10px;overflow:hidden;flex-shrink:0;
+  background:var(--blue-dim);border:1px solid var(--blue-border);
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--blue3);
+}
+.snav-avatar-sm img { width:28px;height:28px;object-fit:cover; }
+.snav-profile-info {
+  min-width:0;flex:1;
+  opacity:0;transform:translateX(-4px);
+  transition:opacity 0.2s 0.05s ease,transform 0.2s 0.05s ease;
+}
+nav:hover .snav-profile-info { opacity:1;transform:none; }
+.snav-pname { font-size:11px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px; }
+.snav-pbal { font-size:9px;font-family:var(--mono);color:var(--blue3);font-weight:600; }
+
+/* Keep profile dropdown working — position relative to nav */
+.profile-dropdown {
+  position:fixed!important;
+  left:calc(14px + var(--snav-open) + 8px)!important;
+  top:auto!important;bottom:80px!important;
+  right:auto!important;
+}
+
+/* show/hide auth vs profile */
+.snav-guest { display:flex; }
+.snav-authed { display:none; }
+body.authed .snav-guest { display:none; }
+body.authed .snav-authed { display:flex; }
+
+/* Legacy hide */
 .show-authed{display:none;}
 .show-guest{display:flex;}
 body.authed .show-authed{display:flex;}
@@ -333,6 +439,91 @@ body.authed .show-guest{display:none;}
 .wm-txn-amount.credit{color:var(--green);}
 .wm-txn-amount.starter{color:var(--blue3);}
 
+/* ══════ GLOBE SECTION ══════ */
+.globe-section{
+  padding:0 0 80px;
+  background:var(--bg);
+  overflow:hidden;
+}
+.globe-header{
+  text-align:center;padding:0 24px 36px;
+  max-width:600px;margin:0 auto;
+}
+.globe-eyebrow{
+  display:inline-block;
+  font-size:9px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--blue3);background:var(--blue-dim);border:1px solid var(--blue-border);
+  padding:4px 14px;border-radius:var(--pill);margin-bottom:14px;
+}
+.globe-title{
+  font-family:var(--display);font-size:clamp(26px,4vw,38px);font-weight:800;
+  color:var(--text);letter-spacing:-0.035em;margin-bottom:10px;
+}
+.globe-sub{font-size:13px;color:var(--text3);line-height:1.75;}
+.globe-sub strong{color:var(--blue3);}
+
+/* Canvas wrapper */
+.globe-stage{
+  position:relative;
+  width:min(680px,94vw);
+  height:min(680px,94vw);
+  margin:0 auto 32px;
+  cursor:grab;
+}
+.globe-stage:active{cursor:grabbing;}
+#globe-canvas{display:block;width:100%;height:100%;}
+
+/* Tooltip */
+.globe-tooltip{
+  position:absolute;
+  display:none;
+  flex-direction:column;gap:3px;
+  background:rgba(10,14,40,0.9);
+  backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,0.14);
+  border-radius:14px;
+  padding:12px 14px;
+  pointer-events:none;
+  min-width:170px;
+  box-shadow:0 12px 40px rgba(0,0,0,0.6);
+  z-index:40;
+  transition:opacity 0.12s;
+}
+.globe-tooltip.vis{display:flex;pointer-events:auto;}
+.gt-code{font-family:var(--mono);font-size:18px;font-weight:800;color:#fff;letter-spacing:-0.02em;}
+.gt-name{font-size:11px;font-weight:600;color:var(--text2);margin-top:1px;}
+.gt-city{font-size:10px;color:var(--text4);margin-bottom:6px;}
+.gt-search-btn{
+  background:var(--blue);color:#fff;border:none;
+  font-family:var(--font);font-size:10px;font-weight:700;
+  padding:6px 12px;border-radius:8px;cursor:pointer;
+  transition:background 0.14s;
+  pointer-events:auto;
+}
+.gt-search-btn:hover{background:var(--blue2);}
+
+/* Destination chips strip */
+.dest-strip-wrap{
+  overflow-x:auto;padding:0 24px 4px;
+  scrollbar-width:thin;scrollbar-color:var(--surface3) transparent;
+}
+.dest-strip-wrap::-webkit-scrollbar{height:3px;}
+.dest-strip-wrap::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px;}
+.dest-strip{
+  display:flex;gap:8px;width:max-content;margin:0 auto;
+  padding-bottom:2px;
+}
+.dest-chip{
+  display:flex;align-items:center;gap:7px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:8px 14px;cursor:pointer;
+  transition:all 0.16s;white-space:nowrap;flex-shrink:0;
+}
+.dest-chip:hover,.dest-chip.hi{border-color:var(--blue-border);background:var(--blue-dim);}
+.dest-chip-code{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--blue3);}
+.dest-chip-city{font-size:10px;color:var(--text3);font-weight:500;}
+.dest-chip-live{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 2s infinite;flex-shrink:0;}
+
 /* ══════ BOARDING PASS MODAL ══════ */
 @keyframes bpIn{from{opacity:0;transform:scale(0.93) translateY(22px)}to{opacity:1;transform:none}}
 .bp-overlay{
@@ -522,7 +713,7 @@ body.authed .show-guest{display:none;}
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  padding:calc(var(--nav-h) + 20px) 24px 80px;
+  padding:40px 24px 80px;
   gap:36px;
   text-align:center;
 }
@@ -1031,7 +1222,7 @@ body.authed .show-guest{display:none;}
 /* Tabs */
 .tab-content{display:none;}
 .tab-content.active{display:flex;flex-direction:column;}
-.page-center{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;background:var(--bg);min-height:calc(100vh - var(--nav-h));padding-top:var(--nav-h);}
+.page-center{display:flex;align-items:center;justify-content:center;flex-direction:column;background:var(--bg);padding:60px 24px 40px;}
 
 /* Toast */
 .toast-wrap{position:fixed;bottom:20px;right:20px;z-index:900;display:flex;flex-direction:column;gap:7px;}
@@ -1041,7 +1232,7 @@ body.authed .show-guest{display:none;}
 .toast.info{border-left:3px solid var(--blue);}
 
 /* ══════ MY BOOKINGS / ABOUT — full page ══════ */
-#tab-my,#tab-about{min-height:100vh;padding-top:var(--nav-h);}
+#tab-my,#tab-about{min-height:100vh;padding-top:0;}
 
 /* ══════ BOOT LOADER ══════ */
 #boot-screen{position:fixed;inset:0;z-index:99999;background:#000;font-family:'JetBrains Mono','Courier New',monospace;font-size:12px;line-height:1.55;color:#c8c8c8;overflow:hidden;display:flex;flex-direction:column;}
@@ -1113,74 +1304,76 @@ body.boot-done > #boot-screen{display:none;}
 </div>
 
 <!-- NAV -->
-<nav>
-  <a href="#" class="nav-brand">
-    <div class="nav-logo-wrap">
-      <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" alt="IndiGo" onerror="this.style.display='none'"/>
-    </div>
-    <div>
-      <div class="brand-name">IndiGo PTFS</div>
-      <div class="brand-tag">Virtual Airline</div>
-    </div>
-  </a>
-  <div class="nav-sep"></div>
-  <div class="nav-links">
-    <button class="nav-link active" onclick="switchTab(this,'flights')">✈ Flights</button>
-    <button class="nav-link" onclick="switchTab(this,'my')">🎫 My Bookings</button>
-    <button class="nav-link" onclick="switchTab(this,'about')">ℹ About</button>
+<nav id="sidenav">
+  <div class="snav-logo">
+    <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" alt="IndiGo" onerror="this.style.display='none'"/>
   </div>
-  <div class="nav-right">
-    <div class="clock-pill" id="nav-clock">00:00:00 UTC</div>
-    <button class="btn-discord show-guest" onclick="openLoginModal()">
-      <svg class="disc-svg" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-      Login with Discord
+  <div class="snav-div"></div>
+  <div class="snav-items">
+    <button class="snav-item active" id="nav-btn-flights" onclick="switchTab(this,'flights')">
+      <span class="snav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg></span>
+      <span class="snav-label">Flights</span>
     </button>
-    <div class="profile-wrap show-authed">
-      <div class="profile-chip" id="profile-chip" onclick="toggleProfileDropdown()">
-        <div class="user-avatar" id="nav-avatar">
-          <img id="nav-avatar-img" src="" alt="" style="display:none"/>
-          <span id="nav-avatar-init">?</span>
-        </div>
-        <div class="profile-name-wrap">
-          <span class="user-name" id="nav-username">—</span>
-          <span class="user-balance-small" id="nav-balance-small">₹—</span>
-        </div>
-        <span class="chevron-icon">▾</span>
+    <button class="snav-item" id="nav-btn-my" onclick="switchTab(this,'my')">
+      <span class="snav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.36C18 2.06 15.96 0 13.5 0 12 0 10.72.87 9.89 2.12L9 3.45 8.11 2.12C7.28.87 6 0 4.5 0 2.04 0 0 2.06 0 4.64c0 .48.11.92.18 1.36H0v2h2v9.5A2.5 2.5 0 0 0 4.5 20h15a2.5 2.5 0 0 0 2.5-2.5V8h2V6h-4zm-9 11.5H4.5c-.27 0-.5-.23-.5-.5V8h7v9.5zm8 0H13V8h7v9c0 .27-.23.5-.5.5z"/></svg></span>
+      <span class="snav-label">My Bookings</span>
+    </button>
+    <button class="snav-item" id="nav-btn-about" onclick="switchTab(this,'about')">
+      <span class="snav-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg></span>
+      <span class="snav-label">About</span>
+    </button>
+  </div>
+  <div class="snav-div" style="margin-top:auto;"></div>
+  <div class="snav-clock">
+    <div class="snav-clock-dot"></div>
+    <span class="snav-clock-val" id="nav-clock">00:00:00</span>
+  </div>
+  <button class="snav-auth snav-guest" onclick="openLoginModal()">
+    <span class="snav-auth-icon"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg></span>
+    <span class="snav-auth-label">Login with Discord</span>
+  </button>
+  <div class="snav-profile snav-authed" onclick="toggleProfileDropdown()">
+    <div class="snav-avatar-sm" id="nav-avatar">
+      <img id="nav-avatar-img" src="" alt="" style="display:none"/>
+      <span id="nav-avatar-init">?</span>
+    </div>
+    <div class="snav-profile-info">
+      <div class="snav-pname" id="nav-username">—</div>
+      <div class="snav-pbal" id="nav-balance-small">₹—</div>
+    </div>
+  </div>
+  <div class="profile-dropdown" id="profile-dropdown">
+    <div class="pd-header">
+      <div class="pd-avatar" id="pd-avatar">
+        <img id="pd-avatar-img" src="" alt="" style="display:none"/>
+        <span id="pd-avatar-init">?</span>
       </div>
-      <div class="profile-dropdown" id="profile-dropdown">
-        <div class="pd-header">
-          <div class="pd-avatar" id="pd-avatar">
-            <img id="pd-avatar-img" src="" alt="" style="display:none"/>
-            <span id="pd-avatar-init">?</span>
-          </div>
-          <div class="pd-username" id="pd-username">—</div>
-          <div class="pd-discord-tag" id="pd-discord-tag">—</div>
-        </div>
-        <div class="pd-wallet-card" onclick="openWalletModal()">
-          <div class="pwc-top"><span class="pwc-logo">IndiGo</span><div class="pwc-chip"></div></div>
-          <div class="pwc-balance-label">Wallet Balance</div>
-          <div class="pwc-balance" id="pd-balance">₹—</div>
-          <div class="pwc-footer">
-            <span class="pwc-user" id="pd-wallet-name">—</span>
-            <span class="pwc-tap"><span class="pwc-tap-dot"></span>Tap to view transactions</span>
-          </div>
-        </div>
-        <div class="pd-actions">
-          <button class="pd-action" onclick="openWalletModal()">
-            <div class="pd-action-icon" style="background:#eef1fd;font-size:16px;">💳</div>
-            <div class="pd-action-text"><div class="pd-action-label">My Wallet</div><div class="pd-action-sub">Balance & transaction history</div></div>
-            <span class="pd-action-arrow">›</span>
-          </button>
-          <button class="pd-action" onclick="closeDropdownSwitchTab('my')">
-            <div class="pd-action-icon" style="background:#ecfdf5;font-size:16px;">🎫</div>
-            <div class="pd-action-text"><div class="pd-action-label">My Bookings</div><div class="pd-action-sub">Manage your reservations</div></div>
-            <span class="pd-action-arrow">›</span>
-          </button>
-        </div>
-        <div class="pd-divider"></div>
-        <button class="pd-signout" onclick="logout()"><span>⇤</span> Sign Out</button>
+      <div class="pd-username" id="pd-username">—</div>
+      <div class="pd-discord-tag" id="pd-discord-tag">—</div>
+    </div>
+    <div class="pd-wallet-card" onclick="openWalletModal()">
+      <div class="pwc-top"><span class="pwc-logo">IndiGo</span><div class="pwc-chip"></div></div>
+      <div class="pwc-balance-label">Wallet Balance</div>
+      <div class="pwc-balance" id="pd-balance">₹—</div>
+      <div class="pwc-footer">
+        <span class="pwc-user" id="pd-wallet-name">—</span>
+        <span class="pwc-tap"><span class="pwc-tap-dot"></span>Tap to view transactions</span>
       </div>
     </div>
+    <div class="pd-actions">
+      <button class="pd-action" onclick="openWalletModal()">
+        <div class="pd-action-icon" style="background:#eef1fd;font-size:16px;">💳</div>
+        <div class="pd-action-text"><div class="pd-action-label">My Wallet</div><div class="pd-action-sub">Balance &amp; transaction history</div></div>
+        <span class="pd-action-arrow">&#x203A;</span>
+      </button>
+      <button class="pd-action" onclick="closeDropdownSwitchTab('my')">
+        <div class="pd-action-icon" style="background:#ecfdf5;font-size:16px;">🎫</div>
+        <div class="pd-action-text"><div class="pd-action-label">My Bookings</div><div class="pd-action-sub">Manage your reservations</div></div>
+        <span class="pd-action-arrow">&#x203A;</span>
+      </button>
+    </div>
+    <div class="pd-divider"></div>
+    <button class="pd-signout" onclick="logout()"><span>&#x21A4;</span> Sign Out</button>
   </div>
 </nav>
 
@@ -1322,18 +1515,44 @@ body.boot-done > #boot-screen{display:none;}
 <!-- ABOUT TAB -->
 <div class="tab-content" id="tab-about">
   <div class="page-center">
-    <div style="text-align:center;padding:60px 20px;max-width:500px;">
+    <!-- About hero -->
+    <div style="text-align:center;padding:60px 20px 40px;max-width:520px;">
       <div style="width:72px;height:72px;border-radius:18px;background:var(--indigo-light);border:1px solid var(--indigo-border);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 22px;overflow:hidden;">
         <img src="https://media.discordapp.net/attachments/1475499036395175996/1502338653135966370/hngzxxk0aqqla5fjwqm4.png?ex=69ff5967&is=69fe07e7&hm=ba63f7449a0003bedb5860197525b6290c1de4e1527960b9579b4802f9bee009&=&format=webp&quality=lossless&width=450&height=450" style="width:72px;height:72px;object-fit:cover;border-radius:18px;" onerror="this.style.display='none'"/>
       </div>
       <div style="font-family:var(--display);font-size:22px;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-0.025em;">IndiGo PTFS</div>
-      <div style="font-size:13px;color:var(--text3);line-height:1.8;margin-bottom:24px;">IndiGo PTFS is a virtual airline community operating on PTFS (Pilot Training Flight Simulator). Book a seat on any listed flight — your boarding pass is sent directly to your Discord DM.</div>
+      <div style="font-size:13px;color:var(--text3);line-height:1.8;margin-bottom:24px;">IndiGo PTFS is a virtual airline community operating on PTFS. Book a seat on any listed flight — your boarding pass is sent directly to your Discord DM.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;text-align:center;margin-bottom:18px;">
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 10px;"><div style="font-size:24px;margin-bottom:7px;">💺</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Economy</div><div style="font-family:var(--mono);font-size:14px;color:var(--blue3);font-weight:700;margin-top:5px;">₹500</div></div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 10px;"><div style="font-size:24px;margin-bottom:7px;">🥂</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Business</div><div style="font-family:var(--mono);font-size:14px;color:var(--cyan);font-weight:700;margin-top:5px;">₹1,200</div></div>
-        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 10px;"><div style="font-size:24px;margin-bottom:7px;">⭐</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">First Class</div><div style="font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700;margin-top:5px;">₹2,500</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 10px;"><div style="font-size:24px;margin-bottom:7px;">🥂</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">Business</div><div style="font-family:var(--mono);font-size:14px;color:var(--cyan);font-weight:700;margin-top:5px;">₹1,800</div></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 10px;"><div style="font-size:24px;margin-bottom:7px;">⭐</div><div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;letter-spacing:0.06em;">First Class</div><div style="font-family:var(--mono);font-size:14px;color:var(--amber);font-weight:700;margin-top:5px;">₹3,000</div></div>
       </div>
       <div style="font-size:11px;color:var(--text4);line-height:1.8;">New members receive ₹5,000 starter balance · 50% refund on cancellations<br/>Boarding pass image sent to Discord DM on booking</div>
+    </div>
+  </div>
+
+  <!-- ══ GLOBE SECTION ══ -->
+  <div class="globe-section">
+    <div class="globe-header">
+      <div class="globe-eyebrow">✈ Route Network</div>
+      <h2 class="globe-title">Explore Our Destinations</h2>
+      <p class="globe-sub">IndiGo PTFS connects <strong id="globe-dest-count">57</strong> airports across India and beyond. Click any destination to explore.</p>
+    </div>
+
+    <div class="globe-stage">
+      <canvas id="globe-canvas"></canvas>
+      <!-- Tooltip -->
+      <div class="globe-tooltip" id="globe-tooltip">
+        <div class="gt-code" id="gt-code">—</div>
+        <div class="gt-name" id="gt-name">—</div>
+        <div class="gt-city" id="gt-city">—</div>
+        <button class="gt-search-btn" id="gt-search-btn" onclick="globeSearchFlight()">Search flights from here</button>
+      </div>
+    </div>
+
+    <!-- Destination cards strip -->
+    <div class="dest-strip-wrap">
+      <div class="dest-strip" id="dest-strip"></div>
     </div>
   </div>
 </div>
@@ -1580,8 +1799,31 @@ const REDIRECT_URI = (function() {
 const CABIN_PRICES = { Economy: 500, 'IndiGo Stretch': 800, 'Economy Plus': 1100, Business: 1800, 'First Class': 3000 };
 
 let allFlights=[], filteredFlights=[], currentFilter='all', currentSort='flight';
+let heroFrom = '', heroTo = '';
 let currentUser=null, userBalance=null, activeFlightId=null;
 let selectedCabin='Economy', selectedPrice=500, dropdownOpen=false;
+
+const AIRPORT_COORDS = {
+  DEL:[28.5665,77.1031], BOM:[19.0887,72.8679], HYD:[17.2313,78.4298],
+  MAA:[12.9941,80.1709], CCU:[22.6520,88.4463], BLR:[13.1986,77.7066],
+  GOI:[15.3808,73.8314], AMD:[23.0772,72.6347], PNQ:[18.5822,73.9197],
+  COK:[10.1520,76.4019], JAI:[26.8242,75.8122], LKO:[26.7606,80.8893],
+  ATQ:[31.7096,74.7973], IXC:[30.6735,76.7885], PAT:[25.5913,85.0880],
+  BBI:[20.2444,85.8178], NAG:[21.0922,79.0472], SXR:[33.9871,74.7742],
+  GAU:[26.1061,91.5859], IXB:[26.6812,88.3286], VTZ:[17.7212,83.2245],
+  TRV:[8.4821,76.9201],  IXM:[9.8345,78.0934],  VGA:[16.5304,80.7968],
+  RPR:[21.1804,81.7388], BHO:[23.2875,77.3374],  IDR:[22.7218,75.8011],
+  UDR:[24.6177,73.8961], JDH:[26.2511,73.0488],  IXJ:[32.6891,74.8374],
+  AGR:[27.1558,77.9609], VNS:[25.4524,82.8593],  GWL:[26.2933,78.2278],
+  DXB:[25.2532,55.3657], AUH:[24.4330,54.6511],  SIN:[1.3502,103.9940],
+  LHR:[51.4700,-0.4543], JFK:[40.6413,-73.7781], LAX:[33.9425,-118.4081],
+  CDG:[49.0097,2.5479],  FRA:[50.0379,8.5622],   HKG:[22.3080,113.9185],
+  NRT:[35.7720,140.3929],ICN:[37.4602,126.4407],  SYD:[-33.9399,151.1753],
+  KUL:[2.7456,101.7099], BKK:[13.6900,100.7501], DOH:[25.2731,51.6080],
+  IST:[41.2753,28.7519], ORD:[41.9742,-87.9073], YYZ:[43.6777,-79.6248],
+  MEL:[-37.6690,144.8410],MUC:[48.3538,11.7861], ZRH:[47.4582,8.5555],
+  AMS:[52.3086,4.7639],  BCN:[41.2974,2.0833],   MAD:[40.4719,-3.5626]
+};
 
 const AIRPORT_DB = {
   DEL:['Indira Gandhi International Airport','New Delhi','India'],BOM:['Chhatrapati Shivaji Maharaj International Airport','Mumbai','India'],HYD:['Rajiv Gandhi International Airport','Hyderabad','India'],MAA:['Chennai International Airport','Chennai','India'],CCU:['Netaji Subhas Chandra Bose International Airport','Kolkata','India'],BLR:['Kempegowda International Airport','Bengaluru','India'],GOI:['Goa International Airport','Goa','India'],AMD:['Sardar Vallabhbhai Patel International Airport','Ahmedabad','India'],PNQ:['Pune Airport','Pune','India'],COK:['Cochin International Airport','Kochi','India'],JAI:['Jaipur International Airport','Jaipur','India'],LKO:['Chaudhary Charan Singh International Airport','Lucknow','India'],ATQ:['Sri Guru Ram Dass Jee International Airport','Amritsar','India'],IXC:['Chandigarh Airport','Chandigarh','India'],PAT:['Jay Prakash Narayan Airport','Patna','India'],BBI:['Biju Patnaik International Airport','Bhubaneswar','India'],NAG:['Dr. Babasaheb Ambedkar International Airport','Nagpur','India'],SXR:['Sheikh ul-Alam International Airport','Srinagar','India'],GAU:['Lokpriya Gopinath Bordoloi International Airport','Guwahati','India'],IXB:['Bagdogra Airport','Siliguri','India'],VTZ:['Visakhapatnam Airport','Visakhapatnam','India'],TRV:['Trivandrum International Airport','Thiruvananthapuram','India'],IXM:['Madurai Airport','Madurai','India'],VGA:['Vijayawada Airport','Vijayawada','India'],RPR:['Swami Vivekananda Airport','Raipur','India'],BHO:['Raja Bhoj Airport','Bhopal','India'],IDR:['Devi Ahilyabai Holkar Airport','Indore','India'],UDR:['Maharana Pratap Airport','Udaipur','India'],JDH:['Jodhpur Airport','Jodhpur','India'],IXJ:['Jammu Airport','Jammu','India'],AGR:['Agra Airport','Agra','India'],VNS:['Lal Bahadur Shastri Airport','Varanasi','India'],GWL:['Gwalior Airport','Gwalior','India'],
@@ -1598,44 +1840,113 @@ function liveAirportCodes() {
 }
 
 function getAirportSuggestions(q) {
+  const live = liveAirportCodes();
   q = q.trim().toUpperCase();
+
+  // Empty query — show all live airports first, then top DB entries
   if (!q) {
-    const live = liveAirportCodes();
     const liveArr = [...live].map(code => ({ code, isLive: true }));
-    const rest = Object.keys(AIRPORT_DB).filter(c => !live.has(c)).slice(0, Math.max(0, 8 - liveArr.length)).map(code => ({ code, isLive: false }));
+    const rest = Object.keys(AIRPORT_DB)
+      .filter(c => !live.has(c))
+      .slice(0, Math.max(0, 8 - liveArr.length))
+      .map(code => ({ code, isLive: false }));
     return [...liveArr, ...rest].slice(0, 8);
   }
+
   const ql = q.toLowerCase();
-  const live = liveAirportCodes();
-  const results = [], seen = new Set();
-  for (const [code, info] of Object.entries(AIRPORT_DB)) { if (code === q && !seen.has(code)) { results.push({ code, isLive: live.has(code) }); seen.add(code); } }
-  for (const [code, info] of Object.entries(AIRPORT_DB)) { if (code.startsWith(q) && !seen.has(code)) { results.push({ code, isLive: live.has(code) }); seen.add(code); } }
-  for (const [code, info] of Object.entries(AIRPORT_DB)) { if (!seen.has(code) && (info[0].toLowerCase().includes(ql) || info[1].toLowerCase().includes(ql) || info[2].toLowerCase().includes(ql))) { results.push({ code, isLive: live.has(code) }); seen.add(code); } }
-  for (const code of live) { if (!seen.has(code) && code.includes(q)) { results.push({ code, isLive: true }); seen.add(code); } }
-  results.sort((a,b) => (b.isLive?1:0)-(a.isLive?1:0));
-  return results.slice(0, 8);
+  const scored = new Map(); // code -> best score
+  const add = (code, score) => {
+    if (!scored.has(code) || scored.get(code) < score) scored.set(code, score);
+  };
+
+  // 1. Exact code match
+  if (AIRPORT_DB[q]) add(q, 1000);
+  if (live.has(q))   add(q, 1050);
+
+  // 2. Code starts-with
+  for (const code of Object.keys(AIRPORT_DB)) {
+    if (code.startsWith(q)) add(code, 800 + (live.has(code) ? 100 : 0));
+  }
+  for (const code of live) {
+    if (code.startsWith(q)) add(code, 850);
+  }
+
+  // 3. City exact match
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (info[1].toUpperCase() === q) add(code, 700 + (live.has(code) ? 100 : 0));
+  }
+
+  // 4. City starts-with
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (info[1].toUpperCase().startsWith(q)) add(code, 600 + (live.has(code) ? 100 : 0));
+  }
+
+  // 5. Airport name starts-with
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (info[0].toUpperCase().startsWith(q)) add(code, 550 + (live.has(code) ? 100 : 0));
+  }
+
+  // 6. Substring match across name / city / country
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    const haystack = (info[0] + ' ' + info[1] + ' ' + info[2]).toLowerCase();
+    if (haystack.includes(ql)) add(code, 300 + (live.has(code) ? 100 : 0));
+  }
+
+  // 7. Live codes not in DB that partially match
+  for (const code of live) {
+    if (!AIRPORT_DB[code] && code.includes(q)) add(code, 400);
+  }
+
+  return [...scored.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 8)
+    .map(([code]) => ({ code, isLive: live.has(code) }));
 }
 
 function airportSuggest(inputId, ddId) {
   const input = document.getElementById(inputId);
-  const dd = document.getElementById(ddId);
-  const q = input.value;
+  const dd    = document.getElementById(ddId);
+  const q     = input.value;
   const suggestions = getAirportSuggestions(q);
+
+  // Position dropdown below the input container (fixed = viewport coords)
   const rect = input.closest('.sf').getBoundingClientRect();
-  dd.style.top = (rect.bottom + 6) + 'px';
-  dd.style.left = rect.left + 'px';
-  dd.style.width = Math.max(rect.width, 300) + 'px';
-  if (!suggestions.length) { dd.innerHTML = `<div class="apt-dd-empty">No airports found</div>`; dd.classList.add('open'); return; }
-  dd.innerHTML = suggestions.map(({code, isLive}) => {
-    const info = AIRPORT_DB[code];
-    const name = info ? info[0] : 'Unknown Airport';
-    const city = info ? `${info[1]}, ${info[2]}` : '';
-    return `<div class="apt-dd-item" onmousedown="selectAirport('${inputId}','${ddId}','${code}')"><span class="apt-dd-code">${code}</span><div class="apt-dd-info"><div class="apt-dd-name">${name}</div><div class="apt-dd-city">${city}</div></div>${isLive ? '<span class="apt-dd-live">LIVE</span>' : ''}</div>`;
+  dd.style.top   = (rect.bottom + 6) + 'px';
+  dd.style.left  = rect.left + 'px';
+  dd.style.width = Math.max(rect.width, 320) + 'px';
+
+  if (!suggestions.length) {
+    dd.innerHTML = `<div class="apt-dd-empty">No airports found — try a city or code</div>`;
+    dd.classList.add('open');
+    return;
+  }
+
+  dd.innerHTML = suggestions.map(({ code, isLive }) => {
+    const info    = AIRPORT_DB[code];
+    const name    = info ? info[0] : code + ' Airport';
+    const city    = info ? `${info[1]}, ${info[2]}` : 'Live airport';
+    const liveBadge = isLive ? '<span class="apt-dd-live">● LIVE</span>' : '';
+    return `<div class="apt-dd-item" onmousedown="selectAirport('${inputId}','${ddId}','${code}')">
+      <span class="apt-dd-code">${code}</span>
+      <div class="apt-dd-info">
+        <div class="apt-dd-name">${name}</div>
+        <div class="apt-dd-city">${city}</div>
+      </div>
+      ${liveBadge}
+    </div>`;
   }).join('');
+
   dd.classList.add('open');
 }
 
-function selectAirport(inputId, ddId, code) { document.getElementById(inputId).value = code; closeDd(ddId); }
+function selectAirport(inputId, ddId, code) {
+  const input = document.getElementById(inputId);
+  const info  = AIRPORT_DB[code];
+  // Show "CODE — City" in the input for clarity
+  input.value = info ? `${code} — ${info[1]}` : code;
+  input.dataset.code = code; // store raw code
+  closeDd(ddId);
+}
 function closeDd(ddId) { const dd = document.getElementById(ddId); if (dd) dd.classList.remove('open'); }
 
 function repositionOpenDds() {
@@ -1644,10 +1955,12 @@ function repositionOpenDds() {
     const dd = document.getElementById(ddId);
     if (!dd || !dd.classList.contains('open')) return;
     const input = document.getElementById(inputId);
+    if (!input) return;
     const rect = input.closest('.sf').getBoundingClientRect();
-    dd.style.top = (rect.bottom + 6) + 'px';
-    dd.style.left = rect.left + 'px';
-    dd.style.width = Math.max(rect.width, 300) + 'px';
+    // Fixed positioning — use viewport coordinates directly (no scrollY needed)
+    dd.style.top   = (rect.bottom + 6) + 'px';
+    dd.style.left  = rect.left + 'px';
+    dd.style.width = Math.max(rect.width, 320) + 'px';
   });
 }
 window.addEventListener('scroll', repositionOpenDds, true);
@@ -1757,8 +2070,7 @@ function closeProfileDropdown() {
 }
 function closeDropdownSwitchTab(tab) {
   closeProfileDropdown();
-  const btn = document.querySelector(`.nav-link:nth-child(${tab==='my'?2:1})`);
-  if (btn) switchTab(btn, tab);
+  switchTab(null, tab);
 }
 document.addEventListener('click', e => { if (dropdownOpen && !e.target.closest('.profile-wrap')) closeProfileDropdown(); });
 
@@ -1874,16 +2186,54 @@ function filterFlights(filter, btn) {
 function applyFilter(filter) {
   const q = (document.getElementById('search-input').value || '').toLowerCase().trim();
   let list = [...allFlights];
-  if (filter==='on-time') list = list.filter(f=>f.status==='Scheduled');
-  if (filter==='boarding') list = list.filter(f=>f.status==='Boarding');
-  if (filter==='delayed') list = list.filter(f=>['Delayed','Rescheduled'].includes(f.status));
+
+  // Status filter
+  if (filter==='on-time')   list = list.filter(f=>f.status==='Scheduled');
+  if (filter==='boarding')  list = list.filter(f=>f.status==='Boarding');
+  if (filter==='delayed')   list = list.filter(f=>['Delayed','Rescheduled'].includes(f.status));
   if (filter==='cancelled') list = list.filter(f=>f.status==='Cancelled');
-  if (filter==='ended') list = list.filter(f=>['Arrived','Departed'].includes(f.status));
-  if (q) list = list.filter(f => (f.flightNum||'').toLowerCase().includes(q)||(f.depAirport||'').toLowerCase().includes(q)||(f.arrAirport||'').toLowerCase().includes(q)||cityOf(f.depAirport).toLowerCase().includes(q)||cityOf(f.arrAirport).toLowerCase().includes(q)||airportName(f.depAirport).toLowerCase().includes(q)||airportName(f.arrAirport).toLowerCase().includes(q)||(f.aircraft||'').toLowerCase().includes(q)||(f.status||'').toLowerCase().includes(q));
+  if (filter==='ended')     list = list.filter(f=>['Arrived','Departed'].includes(f.status));
+
+  // Hero search: from AND to are matched independently (both must match if set)
+  if (heroFrom) list = list.filter(f => {
+    const dep = (f.depAirport || '').toUpperCase();
+    return dep === heroFrom
+      || dep.includes(heroFrom)
+      || cityOf(dep).toUpperCase().includes(heroFrom)
+      || airportName(dep).toUpperCase().includes(heroFrom);
+  });
+  if (heroTo) list = list.filter(f => {
+    const arr = (f.arrAirport || '').toUpperCase();
+    return arr === heroTo
+      || arr.includes(heroTo)
+      || cityOf(arr).toUpperCase().includes(heroTo)
+      || airportName(arr).toUpperCase().includes(heroTo);
+  });
+
+  // Text search box (flight number, route, aircraft, status)
+  if (q) list = list.filter(f =>
+    (f.flightNum||'').toLowerCase().includes(q) ||
+    (f.depAirport||'').toLowerCase().includes(q) ||
+    (f.arrAirport||'').toLowerCase().includes(q) ||
+    cityOf(f.depAirport).toLowerCase().includes(q) ||
+    cityOf(f.arrAirport).toLowerCase().includes(q) ||
+    airportName(f.depAirport).toLowerCase().includes(q) ||
+    airportName(f.arrAirport).toLowerCase().includes(q) ||
+    (f.aircraft||'').toLowerCase().includes(q) ||
+    (f.status||'').toLowerCase().includes(q)
+  );
+
   filteredFlights = list;
   doSort();
 }
-function applySearch() { applyFilter(currentFilter); }
+function applySearch() {
+  // Text search clears the hero from/to filter so they don't conflict
+  heroFrom = '';
+  heroTo = '';
+  document.getElementById('s-from').value = '';
+  document.getElementById('s-to').value = '';
+  applyFilter(currentFilter);
+}
 function applySort(col) { if(col) currentSort=col; doSort(); }
 function doSort() {
   const key = {flight:'flightNum',dep:'depTime',route:'depAirport',status:'status'}[currentSort]||'flightNum';
@@ -2264,31 +2614,52 @@ function onRobloxInput() {
 async function verifyRoblox(username) {
   const statusEl = document.getElementById('rblx-status');
   try {
-    const res = await fetch(`https://users.roblox.com/v1/usernames/users`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ usernames: [username], excludeBannedUsers: false })
-    });
-    if (!res.ok) throw new Error('API error');
-    const data = await res.json();
-    const user = data.data?.[0];
-    if (user) {
-      let avatarHtml = '';
-      try {
-        const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=48x48&format=Png&isCircular=true`);
+    // Use the search endpoint (GET — no CORS preflight) then find exact match
+    const searchRes = await fetch(
+      `https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}&limit=10`,
+      { headers: { 'Accept': 'application/json' } }
+    );
+    if (!searchRes.ok) throw new Error('search failed');
+    const searchData = await searchRes.json();
+    const users = searchData.data || [];
+
+    // Find case-insensitive exact match
+    const user = users.find(u =>
+      u.name.toLowerCase() === username.toLowerCase() ||
+      u.displayName.toLowerCase() === username.toLowerCase()
+    );
+
+    if (!user) {
+      statusEl.innerHTML = `<div class="rblx-err">✕ Roblox user "<b>${username}</b>" not found</div>`;
+      return;
+    }
+
+    // Correct capitalization in the input
+    document.getElementById('bcm-roblox').value = user.name;
+
+    // Fetch headshot thumbnail
+    let avatarHtml = '';
+    try {
+      const thumbRes = await fetch(
+        `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${user.id}&size=48x48&format=Png&isCircular=true`
+      );
+      if (thumbRes.ok) {
         const thumbData = await thumbRes.json();
         const imgUrl = thumbData.data?.[0]?.imageUrl;
         if (imgUrl) avatarHtml = `<img class="rblx-ok-avatar" src="${imgUrl}" alt=""/>`;
-      } catch {}
-      statusEl.innerHTML = `<div class="rblx-ok">${avatarHtml}<span class="rblx-ok-check">✓</span><span class="rblx-ok-name">${user.name} — verified</span></div>`;
-      // Correct capitalization
-      document.getElementById('bcm-roblox').value = user.name;
-    } else {
-      statusEl.innerHTML = `<div class="rblx-err">✕ Username not found on Roblox</div>`;
-    }
-  } catch {
-    // CORS or network error — don't block the user, just clear status
-    statusEl.innerHTML = '<span style="font-size:9.5px;color:var(--text4);">Could not verify (proceed anyway)</span>';
+      }
+    } catch { /* thumbnail optional */ }
+
+    statusEl.innerHTML = `
+      <div class="rblx-ok">
+        ${avatarHtml}
+        <span class="rblx-ok-check">✓</span>
+        <span class="rblx-ok-name">${user.name}${user.displayName && user.displayName !== user.name ? ` (${user.displayName})` : ''} — verified</span>
+      </div>`;
+
+  } catch (err) {
+    // Network / CORS error — don't block booking, just note it
+    statusEl.innerHTML = `<span style="font-size:9.5px;color:var(--text4);">⚠ Could not reach Roblox — double-check your username</span>`;
   }
 }
 
@@ -2296,39 +2667,66 @@ function scrollToFlights() {
   document.querySelector('.flights-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-function swapAirports() { const f=document.getElementById('s-from'), t=document.getElementById('s-to'); [f.value, t.value] = [t.value, f.value]; }
+function swapAirports() {
+  const f = document.getElementById('s-from'), t = document.getElementById('s-to');
+  [f.value, t.value] = [t.value, f.value];
+  [f.dataset.code, t.dataset.code] = [t.dataset.code || '', f.dataset.code || ''];
+  [heroFrom, heroTo] = [heroTo, heroFrom];
+}
+
 function doSearch() {
-  const from = document.getElementById('s-from').value.trim().toUpperCase();
-  const to = document.getElementById('s-to').value.trim().toUpperCase();
-  const fromCode = resolveToIcao(from), toCode = resolveToIcao(to);
-  const q = [fromCode, toCode].filter(Boolean).join(' ');
-  document.getElementById('search-input').value = q;
-  applySearch();
-  // Scroll to flights section smoothly
+  const fromEl = document.getElementById('s-from');
+  const toEl   = document.getElementById('s-to');
+  // Prefer the stored raw code if user picked from dropdown
+  const fromRaw = fromEl.dataset.code || fromEl.value.trim();
+  const toRaw   = toEl.dataset.code   || toEl.value.trim();
+  heroFrom = resolveToCode(fromRaw);
+  heroTo   = resolveToCode(toRaw);
+  // Clear the text search box so the two filters don't conflict
+  document.getElementById('search-input').value = '';
+  applyFilter(currentFilter);
   setTimeout(() => {
     document.querySelector('.flights-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 80);
-  if (fromCode || toCode) toast(`Searching: ${fromCode||'any'} → ${toCode||'any'}`, 'info');
+  const label = [heroFrom, heroTo].filter(Boolean).join(' → ') || 'all routes';
+  toast(`Showing: ${label}`, 'info');
 }
-function resolveToIcao(q) {
-  if (!q) return '';
-  if (/^[A-Z]{3}$/.test(q) && AIRPORT_DB[q]) return q;
-  if (/^[A-Z]{3}$/.test(q)) return q;
-  const ql = q.toLowerCase();
-  for (const [code, info] of Object.entries(AIRPORT_DB)) { if (info[0].toLowerCase().includes(ql) || info[1].toLowerCase().includes(ql)) return code; }
-  return q;
+
+/** Resolve any input (code, city, airport name) to the best airport code */
+function resolveToCode(raw) {
+  if (!raw) return '';
+  const up = raw.trim().toUpperCase();
+  const lo = raw.trim().toLowerCase();
+  // Exact code match in DB
+  if (AIRPORT_DB[up]) return up;
+  // Exact match among live flight codes
+  const live = liveAirportCodes();
+  if (live.has(up)) return up;
+  // Prefix code match in DB
+  for (const code of Object.keys(AIRPORT_DB)) { if (code.startsWith(up)) return code; }
+  // City / airport name match
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (info[1].toLowerCase() === lo || info[0].toLowerCase().includes(lo)) return code;
+  }
+  // Partial city match
+  for (const [code, info] of Object.entries(AIRPORT_DB)) {
+    if (info[1].toLowerCase().includes(lo)) return code;
+  }
+  // Return as-is (maybe a live code not in DB)
+  return up;
 }
 
 function switchTab(btn, tab) {
-  document.querySelectorAll('.nav-link').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
+  document.querySelectorAll('.snav-item').forEach(b=>b.classList.remove('active'));
+  const navBtn = document.getElementById('nav-btn-'+tab);
+  if (navBtn) navBtn.classList.add('active');
   document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
   document.getElementById('tab-'+tab).classList.add('active');
   if (tab==='my') {
     if (currentUser) loadMyBookings();
     else { document.getElementById('my-guest-state').style.display='flex'; document.getElementById('my-authed-state').style.display='none'; }
   }
-  // Scroll to top on tab switch
+  if (tab==='about' && typeof maybeInitGlobe === 'function') maybeInitGlobe();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -2354,6 +2752,349 @@ function toast(msg, type='info') {
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') { closePanel(); closeModal(); closeWalletModal(); closeProfileDropdown(); closeBookingConfirm(); closeBoardingPass(); }
 });
+
+// ══════════════════════════════════════════════════
+//  INTERACTIVE GLOBE  (runs after DOM is ready — script is at bottom of body)
+// ══════════════════════════════════════════════════
+(function() {
+
+const GLOBE_AIRPORTS = Object.entries(AIRPORT_DB).filter(([code])=>AIRPORT_COORDS[code]);
+
+// Lat/lon → 3D unit vector
+function ll2xyz(lat,lon,r=1){
+  const phi=(90-lat)*Math.PI/180, th=(lon+180)*Math.PI/180;
+  return [r*Math.sin(phi)*Math.cos(th), r*Math.cos(phi), -r*Math.sin(phi)*Math.sin(th)];
+}
+
+// Project 3D → 2D canvas
+function project(x,y,z,mat,cx,cy,r){
+  // rotate by mat (3×3 row-major)
+  const rx=mat[0]*x+mat[1]*y+mat[2]*z;
+  const ry=mat[3]*x+mat[4]*y+mat[5]*z;
+  const rz=mat[6]*x+mat[7]*y+mat[8]*z;
+  return { sx:cx+rx*r, sy:cy-ry*r, z:rz };
+}
+
+// Build rotation matrix from euler angles
+function rotMat(ax,ay){
+  const cx=Math.cos(ax),sx=Math.sin(ax),cy=Math.cos(ay),sy=Math.sin(ay);
+  return [
+    cy,     0,  sy,
+    sx*sy,  cx,-sx*cy,
+   -cx*sy,  sx, cx*cy
+  ];
+}
+
+let rotX=0.35, rotY=0.4, velX=0, velY=0;
+let dragging=false, lastMX=0, lastMY=0;
+let hoveredIdx=-1, selectedIdx=-1;
+let animId=null;
+const canvas=document.getElementById('globe-canvas');
+if(!canvas)return;
+const ctx2=canvas.getContext('2d');
+
+function resize(){
+  const s=Math.min(680,canvas.parentElement.clientWidth*0.94);
+  canvas.width=canvas.height=Math.round(s*window.devicePixelRatio||s);
+  canvas.style.width=canvas.style.height=s+'px';
+}
+window.addEventListener('resize',resize);
+
+// Mouse / touch
+canvas.addEventListener('mousedown',e=>{dragging=true;lastMX=e.clientX;lastMY=e.clientY;velX=velY=0;});
+window.addEventListener('mouseup',()=>{dragging=false;});
+window.addEventListener('mousemove',e=>{
+  if(!dragging)return;
+  const dx=e.clientX-lastMX, dy=e.clientY-lastMY;
+  velY+=dx*0.008; velX+=dy*0.008;
+  lastMX=e.clientX; lastMY=e.clientY;
+});
+canvas.addEventListener('touchstart',e=>{e.preventDefault();dragging=true;lastMX=e.touches[0].clientX;lastMY=e.touches[0].clientY;velX=velY=0;},{passive:false});
+window.addEventListener('touchend',()=>{dragging=false;});
+window.addEventListener('touchmove',e=>{
+  if(!dragging)return;
+  const dx=e.touches[0].clientX-lastMX, dy=e.touches[0].clientY-lastMY;
+  velY+=dx*0.008; velX+=dy*0.008;
+  lastMX=e.touches[0].clientX; lastMY=e.touches[0].clientY;
+},{passive:true});
+
+// Click to select airport
+canvas.addEventListener('click',e=>{
+  if(Math.abs(velX)+Math.abs(velY)>0.08)return;
+  const rect=canvas.getBoundingClientRect();
+  const mx=(e.clientX-rect.left)*(canvas.width/rect.width);
+  const my=(e.clientY-rect.top)*(canvas.height/rect.height);
+  const mat=rotMat(rotX,rotY);
+  const cx=canvas.width/2, cy=canvas.height/2, r=canvas.width*0.42;
+  let best=-1, bestD=20;
+  GLOBE_AIRPORTS.forEach(([code,info],i)=>{
+    const coords=AIRPORT_COORDS[code]; if(!coords)return;
+    const [x,y,z]=ll2xyz(coords[0],coords[1]);
+    const p=project(x,y,z,mat,cx,cy,r);
+    if(p.z<0)return;
+    const d=Math.hypot(p.sx-mx,p.sy-my);
+    if(d<bestD){bestD=d;best=i;}
+  });
+  if(best>=0){selectedIdx=best;showTooltip(best,e);}
+  else{selectedIdx=-1;hideTooltip();}
+});
+
+// Hover
+canvas.addEventListener('mousemove',e=>{
+  if(dragging)return;
+  const rect=canvas.getBoundingClientRect();
+  const mx=(e.clientX-rect.left)*(canvas.width/rect.width);
+  const my=(e.clientY-rect.top)*(canvas.height/rect.height);
+  const mat=rotMat(rotX,rotY);
+  const cx=canvas.width/2, cy=canvas.height/2, r=canvas.width*0.42;
+  let best=-1, bestD=18;
+  GLOBE_AIRPORTS.forEach(([code,info],i)=>{
+    const coords=AIRPORT_COORDS[code]; if(!coords)return;
+    const [x,y,z]=ll2xyz(coords[0],coords[1]);
+    const p=project(x,y,z,mat,cx,cy,r);
+    if(p.z<0)return;
+    const d=Math.hypot(p.sx-mx,p.sy-my);
+    if(d<bestD){bestD=d;best=i;}
+  });
+  hoveredIdx=best;
+  canvas.style.cursor=best>=0?'pointer':'grab';
+});
+
+let tooltipApt=null;
+function showTooltip(idx,e){
+  const [code,info]=GLOBE_AIRPORTS[idx];
+  tooltipApt=code;
+  const tt=document.getElementById('globe-tooltip');
+  document.getElementById('gt-code').textContent=code;
+  document.getElementById('gt-name').textContent=info[0];
+  document.getElementById('gt-city').textContent=`${info[1]}, ${info[2]}`;
+  const live=liveAirportCodes();
+  document.getElementById('gt-search-btn').textContent=
+    live.has(code)?`🔴 Live — search flights`:`Search flights from ${code}`;
+  const rect=canvas.getBoundingClientRect();
+  const px=e.clientX-rect.left+16, py=e.clientY-rect.top-10;
+  tt.style.left=Math.min(px,rect.width-200)+'px';
+  tt.style.top=Math.max(0,py-30)+'px';
+  tt.classList.add('vis');
+  // Highlight chip
+  document.querySelectorAll('.dest-chip').forEach(c=>c.classList.toggle('hi',c.dataset.code===code));
+}
+function hideTooltip(){
+  document.getElementById('globe-tooltip').classList.remove('vis');
+  document.querySelectorAll('.dest-chip').forEach(c=>c.classList.remove('hi'));
+  tooltipApt=null;
+}
+window.globeSearchFlight=function(){
+  if(!tooltipApt)return;
+  document.getElementById('s-from').value=tooltipApt;
+  document.getElementById('s-from').dataset.code=tooltipApt;
+  heroFrom=tooltipApt; heroTo='';
+  applyFilter(currentFilter);
+  switchTab(null,'flights');
+  hideTooltip();
+  setTimeout(()=>document.querySelector('.flights-section')
+    .scrollIntoView({behavior:'smooth',block:'start'}),120);
+};
+
+// Latitude lines data (sphere wireframe)
+function drawGlobe(){
+  const w=canvas.width, h=canvas.height;
+  const cx=w/2, cy=h/2, r=w*0.42;
+  ctx2.clearRect(0,0,w,h);
+  const mat=rotMat(rotX,rotY);
+
+  // Glow background sphere
+  const grd=ctx2.createRadialGradient(cx,cy,r*0.1,cx,cy,r*1.05);
+  grd.addColorStop(0,'rgba(20,35,120,0.35)');
+  grd.addColorStop(0.6,'rgba(10,20,80,0.2)');
+  grd.addColorStop(1,'rgba(0,0,0,0)');
+  ctx2.beginPath(); ctx2.arc(cx,cy,r,0,Math.PI*2);
+  ctx2.fillStyle=grd; ctx2.fill();
+
+  // Sphere outline
+  ctx2.beginPath(); ctx2.arc(cx,cy,r,0,Math.PI*2);
+  ctx2.strokeStyle='rgba(79,114,255,0.15)'; ctx2.lineWidth=1; ctx2.stroke();
+
+  // Grid lines (lat/lon)
+  const SEG=60;
+  ctx2.lineWidth=0.6;
+  // Latitude rings
+  for(let lat=-60;lat<=60;lat+=30){
+    ctx2.beginPath(); let first=true;
+    for(let i=0;i<=SEG;i++){
+      const lon=-180+360*i/SEG;
+      const [x,y,z]=ll2xyz(lat,lon);
+      const p=project(x,y,z,mat,cx,cy,r);
+      if(p.z<0){first=true;continue;}
+      first?ctx2.moveTo(p.sx,p.sy):ctx2.lineTo(p.sx,p.sy);
+      first=false;
+    }
+    ctx2.strokeStyle='rgba(79,114,255,0.12)'; ctx2.stroke();
+  }
+  // Longitude meridians
+  for(let lon=-180;lon<180;lon+=30){
+    ctx2.beginPath(); let first=true;
+    for(let i=0;i<=SEG;i++){
+      const lat=-90+180*i/SEG;
+      const [x,y,z]=ll2xyz(lat,lon);
+      const p=project(x,y,z,mat,cx,cy,r);
+      if(p.z<0){first=true;continue;}
+      first?ctx2.moveTo(p.sx,p.sy):ctx2.lineTo(p.sx,p.sy);
+      first=false;
+    }
+    ctx2.strokeStyle='rgba(79,114,255,0.08)'; ctx2.stroke();
+  }
+
+  // Route arcs between airports that have live flights
+  const live=[...liveAirportCodes()];
+  const drawn=new Set();
+  allFlights.forEach(f=>{
+    const key=[f.depAirport,f.arrAirport].sort().join('-');
+    if(drawn.has(key))return; drawn.add(key);
+    const dc=AIRPORT_COORDS[f.depAirport],ac2=AIRPORT_COORDS[f.arrAirport];
+    if(!dc||!ac2)return;
+    const [dx,dy,dz]=ll2xyz(dc[0],dc[1]);
+    const [ax,ay,az]=ll2xyz(ac2[0],ac2[1]);
+    const dp=project(dx,dy,dz,mat,cx,cy,r);
+    const ap=project(ax,ay,az,mat,cx,cy,r);
+    if(dp.z<0&&ap.z<0)return;
+    // Arc using bezier – midpoint lifted toward viewer
+    const mx2=(dx+ax)/2, my2=(dy+ay)/2, mz2=(dz+az)/2;
+    const len=Math.sqrt(mx2**2+my2**2+mz2**2)||1;
+    const arcH=1.18;
+    const mp=project(mx2/len*arcH,my2/len*arcH,mz2/len*arcH,mat,cx,cy,r);
+    ctx2.beginPath();
+    ctx2.moveTo(dp.sx,dp.sy);
+    ctx2.quadraticCurveTo(mp.sx,mp.sy,ap.sx,ap.sy);
+    ctx2.strokeStyle='rgba(79,114,255,0.18)';
+    ctx2.lineWidth=0.8; ctx2.stroke();
+  });
+
+  // Airport dots
+  const liveSet=liveAirportCodes();
+  GLOBE_AIRPORTS.forEach(([code,info],i)=>{
+    const coords=AIRPORT_COORDS[code]; if(!coords)return;
+    const [x,y,z]=ll2xyz(coords[0],coords[1]);
+    const p=project(x,y,z,mat,cx,cy,r);
+    if(p.z<0)return;
+    const isLive=liveSet.has(code);
+    const isHover=i===hoveredIdx;
+    const isSel=i===selectedIdx;
+    const dotR=isLive?(isHover||isSel?7:5):(isHover||isSel?5:3);
+    // Glow for live
+    if(isLive){
+      ctx2.beginPath(); ctx2.arc(p.sx,p.sy,dotR+5,0,Math.PI*2);
+      const g=ctx2.createRadialGradient(p.sx,p.sy,0,p.sx,p.sy,dotR+5);
+      g.addColorStop(0,'rgba(0,229,160,0.35)');
+      g.addColorStop(1,'rgba(0,229,160,0)');
+      ctx2.fillStyle=g; ctx2.fill();
+    }
+    ctx2.beginPath(); ctx2.arc(p.sx,p.sy,dotR,0,Math.PI*2);
+    ctx2.fillStyle=isSel?'#fff':isLive?'#00e5a0':'rgba(79,114,255,0.75)';
+    ctx2.fill();
+    if(isHover||isSel){
+      ctx2.strokeStyle=isLive?'#00e5a0':'#4f72ff';
+      ctx2.lineWidth=1.5; ctx2.stroke();
+    }
+    // Label for hovered/selected
+    if(isHover||isSel){
+      ctx2.font=`bold ${Math.round(w*0.018)}px 'DM Sans',sans-serif`;
+      ctx2.fillStyle='#fff';
+      ctx2.shadowColor='rgba(0,0,0,0.8)'; ctx2.shadowBlur=4;
+      ctx2.fillText(code, p.sx+dotR+4, p.sy+4);
+      ctx2.shadowBlur=0;
+    }
+  });
+}
+
+function tick(){
+  if(!dragging){
+    rotY+=velY; rotX+=velX;
+    velY*=0.93; velX*=0.93;
+    // Gentle auto-spin when not interacting
+    if(Math.abs(velY)<0.001&&Math.abs(velX)<0.001) rotY+=0.002;
+    // Clamp tilt
+    rotX=Math.max(-1.2,Math.min(1.2,rotX));
+  }
+  drawGlobe();
+  animId=requestAnimationFrame(tick);
+}
+
+// Build destination chips
+function buildChips(){
+  const live=liveAirportCodes();
+  const strip=document.getElementById('dest-strip');
+  if(!strip)return;
+  // Sort: live first, then alphabetically
+  const sorted=[...GLOBE_AIRPORTS].sort((a,b)=>{
+    const al=live.has(a[0])?1:0, bl=live.has(b[0])?1:0;
+    if(al!==bl)return bl-al;
+    return a[1][1].localeCompare(b[1][1]);
+  });
+  document.getElementById('globe-dest-count').textContent=sorted.length;
+  strip.innerHTML=sorted.map(([code,info])=>`
+    <div class="dest-chip" data-code="${code}" onclick="globeChipClick('${code}')">
+      ${live.has(code)?'<div class="dest-chip-live"></div>':''}
+      <span class="dest-chip-code">${code}</span>
+      <span class="dest-chip-city">${info[1]}</span>
+    </div>
+  `).join('');
+}
+
+window.globeChipClick=function(code){
+  const idx=GLOBE_AIRPORTS.findIndex(([c])=>c===code);
+  if(idx<0)return;
+  selectedIdx=idx;
+  // Rotate globe to put this airport facing front
+  const info=GLOBE_AIRPORTS[idx][1];
+  const cc=AIRPORT_COORDS[code];
+  if(cc){
+    const targetRotY=-cc[1]*Math.PI/180-Math.PI;
+    const targetRotX=cc[0]*Math.PI/180*0.9;
+    // Smooth tween
+    const sY=rotY,sX=rotX;
+    let t=0;
+    function tween(){
+      t+=0.04;
+      rotY=sY+(targetRotY-sY)*Math.min(1,t);
+      rotX=sX+(targetRotX-sX)*Math.min(1,t);
+      if(t<1)requestAnimationFrame(tween);
+    }
+    tween();
+  }
+  document.querySelectorAll('.dest-chip').forEach(c=>c.classList.toggle('hi',c.dataset.code===code));
+  // Show tooltip in center
+  const tt=document.getElementById('globe-tooltip');
+  document.getElementById('gt-code').textContent=code;
+  document.getElementById('gt-name').textContent=GLOBE_AIRPORTS[idx][1][0];
+  document.getElementById('gt-city').textContent=`${GLOBE_AIRPORTS[idx][1][1]}, ${GLOBE_AIRPORTS[idx][1][2]}`;
+  const live=liveAirportCodes();
+  document.getElementById('gt-search-btn').textContent=
+    live.has(code)?`🔴 Live — search flights`:`Search flights from ${code}`;
+  tooltipApt=code;
+  const stage=document.querySelector('.globe-stage');
+  const sr=stage.getBoundingClientRect();
+  tt.style.left=(sr.width/2-85)+'px';
+  tt.style.top='20px';
+  tt.classList.add('vis');
+};
+
+// Expose maybeInitGlobe globally so switchTab can call it
+let globeInited=false;
+function maybeInitGlobe(){
+  if(globeInited)return;
+  globeInited=true;
+  // Use two rAFs to ensure layout is fully flushed before measuring
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    resize();
+    buildChips();
+    tick();
+  }));
+}
+window.maybeInitGlobe = maybeInitGlobe;
+
+})(); // end globe IIFE
+
 </script>
 
 <!-- BOOT SCRIPT -->
